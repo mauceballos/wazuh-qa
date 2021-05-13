@@ -177,11 +177,8 @@ def test_wazuh_db_chunks(restart_wazuh, clean_registered_agents, configure_socke
     send_chunk_command('global disconnect-agents 0 {} syncreq'.format(str(int(time.time()) + 1)))
 
 
-def test_wazuh_db_timeout(configure_sockets_environment,
-                          connect_to_sockets_module,
-                          pre_insert_packages,
-                          pre_set_sync_info):
-
+def test_wazuh_db_timeout(configure_sockets_environment, connect_to_sockets_module, 
+                          pre_insert_packages, pre_set_sync_info):
     """Check that efectively the socket is closed after timeout is reached"""
 
     def send_row_by_row_command(command):
