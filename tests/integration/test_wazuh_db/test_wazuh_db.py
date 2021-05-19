@@ -92,8 +92,8 @@ def pre_insert_agents():
 def pre_set_sync_info():
     """Asign the last_attempt value to last_completion in sync_info table to force the synced status"""
 
-    command = 'agent 000 sql UPDATE sync_info SET last_completion = (SELECT last_attempt from sync_info ' \
-              'where component = "syscollector-packages") where component = "syscollector-packages" '
+    command = 'agent 000 sql UPDATE sync_info SET last_completion = 10, last_attempt = 10 ' \
+              'where component = "syscollector-packages"'
     receiver_sockets[0].send(command, size=True)
     response = receiver_sockets[0].receive(size=True).decode()
     data = response.split(" ", 1)
@@ -104,7 +104,7 @@ def pre_set_sync_info():
 def pre_insert_packages():
     """Insert a set of dummy packages into sys_programs table"""
 
-    PACKAGES_NUMBER = 2000
+    PACKAGES_NUMBER = 20000
     for pkg_n in range(PACKAGES_NUMBER):
         command = f'agent 000 sql INSERT OR REPLACE INTO sys_programs \
         (scan_id,scan_time,format,name,priority,section,size,vendor,install_time,version,\
@@ -159,36 +159,17 @@ def test_wazuh_db_create_agent(restart_wazuh, clean_registered_agents, configure
     assert os.path.exists(os.path.join(WAZUH_PATH, 'queue', 'db', "999.db"))
 
 
-def test_wazuh_db_chunks(restart_wazuh, clean_registered_agents, configure_sockets_environment, connect_to_sockets_module, pre_insert_agents):
-    """Check that commands by chunks work properly when agents amount exceed the response maximum size"""
-
-    def send_chunk_command(command):
-        receiver_sockets[0].send(command, size=True)
-        response = receiver_sockets[0].receive(size=True).decode()
-
-        status = response.split(" ", 1)[0]
-        assert status == 'due', 'Failed chunks check on < {} >. Expected: {}. Response: {}' \
-            .format(command, 'due', status)
-
-    # Check get-all-agents chunk limit
-    send_chunk_command('global get-all-agents last_id 0')
-    # Check sync-agent-info-get chunk limit
-    send_chunk_command('global sync-agent-info-get last_id 0')
-    # Check get-agents-by-connection-status chunk limit
-    send_chunk_command('global get-agents-by-connection-status 0 active')
-    # Check disconnect-agents chunk limit
-    send_chunk_command('global disconnect-agents 0 {} syncreq'.format(str(int(time.time()) + 1)))
-
-
 def test_wazuh_db_timeout(configure_sockets_environment, connect_to_sockets_module,
                           pre_insert_packages, pre_set_sync_info):
     """Check that effectively the socket is closed after timeout is reached"""
 
     command = 'agent 000 package get'
     receiver_sockets[0].send(command, size=True)
-    time.sleep(5)
+    time.sleep(2)
     socket_closed = False
+    cmd_counter = 0
     while True:
+        cmd_counter += 1
         response = receiver_sockets[0].receive(size=True).decode()
         if response == "":
             socket_closed = True
@@ -196,4 +177,5 @@ def test_wazuh_db_timeout(configure_sockets_environment, connect_to_sockets_modu
         status = response.split(" ", 1)[0]
         if status != "due":
             break
-    assert socket_closed, f'Socket never closed, received: {status}'
+
+    assert socket_closed, f'Socket never closed. Received {cmd_counter} commands. Last command: {response}'
