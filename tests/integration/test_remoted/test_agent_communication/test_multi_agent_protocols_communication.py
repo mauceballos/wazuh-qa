@@ -95,6 +95,12 @@ def validate_agent_manager_protocol_communication(num_agents=2, manager_port=151
         # Create sender event threads
         send_event_threads.append(ThreadExecutor(send_event, {'event': event, 'protocol': protocol,
                                                               'manager_port': manager_port, 'agent': agent}))
+        send_event_threads.append(ThreadExecutor(send_event, {'event': event, 'protocol': protocol,
+                                                              'manager_port': manager_port, 'agent': agent}))
+        send_event_threads.append(ThreadExecutor(send_event, {'event': event, 'protocol': protocol,
+                                                              'manager_port': manager_port, 'agent': agent}))
+        send_event_threads.append(ThreadExecutor(send_event, {'event': event, 'protocol': protocol,
+                                                              'manager_port': manager_port, 'agent': agent}))
 
     # Create socket monitor thread and start it
     socket_monitor_thread = ThreadExecutor(rd.check_queue_socket_event, {'raw_events': search_patterns})
