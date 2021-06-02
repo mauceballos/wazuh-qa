@@ -103,7 +103,7 @@ class DataVisualizer:
         Returns:
             list: list of colors. The colors are represented as a tuple of float values.
         """
-        return sns.hls_palette(size - 1 if size > 1 else 1, h=.5)
+        return sns.hls_palette(size, h=.5)
 
     def _load_dataframes(self):
         """Load the dataframes from dataframes_paths."""
@@ -196,11 +196,21 @@ class DataVisualizer:
             for element in elements:
                 fig, ax = plt.subplots()
                 daemons = self._get_daemons()
-                colors = self._color_palette(len(daemons))
-                for daemon, color in zip(daemons, colors):
-                    self._basic_plot(ax, self.dataframe[self.dataframe.Daemon == daemon][element],
-                                     label=daemon, color=color)
-                self._save_custom_plot(ax, element, f"{element} {title}")
+                if not self.compare:
+                    colors = self._color_palette(len(daemons))
+                    for daemon, color in zip(daemons, colors):
+                        self._basic_plot(ax, self.dataframe[self.dataframe.Daemon == daemon][element],
+                                         label=daemon, color=color)
+                    self._save_custom_plot(ax, element, f"{element} {title}")
+                else:
+                    labels = self._get_labels()
+                    colors = self._color_palette(len(labels))
+                    for daemon in daemons:
+                        for label, color in zip(labels, colors):
+                            df = self.dataframe[self.dataframe.Daemon == daemon][self.dataframe.Version ==
+                                                                                 label][element]
+                            self._basic_plot(ax, df, label=f"{daemon}-{label}", color=color)
+                        self._save_custom_plot(ax, f"{daemon}-{element}", f"{element} {title}")
 
         elif self.target == 'logcollector':
             for element in elements:
@@ -314,3 +324,7 @@ class DataVisualizer:
     def _get_logcollector_targets(self):
         """Get the list of unique logcollector targets (sockets) in the dataset."""
         return self.dataframe.target.unique()
+
+    def _get_labels(self):
+        """Get the list of unique version labels in the dataset."""
+        return self.dataframe.Version.unique()
