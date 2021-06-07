@@ -419,7 +419,6 @@ class QueueMonitor:
                     msg = self._queue.peek(position=position, block=True, timeout=self._time_step)
                     position += 1
                 item = callback(msg)
-                logging.debug(msg)
                 if item is not None and item:
                     result_list.append(item)
                     if len(result_list) == accum_results and timeout_extra > 0 and not extra_timer_is_running:

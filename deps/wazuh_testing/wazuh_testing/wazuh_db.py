@@ -6,6 +6,7 @@ import json
 import logging
 import socket
 import sqlite3
+from json import JSONDecodeError
 
 from wazuh_testing.tools import WAZUH_PATH, WAZUH_DB_SOCKET_PATH
 from wazuh_testing.tools.monitoring import wazuh_pack, wazuh_unpack
@@ -154,7 +155,10 @@ def query_wdb(command):
             # Remove response header and cast str to list of dictionaries
             # From --> 'ok [ {data1}, {data2}...]' To--> [ {data1}, data2}...]
             if len(data.split(' ')) > 1:
-                data = json.loads(' '.join(data.split(' ')[1:]))
+                try:
+                    data = json.loads(' '.join(data.split(' ')[1:]))
+                except JSONDecodeError:
+                    return data
     finally:
         sock.close()
 
