@@ -1,6 +1,7 @@
 # Copyright (C) 2015-2021, Wazuh Inc.
 # Created by Wazuh, Inc. <info@wazuh.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
+import logging
 import os
 import time
 
@@ -74,8 +75,16 @@ def test_request(get_configuration, configure_environment, remove_shared_files,
 
         msg_request = f'{agent.id} {command_request}'
 
-        response = send_request(msg_request)
+        attempts = 3
+        response = ''
+        while attempts > 0 and response == '':
+            try:
+                response = send_request(msg_request)
+            except ValueError:
+                logging.warning('Empty response from socket, retrying.')
+                attempts -= 1
 
+        response = send_request(msg_request)
         assert expected_answer in response, "Remoted unexpected answer"
 
         if "disconnected" not in command_request:
