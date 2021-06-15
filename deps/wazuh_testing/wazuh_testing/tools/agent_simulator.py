@@ -717,7 +717,7 @@ class Agent:
         """
         return self.get_agent_info('connection_status')
 
-    @retry(AttributeError, attempts=10, delay=2, delay_multiplier=1)
+    @retry(AttributeError, attempts=5, delay=5, delay_multiplier=1)
     def wait_status_active(self):
         """Wait until agent status is active in global.db.
 
@@ -1729,7 +1729,7 @@ def create_agents(agents_number, manager_address, cypher='aes', fim_eps=100, aut
 
     return agents
 
-
+@retry(AttributeError, attempts=3, delay=15, delay_multiplier=1)
 def connect(agent,  manager_address='localhost', protocol=TCP, manager_port='1514'):
     """Connects an agent to the manager
 
