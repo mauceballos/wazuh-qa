@@ -31,7 +31,7 @@ class Parameters:
     def __init__(self):
         timeouts = defaultdict(lambda: 10)
         timeouts['linux'] = 5
-        timeouts['darwin'] = 5
+        timeouts['darwin'] = 15
         self._default_timeout = timeouts[sys.platform]
         self._fim_database_memory = False
         self._gcp_project_id = None
