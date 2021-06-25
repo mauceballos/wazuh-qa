@@ -133,7 +133,7 @@ def check_only_future_events_valid(cfg):
         log_callback = logcollector.callback_eventchannel_analyzing(cfg['location'])
 
     elif sys.platform == 'darwin' and cfg['log_format'] == 'macos':
-        for i in range(10):
+        for i in range(60):
             try:
                 assert 'macos' in read_json(FILE_STATUS_PATH), ""
                 file_status_updated = True
