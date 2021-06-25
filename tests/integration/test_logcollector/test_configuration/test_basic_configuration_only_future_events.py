@@ -54,6 +54,7 @@ for log_format in log_format_list:
         location = temp_file_path
 
     tcases += [
+        {'LOCATION': f"{location}", 'LOG_FORMAT': f'{log_format}', 'ONLY-FUTURE-EVENTS': 'yes', 'INVALID_VALUE': ''},
         {'LOCATION': f"{location}", 'LOG_FORMAT': f'{log_format}', 'ONLY-FUTURE-EVENTS': 'no', 'MAX-SIZE': '20B',
          'INVALID_VALUE': ''},
         {'LOCATION': f"{location}", 'LOG_FORMAT': f'{log_format}', 'ONLY-FUTURE-EVENTS': 'no',
@@ -76,7 +77,6 @@ for log_format in log_format_list:
          'INVALID_VALUE': 'max-size'},
         {'LOCATION': f"{location}", 'LOG_FORMAT': f'{log_format}', 'ONLY-FUTURE-EVENTS': 'no', 'MAX-SIZE': '!32817--',
          'INVALID_VALUE': 'max-size'},
-        {'LOCATION': f"{location}", 'LOG_FORMAT': f'{log_format}', 'ONLY-FUTURE-EVENTS': 'yes', 'INVALID_VALUE': ''},
         {'LOCATION': f"{location}", 'LOG_FORMAT': f'{log_format}', 'ONLY-FUTURE-EVENTS': 'no', 'INVALID_VALUE': ''},
         {'LOCATION': f"{location}", 'LOG_FORMAT': f'{log_format}', 'ONLY-FUTURE-EVENTS': 'yesTesting',
          'INVALID_VALUE': 'only-future-events'},
