@@ -13,6 +13,7 @@ from wazuh_testing.tools.monitoring import AGENT_DETECTOR_PREFIX, FileMonitor, L
 from wazuh_testing.tools import get_service, LOG_FILE_PATH
 from tempfile import gettempdir
 from wazuh_testing.tools.utils import lower_case_key_dictionary_array
+from time import sleep
 
 LOGCOLLECTOR_DAEMON = "wazuh-logcollector"
 prefix = LOG_COLLECTOR_DETECTOR_PREFIX
@@ -127,6 +128,7 @@ def check_only_future_events_valid(cfg):
         log_callback = logcollector.callback_eventchannel_analyzing(cfg['location'])
 
     elif sys.platform == 'darwin' and cfg['log_format'] == 'macos':
+        sleep(10)
         error_message = logcollector.GENERIC_CALLBACK_ERROR_ANALYZING_MACOS
         if cfg['only-future-events'] == 'no':
             log_callback = logcollector.callback_monitoring_macos_logs(True)
