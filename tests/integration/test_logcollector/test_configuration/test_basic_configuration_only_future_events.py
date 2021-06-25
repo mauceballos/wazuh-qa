@@ -5,6 +5,7 @@
 import os
 import pytest
 import sys
+from time import sleep
 
 from wazuh_testing.tools.configuration import load_wazuh_configurations
 import wazuh_testing.generic_callbacks as gc
@@ -13,7 +14,11 @@ from wazuh_testing.tools.monitoring import AGENT_DETECTOR_PREFIX, FileMonitor, L
 from wazuh_testing.tools import get_service, LOG_FILE_PATH
 from tempfile import gettempdir
 from wazuh_testing.tools.utils import lower_case_key_dictionary_array
-from time import sleep
+from wazuh_testing.tools import FILE_STATUS_PATH
+from wazuh_testing.tools.file import read_json
+
+
+
 
 LOGCOLLECTOR_DAEMON = "wazuh-logcollector"
 prefix = LOG_COLLECTOR_DETECTOR_PREFIX
@@ -36,7 +41,6 @@ temp_file_path = os.path.join(gettempdir(), 'testing.log')
 log_format_list = ['syslog', 'json', 'snort-full', 'mysql_log', 'postgresql_log', 'nmapg', 'iis', 'djb-multilog',
                    'multi-line:3', 'squid', 'audit']
 tcases = []
-
 
 if sys.platform == 'win32':
     prefix = AGENT_DETECTOR_PREFIX
@@ -122,13 +126,21 @@ def check_only_future_events_valid(cfg):
         TimeoutError: If the "Analyzing file" callback is not generated.
     """
     error_message = logcollector.GENERIC_CALLBACK_ERROR_ANALYZING_FILE
+    file_status_updated = False
 
     if sys.platform == 'win32' and cfg['log_format'] == 'eventchannel':
         error_message = logcollector.GENERIC_CALLBACK_ERROR_ANALYZING_EVENTCHANNEL
         log_callback = logcollector.callback_eventchannel_analyzing(cfg['location'])
 
     elif sys.platform == 'darwin' and cfg['log_format'] == 'macos':
-        sleep(10)
+        for i in range(10):
+            try:
+                assert 'macos' in read_json(FILE_STATUS_PATH), ""
+                file_status_updated = True
+            except AssertionError:
+                sleep(1)
+        assert file_status_updated, "File status did not update correctly for macos location"
+
         error_message = logcollector.GENERIC_CALLBACK_ERROR_ANALYZING_MACOS
         if cfg['only-future-events'] == 'no':
             log_callback = logcollector.callback_monitoring_macos_logs(True)

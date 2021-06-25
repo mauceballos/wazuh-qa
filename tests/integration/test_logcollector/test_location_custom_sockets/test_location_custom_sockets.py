@@ -159,7 +159,7 @@ def test_location_custom_sockets(get_local_internal_options, configure_local_int
     # Ensure that the logcollector is connected to the socket
     callback_message = lg.callback_socket_connected(socket_name=config['socket_name'],
                                                     socket_path=config['socket_path'])
-    wazuh_log_monitor.start(timeout=global_parameters.default_timeout,
+    wazuh_log_monitor.start(timeout=20,
                             error_message=lg.GENERIC_CALLBACK_ERROR_COMMAND_MONITORING,
                             callback=callback_message)
 
