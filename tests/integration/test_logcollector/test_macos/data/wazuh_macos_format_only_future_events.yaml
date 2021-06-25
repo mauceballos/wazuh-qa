@@ -19,3 +19,7 @@
           value: 'macos'
       - only-future-events:
           value: ONLY_FUTURE_EVENTS
+      - query:
+           value: 'process == "customlog"'
+           attributes:
+             - type: 'debug'
