@@ -137,7 +137,7 @@ def check_only_future_events_valid(cfg):
             try:
                 assert 'macos' in read_json(FILE_STATUS_PATH), ""
                 file_status_updated = True
-            except AssertionError:
+            except (AssertionError, FileNotFoundError):
                 sleep(1)
         assert file_status_updated, "File status did not update correctly for macos location"
 
