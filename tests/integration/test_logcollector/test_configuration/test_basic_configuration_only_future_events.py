@@ -130,7 +130,7 @@ def check_only_future_events_valid(cfg):
         error_message = logcollector.GENERIC_CALLBACK_ERROR_ANALYZING_MACOS
         if cfg['only-future-events'] == 'no':
             log_callback = logcollector.callback_monitoring_macos_logs(True)
-            wazuh_log_monitor.start(timeout=5, callback=log_callback,
+            wazuh_log_monitor.start(timeout=20, callback=log_callback,
                                     error_message=error_message)
 
         log_callback = logcollector.callback_monitoring_macos_logs()
@@ -138,7 +138,7 @@ def check_only_future_events_valid(cfg):
     else:
         log_callback = logcollector.callback_analyzing_file(cfg['location'])
 
-    wazuh_log_monitor.start(timeout=5, callback=log_callback,
+    wazuh_log_monitor.start(timeout=20, callback=log_callback,
                             error_message=error_message)
 
 
