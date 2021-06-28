@@ -133,14 +133,8 @@ def check_only_future_events_valid(cfg):
         log_callback = logcollector.callback_eventchannel_analyzing(cfg['location'])
 
     elif sys.platform == 'darwin' and cfg['log_format'] == 'macos':
-        for i in range(60):
-            try:
-                assert 'macos' in read_json(FILE_STATUS_PATH), ""
-                file_status_updated = True
-            except (AssertionError, FileNotFoundError):
-                sleep(1)
-        assert file_status_updated, "File status did not update correctly for macos location"
-
+        # Time to wait until Wazuh get macos logs
+        sleep(20)
         error_message = logcollector.GENERIC_CALLBACK_ERROR_ANALYZING_MACOS
         if cfg['only-future-events'] == 'no':
             log_callback = logcollector.callback_monitoring_macos_logs(True)
