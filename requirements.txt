@@ -25,11 +25,11 @@ pyOpenSSL==19.1.0
 pytest-html==3.1.1
 pytest==6.2.3
 pyyaml==5.4
-requests==2.23.0
+requests>=2.25.0
 scipy>=1.0; platform_system == "Linux" or platform_system == "MacOS" or platform_system=='Windows'
 seaborn>=0.11.1; platform_system == "Linux" or platform_system == "MacOS" or platform_system=='Windows'
 setuptools~=56.0.0
 testinfra==5.0.0
 jq==1.1.2; platform_system == "Linux" or platform_system == "MacOS"
 cryptography==3.3.2; platform_system == "Linux" or platform_system == "MacOS" or platform_system=='Windows'
-urllib3~=1.25.11
+urllib3>=1.26.5
