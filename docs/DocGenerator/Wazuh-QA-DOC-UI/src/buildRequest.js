@@ -69,11 +69,14 @@ export default function buildRequest(state) {
       }
     },
     //https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-request-source-filtering.html#search-request-source-filtering
-    _source: ["id", "nps_link", "title", "description"],
+    // _source: ["id", "nps_link", "title", "description", "location", "states", "visitors"],
+    _source: {
+        "includes": ["id", "Brief", "METADATA", "name", "tests"]
+    },
     aggs: {
-      states: { terms: { field: "states.keyword", size: 30 } },
-      world_heritage_site: {
-        terms: { field: "world_heritage_site" }
+      brief: { terms: { field: "name.keyword" } },
+      name: {
+        terms: { field: "Brief.keyword" }
       },
       visitors: {
         range: {

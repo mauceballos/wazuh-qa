@@ -94,16 +94,17 @@ export default function App() {
                       />
                     )}
                     <Facet
-                      field="states"
-                      label="States"
+                      field="brief"
+                      label="Brief description"
                       filterType="any"
                       isFilterable={true}
                     />
                     <Facet
-                      field="world_heritage_site"
-                      label="World Heritage Site?"
+                      field="name"
+                      label="Test name"
                     />
                     <Facet field="visitors" label="Visitors" filterType="any" />
+                    <Facet field="location" label="Location"/>
                     <Facet
                       field="acres"
                       label="Acres"
