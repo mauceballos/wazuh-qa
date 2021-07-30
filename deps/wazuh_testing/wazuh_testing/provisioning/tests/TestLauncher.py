@@ -20,10 +20,8 @@ class TestLauncher:
         qa_framework_path (str, None): Remote directory path where the qa repository will be download to
 
     """
-    def __init__(self, ansible_inventory_path, tests, html_report_dir_path=None, plain_report_dir_path=None,
+    def __init__(self, ansible_inventory_path, tests,
                  qa_framework_path="/tmp/wazuh-qa/"):
-        self.html_report_dir_path = html_report_dir_path
-        self.plain_report_dir_path = plain_report_dir_path
         self.qa_framework_path = qa_framework_path
         self.ansible_inventory_path = ansible_inventory_path
         self.tests = tests
@@ -31,5 +29,4 @@ class TestLauncher:
     def run(self):
         """ Function to iterate over a list of a set of ests and execute them one by one. """
         for test in self.tests:
-            test.run(self.ansible_inventory_path, report_html_local_dir=self.html_report_dir_path,
-                     plain_report_local_dir=self.plain_report_dir_path)
+            test.run(self.ansible_inventory_path)
