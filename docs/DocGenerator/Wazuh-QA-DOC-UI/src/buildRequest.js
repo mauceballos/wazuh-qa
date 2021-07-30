@@ -69,40 +69,16 @@ export default function buildRequest(state) {
       }
     },
     //https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-request-source-filtering.html#search-request-source-filtering
-    // _source: ["id", "nps_link", "title", "description", "location", "states", "visitors"],
     _source: {
-        "includes": ["id", "Brief", "METADATA", "name", "tests"]
+        "includes": ["Brief", "id", "Tiers", "Name", "Group Id", "Tests"]
     },
     aggs: {
-      brief: { terms: { field: "name.keyword" } },
-      name: {
-        terms: { field: "Brief.keyword" }
-      },
-      visitors: {
-        range: {
-          field: "visitors",
-          ranges: [
-            { from: 0.0, to: 10000.0, key: "0 - 10000" },
-            { from: 10001.0, to: 100000.0, key: "10001 - 100000" },
-            { from: 100001.0, to: 500000.0, key: "100001 - 500000" },
-            { from: 500001.0, to: 1000000.0, key: "500001 - 1000000" },
-            { from: 1000001.0, to: 5000000.0, key: "1000001 - 5000000" },
-            { from: 5000001.0, to: 10000000.0, key: "5000001 - 10000000" },
-            { from: 10000001.0, key: "10000001+" }
-          ]
-        }
-      },
-      acres: {
-        range: {
-          field: "acres",
-          ranges: [
-            { from: -1.0, key: "Any" },
-            { from: 0.0, to: 1000.0, key: "Small" },
-            { from: 1001.0, to: 100000.0, key: "Medium" },
-            { from: 100001.0, key: "Large" }
-          ]
-        }
-      }
+      name: { terms: { field: "Name.keyword" } },
+      brief: { terms: { field: "Brief.keyword" } },
+      id: { terms: { field: "id" } },
+      group_id: { terms: { field: "Group Id" } },
+      tiers: {terms: {field: "Metadata.Tiers" } },
+      tests_name: {terms: {field: "Tests.Name.keyword" } }
     },
 
     // Dynamic values based on current Search UI state

@@ -1,0 +1,26 @@
+Brief: RedHat feed tests
+Group Id: 1
+Id: 6
+Metadata:
+  Daemons:
+  - wazuh_modules
+  Modules:
+  - Vulnerability Detector
+  Operating System:
+  - RedHat
+  Tags:
+  - VulDet
+  Tiers:
+  - 0
+Name: test_redhat_inventory_redhat_feed.py
+Tests:
+- Checks:
+  - The feed must ...
+  - The feed also must ...
+  Name: test_redhat_vulnerabilities_report
+  Test Cases:
+  - redhat_scan_configuration-RHEL8
+  - redhat_scan_configuration-RHEL7
+  - redhat_scan_configuration-RHEL6
+  - redhat_scan_configuration-RHEL5
+  Test Logic: Check that the feed..

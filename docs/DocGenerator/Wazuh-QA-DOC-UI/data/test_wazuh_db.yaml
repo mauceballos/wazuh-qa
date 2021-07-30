@@ -1,0 +1,58 @@
+Brief: Module description
+Group Id: 0
+Id: 1
+Metadata:
+  Daemons:
+  - wazuh_db
+  Modules:
+  - Wazuh DB
+  Operating System:
+  - Windows
+  - Ubuntu
+  Tags:
+  - Enrollment
+  Tiers:
+  - 0
+  - 1
+Name: test_wazuh_db.py
+Tests:
+- Name: test_wazuh_db_messages
+  Test Cases:
+  - 'global: Insert commands'
+  - 'global: Update commands'
+  - 'global: Labels commands'
+  - 'global: Select commands'
+  - 'global: get-all-agents command'
+  - 'global: sync-agent-info-get command'
+  - 'global: sync-agent-info-set command'
+  - 'global: Belongs commands'
+  - 'global: Reset connection status'
+  - 'global: get-agents-by-connection-status command'
+  - 'global: disconnect-agents command'
+  - 'global: Delete commands'
+  - 'global: Manager keepalive'
+  - 'fim: Basics success'
+  - 'fim: Syntax errors'
+  - 'fim: Save2 fails'
+  - 'fim: Integrity_check_global success'
+  - 'fim: Integrity_check_global fails'
+  - 'fim: Integrity_check_left success'
+  - 'fim: Integrity_check_left fails'
+  - 'fim: Integrity clear success'
+  - 'fim: Integrity_clear fails'
+  - 'fim: Invalid agent ID'
+  - 'fim: Update existing file'
+  - 'fim: Path length'
+  - 'fim: Checksum field'
+  - 'fim: Large inode'
+  - 'agent: Agents'' CVEs table: vuln_cves'
+  Test Logic: Check that every input message in wazuh-db socket generates the adequate
+    output to wazuh-db socket
+- Checks:
+  - The received output must match with...
+  - The received output with regex must match with...
+  Name: test_wazuh_db_create_agent
+  Test Logic: 'Check that Wazuh DB creates the agent database when a query with a
+    new agent ID is sent. Also...
+
+    But also...'

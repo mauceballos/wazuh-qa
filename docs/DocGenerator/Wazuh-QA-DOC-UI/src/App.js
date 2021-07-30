@@ -86,8 +86,8 @@ export default function App() {
                             direction: ""
                           },
                           {
-                            name: "Title",
-                            value: "title",
+                            name: "Name",
+                            value: "Name",
                             direction: "asc"
                           }
                         ]}
@@ -103,18 +103,15 @@ export default function App() {
                       field="name"
                       label="Test name"
                     />
-                    <Facet field="visitors" label="Visitors" filterType="any" />
-                    <Facet field="location" label="Location"/>
-                    <Facet
-                      field="acres"
-                      label="Acres"
-                      view={SingleSelectFacet}
-                    />
+                    <Facet field="group_id" label="Group ID:" filterType="any" />
+                    <Facet field="id" label="ID:"/>
+                    <Facet field="tiers" label="Tiers:"/>
+                    <Facet field="tests_name" label="Tests Name:"/>
                   </div>
                 }
                 bodyContent={
                   <Results
-                    titleField="title"
+                    titleField="Name"
                     urlField="nps_link"
                     shouldTrackClickThrough={true}
                   />

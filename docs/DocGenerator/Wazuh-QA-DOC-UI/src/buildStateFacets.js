@@ -46,16 +46,21 @@ function getRangeFacet(aggregations, fieldName) {
 
 export default function buildStateFacets(aggregations) {
   const brief = getValueFacet(aggregations, "brief");
-  const name = getValueFacet(
-    aggregations,
-    "name"
-  );
+  const name = getValueFacet(aggregations, "name");
+  const id = getValueFacet(aggregations, "id");
+  const group_id = getValueFacet(aggregations, "group_id");
+  const tiers = getValueFacet(aggregations, "tiers");
+  const tests_name = getValueFacet(aggregations, "tests_name");
   // const visitors = getRangeFacet(aggregations, "visitors");
   // const acres = getRangeFacet(aggregations, "acres");
 
   const facets = {
     ...(brief && { brief }),
     ...(name && { name }),
+    ...(id && {id}),
+    ...(group_id && {group_id}),
+    ...(tiers && {tiers}),
+    ...(tests_name && {tests_name})
     // ...(visitors && { visitors }),
     // ...(acres && { acres })
   };

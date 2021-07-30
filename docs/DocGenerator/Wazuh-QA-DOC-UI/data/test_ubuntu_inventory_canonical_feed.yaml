@@ -1,0 +1,28 @@
+Brief: Ubuntu feed tests
+Group Id: 1
+Id: 9
+Metadata:
+  Daemons:
+  - wazuh_modules
+  Modules:
+  - Vulnerability Detector
+  Operating System:
+  - Ubuntu
+  Tags:
+  - VulDet
+  Tiers:
+  - 0
+  - 1
+  - 2
+Name: test_ubuntu_inventory_canonical_feed.py
+Tests:
+- Checks:
+  - The feed must ...
+  - The feed also must ...
+  Name: test_ubuntu_vulnerabilities_report
+  Test Cases:
+  - ubuntu_scan_configuration-FOCAL
+  - ubuntu_scan_configuration-BIONIC
+  - ubuntu_scan_configuration-XENIAL
+  - ubuntu_scan_configuration-TRUSTY
+  Test Logic: Check that the feed..
