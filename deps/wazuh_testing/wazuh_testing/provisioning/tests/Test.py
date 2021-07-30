@@ -14,9 +14,10 @@ class Test(ABC):
 
     """
 
-    def __init__(self, tests_path, tests_run_dir):
+    def __init__(self, tests_path, tests_run_dir, tests_result_path):
         self.tests_path = tests_path
         self.tests_run_dir = tests_run_dir
+        self.tests_result_path = tests_result_path
         self.result = None
 
     @abstractmethod
