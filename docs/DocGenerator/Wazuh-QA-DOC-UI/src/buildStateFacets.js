@@ -19,50 +19,21 @@ function getValueFacet(aggregations, fieldName) {
   }
 }
 
-function getRangeFacet(aggregations, fieldName) {
-  if (
-    aggregations &&
-    aggregations[fieldName] &&
-    aggregations[fieldName].buckets &&
-    aggregations[fieldName].buckets.length > 0
-  ) {
-    return [
-      {
-        field: fieldName,
-        type: "range",
-        data: aggregations[fieldName].buckets.map(bucket => ({
-          // Boolean values and date values require using `key_as_string`
-          value: {
-            to: bucket.to,
-            from: bucket.from,
-            name: bucket.key
-          },
-          count: bucket.doc_count
-        }))
-      }
-    ];
-  }
-}
-
 export default function buildStateFacets(aggregations) {
   const brief = getValueFacet(aggregations, "brief");
   const name = getValueFacet(aggregations, "name");
-  const id = getValueFacet(aggregations, "id");
   const group_id = getValueFacet(aggregations, "group_id");
   const tiers = getValueFacet(aggregations, "tiers");
-  const tests_name = getValueFacet(aggregations, "tests_name");
-  // const visitors = getRangeFacet(aggregations, "visitors");
-  // const acres = getRangeFacet(aggregations, "acres");
+  const operating_system = getValueFacet(aggregations, "operating_system");
+  const modules = getValueFacet(aggregations, "modules");
 
   const facets = {
     ...(brief && { brief }),
     ...(name && { name }),
-    ...(id && {id}),
     ...(group_id && {group_id}),
     ...(tiers && {tiers}),
-    ...(tests_name && {tests_name})
-    // ...(visitors && { visitors }),
-    // ...(acres && { acres })
+    ...(operating_system && {operating_system}),
+    ...(modules && {modules})
   };
 
   if (Object.keys(facets).length > 0) {

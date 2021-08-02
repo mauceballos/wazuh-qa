@@ -1,34 +1,34 @@
 {
-    "Brief": "RedHat feed tests",
-    "Metadata": {
-        "Modules": [
+    "brief": "RedHat feed tests",
+    "metadata": {
+        "modules": [
             "Vulnerability Detector"
         ],
-        "Daemons": [
+        "daemons": [
             "wazuh_modules"
         ],
-        "Operating System": [
+        "operating_system": [
             "RedHat"
         ],
-        "Tiers": [
+        "tiers": [
             0
         ],
-        "Tags": [
+        "tags": [
             "VulDet"
         ]
     },
-    "Name": "test_redhat_inventory_redhat_feed.py",
+    "name": "test_redhat_inventory_redhat_feed.py",
     "id": 6,
-    "Group Id": 1,
-    "Tests": [
+    "group_id": 1,
+    "tests": [
         {
-            "Test Logic": "Check that the feed..",
-            "Checks": [
+            "test_logic": "Check that the feed..",
+            "checks": [
                 "The feed must ...",
                 "The feed also must ..."
             ],
-            "Name": "test_redhat_vulnerabilities_report",
-            "Test Cases": [
+            "name": "test_redhat_vulnerabilities_report",
+            "test_cases": [
                 "redhat_scan_configuration-RHEL8",
                 "redhat_scan_configuration-RHEL7",
                 "redhat_scan_configuration-RHEL6",

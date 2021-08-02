@@ -1,39 +1,39 @@
 {
-    "Brief": "NVD feed tests",
-    "Metadata": {
-        "Modules": [
+    "brief": "NVD feed tests",
+    "metadata": {
+        "modules": [
             "Vulnerability Detector"
         ],
-        "Daemons": [
+        "daemons": [
             "wazuh_modules"
         ],
-        "Operating System": [
+        "operating_system": [
             "Ubuntu",
             "Centos",
             "Windows"
         ],
-        "Tiers": [
+        "tiers": [
             0,
             1,
             2,
             3
         ],
-        "Tags": [
+        "tags": [
             "VulDet"
         ]
     },
-    "Name": "test_scan_providers_and_nvd_feed.py",
+    "name": "test_scan_providers_and_nvd_feed.py",
     "id": 3,
-    "Group Id": 1,
-    "Tests": [
+    "group_id": 1,
+    "tests": [
         {
-            "Test Logic": "Check that the feed..",
-            "Checks": [
+            "test_logic": "Check that the feed..",
+            "checks": [
                 "The feed must ...",
                 "The feed also must ..."
             ],
-            "Name": "test_vulnerabilities_report",
-            "Test Cases": [
+            "name": "test_vulnerabilities_report",
+            "test_cases": [
                 "scan_nvd_configuration-RHEL8",
                 "scan_nvd_configuration-RHEL7",
                 "scan_nvd_configuration-RHEL6",

@@ -12,7 +12,7 @@ import {
   Paging,
   Sorting
 } from "@elastic/react-search-ui";
-import { Layout, SingleSelectFacet } from "@elastic/react-search-ui-views";
+import { Layout} from "@elastic/react-search-ui-views";
 import "@elastic/react-search-ui-views/lib/styles/styles.css";
 
 import buildRequest from "./buildRequest";
@@ -46,7 +46,7 @@ const config = {
     const responseJsonWithDisjunctiveFacetCounts = await applyDisjunctiveFaceting(
       responseJson,
       state,
-      ["visitors", "states"]
+      ["group_id", "metadata.tiers", "metadata.operating_system", "metadata.modules"]
     );
     return buildState(responseJsonWithDisjunctiveFacetCounts, resultsPerPage);
   }
@@ -87,31 +87,21 @@ export default function App() {
                           },
                           {
                             name: "Name",
-                            value: "Name",
+                            value: "name",
                             direction: "asc"
                           }
                         ]}
                       />
                     )}
-                    <Facet
-                      field="brief"
-                      label="Brief description"
-                      filterType="any"
-                      isFilterable={true}
-                    />
-                    <Facet
-                      field="name"
-                      label="Test name"
-                    />
                     <Facet field="group_id" label="Group ID:" filterType="any" />
-                    <Facet field="id" label="ID:"/>
-                    <Facet field="tiers" label="Tiers:"/>
-                    <Facet field="tests_name" label="Tests Name:"/>
+                    <Facet field="tiers" label="Tiers:" filterType="any"/>
+                    <Facet field="operating_system" label="Operating System:" filterType="any"/>
+                    <Facet field="modules" label="Modules:" filterType="any"/>
                   </div>
                 }
                 bodyContent={
                   <Results
-                    titleField="Name"
+                    titleField="name"
                     urlField="nps_link"
                     shouldTrackClickThrough={true}
                   />

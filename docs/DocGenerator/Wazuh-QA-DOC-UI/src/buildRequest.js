@@ -70,15 +70,15 @@ export default function buildRequest(state) {
     },
     //https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-request-source-filtering.html#search-request-source-filtering
     _source: {
-        "includes": ["Brief", "id", "Tiers", "Name", "Group Id", "Tests"]
+        "includes": ["brief", "id", "metadata.modules", "name", "group_id", "tests"]
     },
     aggs: {
-      name: { terms: { field: "Name.keyword" } },
-      brief: { terms: { field: "Brief.keyword" } },
-      id: { terms: { field: "id" } },
-      group_id: { terms: { field: "Group Id" } },
-      tiers: {terms: {field: "Metadata.Tiers" } },
-      tests_name: {terms: {field: "Tests.Name.keyword" } }
+      name: { terms: { field: "name.keyword" } },
+      brief: { terms: { field: "brief.keyword" } },
+      group_id: { terms: { field: "group_id" } },
+      tiers: {terms: {field: "metadata.tiers" } },
+      operating_system: {terms: {field: "metadata.operating_system.keyword" } },
+      modules: {terms: {field: "metadata.modules.keyword" } },
     },
 
     // Dynamic values based on current Search UI state

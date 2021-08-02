@@ -1,36 +1,36 @@
 {
-    "Brief": "Ubuntu feed tests",
-    "Metadata": {
-        "Modules": [
+    "brief": "Ubuntu feed tests",
+    "metadata": {
+        "modules": [
             "Vulnerability Detector"
         ],
-        "Daemons": [
+        "daemons": [
             "wazuh_modules"
         ],
-        "Operating System": [
+        "operating_system": [
             "Ubuntu"
         ],
-        "Tiers": [
+        "tiers": [
             0,
             1,
             2
         ],
-        "Tags": [
+        "tags": [
             "VulDet"
         ]
     },
-    "Name": "test_ubuntu_inventory_canonical_feed.py",
+    "name": "test_ubuntu_inventory_canonical_feed.py",
     "id": 9,
-    "Group Id": 1,
-    "Tests": [
+    "group_id": 1,
+    "tests": [
         {
-            "Test Logic": "Check that the feed..",
-            "Checks": [
+            "test_logic": "Check that the feed..",
+            "checks": [
                 "The feed must ...",
                 "The feed also must ..."
             ],
-            "Name": "test_ubuntu_vulnerabilities_report",
-            "Test Cases": [
+            "name": "test_ubuntu_vulnerabilities_report",
+            "test_cases": [
                 "ubuntu_scan_configuration-FOCAL",
                 "ubuntu_scan_configuration-BIONIC",
                 "ubuntu_scan_configuration-XENIAL",

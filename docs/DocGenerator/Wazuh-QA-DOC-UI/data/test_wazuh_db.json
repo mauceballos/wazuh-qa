@@ -1,32 +1,32 @@
 {
-    "Brief": "Module description",
-    "Metadata": {
-        "Modules": [
+    "brief": "Module description",
+    "metadata": {
+        "modules": [
             "Wazuh DB"
         ],
-        "Daemons": [
+        "daemons": [
             "wazuh_db"
         ],
-        "Operating System": [
+        "operating_system": [
             "Windows",
             "Ubuntu"
         ],
-        "Tiers": [
+        "tiers": [
             0,
             1
         ],
-        "Tags": [
+        "tags": [
             "Enrollment"
         ]
     },
-    "Name": "test_wazuh_db.py",
+    "name": "test_wazuh_db.py",
     "id": 1,
-    "Group Id": 2,
-    "Tests": [
+    "group_id": 2,
+    "tests": [
         {
-            "Test Logic": "Check that every input message in wazuh-db socket generates the adequate output to wazuh-db socket",
-            "Name": "test_wazuh_db_messages",
-            "Test Cases": [
+            "test_logic": "Check that every input message in wazuh-db socket generates the adequate output to wazuh-db socket",
+            "name": "test_wazuh_db_messages",
+            "test_cases": [
                 "global: Insert commands",
                 "global: Update commands",
                 "global: Labels commands",
@@ -52,18 +52,18 @@
                 "fim: Invalid agent ID",
                 "fim: Update existing file",
                 "fim: Path length",
-                "fim: Checksum field",
+                "fim: checksum field",
                 "fim: Large inode",
                 "agent: Agents' CVEs table: vuln_cves"
             ]
         },
         {
-            "Test Logic": "Check that Wazuh DB creates the agent database when a query with a new agent ID is sent. Also...\nBut also...",
-            "Checks": [
+            "test_logic": "Check that Wazuh DB creates the agent database when a query with a new agent ID is sent. Also...\nBut also...",
+            "checks": [
                 "The received output must match with...",
                 "The received output with regex must match with..."
             ],
-            "Name": "test_wazuh_db_create_agent"
+            "name": "test_wazuh_db_create_agent"
         }
     ]
 }
