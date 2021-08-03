@@ -9,7 +9,6 @@ INDEX = "qa-doc"
 
 class Initialize_elasticsearch:
     def __init__(self):
-        self.header = { "index" : { "_index" : INDEX, "_type" : "_doc" } }
         self.regex = ".*json"
         self.files = self.get_files()
         self.es = Elasticsearch()
@@ -35,14 +34,19 @@ class Initialize_elasticsearch:
                 self.output.append(lines)
 
     def remove_index(self):
-        self.es.indices.delete(index=INDEX, ignore=[400, 404])
+        delete=self.es.indices.delete(index=INDEX, ignore=[400, 404])
+        print(f'Delete index {INDEX}\n {delete}\n')
 
     def index_data(self):
         self.test_connection()
         self.get_files()
         self.read_files_content()
-        self.remove_index()
-        helpers.bulk(self.es, self.output, index=INDEX)
+        if self.test_connection():
+            self.remove_index()
+            print("Indexing data...\n")
+            helpers.bulk(self.es, self.output, index=INDEX)
+            out=json.dumps(self.es.cluster.health(wait_for_status='yellow', request_timeout=1), indent=4)
+            print(out)
 
 
 init=Initialize_elasticsearch()

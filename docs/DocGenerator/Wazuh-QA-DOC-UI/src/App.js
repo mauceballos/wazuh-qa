@@ -22,6 +22,7 @@ import buildState from "./buildState";
 
 const config = {
   debug: true,
+  alwaysSearchOnInitialLoad: true,
   hasA11yNotifications: true,
   onResultClick: () => {
     /* Not implemented */
@@ -46,7 +47,7 @@ const config = {
     const responseJsonWithDisjunctiveFacetCounts = await applyDisjunctiveFaceting(
       responseJson,
       state,
-      ["group_id", "metadata.tiers", "metadata.operating_system", "metadata.modules"]
+      ["group_id", "tiers", "operating_system", "modules"]
     );
     return buildState(responseJsonWithDisjunctiveFacetCounts, resultsPerPage);
   }
@@ -66,8 +67,8 @@ export default function App() {
                     autocompleteResults={{
                       linkTarget: "_blank",
                       sectionTitle: "Results",
-                      titleField: "title",
-                      urlField: "nps_link",
+                      titleField: "name",
+                      urlField: "",
                       shouldTrackClickThrough: true,
                       clickThroughTags: ["test"]
                     }}
@@ -102,7 +103,6 @@ export default function App() {
                 bodyContent={
                   <Results
                     titleField="name"
-                    urlField="nps_link"
                     shouldTrackClickThrough={true}
                   />
                 }
