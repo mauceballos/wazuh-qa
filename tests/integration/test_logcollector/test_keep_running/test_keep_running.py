@@ -5,6 +5,7 @@ import os
 import tempfile
 
 import pytest
+from pytest_bdd import scenario, given, when, then
 
 import wazuh_testing.logcollector as logcollector
 from wazuh_testing import global_parameters
@@ -52,39 +53,29 @@ configuration_ids = [f"{x['mode']}_{x['location']}_in_{x['log_format']}_format" 
 
 
 # Fixtures
-@pytest.fixture(scope="module", params=configurations, ids=configuration_ids)
-def get_configuration(request):
-    """Get configurations from the module."""
+
+@pytest.fixture(scope='module', params=configurations, ids=configuration_ids)
+def get_requestparam(request):
     return request.param
 
+@pytest.fixture(scope='module')
+@given("Get configurations from the module")
+def get_configuration(get_requestparam):
+    return get_requestparam
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
+@given("Get internal configuration")
 def get_local_internal_options():
-    """Get internal configuration."""
     return local_internal_options
 
-
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
+@given("Get file list to create from the module")
 def get_files_list():
-    """Get file list to create from the module."""
     return file_structure
 
-
-def test_keep_running(get_local_internal_options, configure_local_internal_options, get_configuration,
-                      configure_environment, create_file_structure_module, restart_logcollector):
-    """Check if logcollector keeps running once a log is rotated.
-
-    To do this, logcollector is configured to monitor a log file, then data is added to the log and it is rotated.
-    Finally, write data back to the rotated log and check that logcollector continues to monitor it.
-
-    Args:
-        get_local_internal_options (fixture): Get internal configuration.
-        configure_local_internal_options (fixture): Set internal configuration for testing.
-        get_configuration (fixture): Get configurations from the module.
-        configure_environment (fixture): Configure a custom environment for testing.
-        generate_log_file (fixture): Generate a log file for testing.
-        restart_logcollector (fixture): Reset log file and start a new monitor.
-    """
+@when("The file is being analyzed")
+def file_analyzed(get_local_internal_options, configure_local_internal_options, get_configuration,
+                          configure_environment, create_file_structure_module, restart_logcollector):
     config = get_configuration['metadata']
 
     # Ensure that the file is being analyzed
@@ -94,16 +85,10 @@ def test_keep_running(get_local_internal_options, configure_local_internal_optio
                             error_message=logcollector.GENERIC_CALLBACK_ERROR_COMMAND_MONITORING,
                             callback=callback_message)
 
-    # Add another MiB of data to log
-    logcollector.add_log_data(log_path=config['location'],
-                              log_line_message=f"{config['log_line_before']}{config['mode']}",
-                              size_kib=1024)
-
-    message = f"DEBUG: Reading syslog message: '{config['log_line_before']}{config['mode']}'"
-    callback_message = monitoring.make_callback(pattern=message, prefix=LOG_COLLECTOR_DETECTOR_PREFIX)
-    wazuh_log_monitor.start(timeout=global_parameters.default_timeout,
-                            error_message=logcollector.GENERIC_CALLBACK_ERROR_COMMAND_MONITORING,
-                            callback=callback_message)
+@then("Rotation or truncate has been completed")
+def are_completed(get_local_internal_options, configure_local_internal_options, get_configuration,
+                      configure_environment, create_file_structure_module, restart_logcollector):
+    config = get_configuration['metadata']
 
     if config['mode'] == 'rotate':
         file.remove_file(config['location'])
@@ -123,6 +108,26 @@ def test_keep_running(get_local_internal_options, configure_local_internal_optio
                                 error_message=logcollector.GENERIC_CALLBACK_ERROR_COMMAND_MONITORING,
                                 callback=callback_message)
 
+@when("Add another MiB of data to log")
+def add_data(get_local_internal_options, configure_local_internal_options, get_configuration,
+                      configure_environment, create_file_structure_module, restart_logcollector):
+    config = get_configuration['metadata']
+
+    logcollector.add_log_data(log_path=config['location'],
+                              log_line_message=f"{config['log_line_before']}{config['mode']}",
+                              size_kib=1024)
+
+    message = f"DEBUG: Reading syslog message: '{config['log_line_before']}{config['mode']}'"
+    callback_message = monitoring.make_callback(pattern=message, prefix=LOG_COLLECTOR_DETECTOR_PREFIX)
+    wazuh_log_monitor.start(timeout=global_parameters.default_timeout,
+                            error_message=logcollector.GENERIC_CALLBACK_ERROR_COMMAND_MONITORING,
+                            callback=callback_message)
+
+@then("Add a MiB of data to rotated/truncated log")
+def add_data(get_local_internal_options, configure_local_internal_options, get_configuration,
+                      configure_environment, create_file_structure_module, restart_logcollector):
+    config = get_configuration['metadata']
+
     # Add a MiB of data to rotated/truncated log
     logcollector.add_log_data(log_path=config['location'],
                               log_line_message=f"{config['log_line_after']}{config['mode']}",
@@ -133,3 +138,27 @@ def test_keep_running(get_local_internal_options, configure_local_internal_optio
     wazuh_log_monitor.start(timeout=global_parameters.default_timeout,
                             error_message=logcollector.GENERIC_CALLBACK_ERROR_COMMAND_MONITORING,
                             callback=callback_message)
+
+@scenario('keep_running.feature', 'logcollector continues to monitor log files after they have been rotated')
+def test_keep_running(get_local_internal_options, configure_local_internal_options, get_configuration,
+                      configure_environment, create_file_structure_module, restart_logcollector):
+    """Check if logcollector keeps running once a log is rotated.
+
+    To do this, logcollector is configured to monitor a log file, then data is added to the log and it is rotated.
+    Finally, write data back to the rotated log and check that logcollector continues to monitor it.
+
+    Args:
+        get_local_internal_options (fixture): Get internal configuration.
+        configure_local_internal_options (fixture): Set internal configuration for testing.
+        get_configuration (fixture): Get configurations from the module.
+        configure_environment (fixture): Configure a custom environment for testing.
+        generate_log_file (fixture): Generate a log file for testing.
+        restart_logcollector (fixture): Reset log file and start a new monitor.
+    """
+    pass
+
+    
+
+    
+
+    
