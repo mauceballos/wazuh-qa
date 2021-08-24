@@ -57,6 +57,21 @@ def set_up_groups(request):
     for group in groups:
         subprocess.call(['/var/ossec/bin/agent_groups', '-r', '-g', f'{group}', '-q'])
 
+@pytest.fixture(scope="module", params=message_tests)
+def write_keys(request):
+    client_keys_path = os.path.join(WAZUH_PATH, 'etc', 'client.keys')
+    # Stop Wazuh
+    control_service('stop')
+
+    keys = request.param.get('keys', [])
+    for key in keys:
+        with open(client_keys_path, "a") as keys_file:
+            keys_file.write(key + '\n')
+
+    # Start Wazuh
+    control_service('start')
+
+    yield request.param
 
 @pytest.fixture(scope="module", params=configurations)
 def get_configuration(request):
@@ -81,7 +96,7 @@ def clean_client_keys_file():
     control_service('start')
 
 
-def test_ossec_auth_messages(clean_client_keys_file, get_configuration, set_up_groups, configure_environment,
+def test_ossec_auth_messages(clean_client_keys_file, write_keys, get_configuration, set_up_groups, configure_environment,
                              configure_sockets_environment, connect_to_sockets_module, wait_for_agentd_startup):
     """Check that every input message in authd port generates the adequate output
 
