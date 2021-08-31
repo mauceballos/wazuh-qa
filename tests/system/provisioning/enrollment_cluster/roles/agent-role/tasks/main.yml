@@ -41,10 +41,10 @@
     USER_AUTO_START: "y"
   shell: "./install.sh"
 
-- name: Copy ossec.conf file
+- name: Copy agent.conf file
   copy:
-    src: ../files/ossec.conf
-    dest: /var/ossec/etc/ossec.conf
+    src: ../files/agent.conf
+    dest: /var/ossec/etc/agent.conf
     owner: wazuh
     group: wazuh
     mode: '0644'
@@ -56,7 +56,7 @@
 
 - name: Set Wazuh Manager IP
   lineinfile:
-    path: /var/ossec/etc/ossec.conf
+    path: /var/ossec/etc/agent.conf
     regexp: '<address>(.*)</address>'
     line: "<address>{{ worker1_hostname }}</address>"
     backrefs: yes

@@ -21,17 +21,17 @@ enrollment_cluster
 ├── roles
 │   ├── agent-role
 │   │   ├── files
-│   │   │   └── ossec.conf
+│   │   │   └── agent.conf
 │   │   └── tasks
 │   │       └── main.yml
 │   ├── master-role
 │   │   ├── files
-│   │   │   └── ossec.conf
+│   │   │   └── manager.conf
 │   │   └── tasks
 │   │       └── main.yml
 │   └── worker-role
 │       ├── files
-│       │   └── ossec.conf
+│       │   └── manager.conf
 │       └── tasks
 │           └── main.yml
 └── vars

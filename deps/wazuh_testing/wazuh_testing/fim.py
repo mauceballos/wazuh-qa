@@ -1320,6 +1320,11 @@ def callback_dbsync_no_data(line):
     return None
 
 
+def callback_detect_end_runtime_wildcards(line):
+    match = re.match(r".*Configuration wildcards update finalize\.", line)
+    return match is not None
+
+
 def check_time_travel(time_travel: bool, interval: timedelta = timedelta(hours=13), monitor: FileMonitor = None,
                       timeout=global_parameters.default_timeout):
     """Change date and time of the system depending on a boolean condition.
@@ -1912,6 +1917,11 @@ if sys.platform == 'win32':
         if triggers_event_add:
             logger.info("'added' {} detected as expected.\n".format("events" if len(value_list) > 1 else "event"))
 
+        log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_end_scan,
+                          update_position=True,
+                          error_message=f'End of scheduled scan not detected after '
+                          f'{global_parameters.default_timeout} seconds')
+
         # Modify previous registry values
         for name, content in value_list.items():
             if name in registry_path:
@@ -1926,6 +1936,11 @@ if sys.platform == 'win32':
         if triggers_event_modified:
             logger.info("'modified' {} detected as expected.\n".format("events" if len(value_list) > 1 else "event"))
 
+        log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_end_scan,
+                          update_position=True,
+                          error_message=f'End of scheduled scan not detected after '
+                          f'{global_parameters.default_timeout} seconds')
+
         # Delete previous registry values
         for name, _ in value_list.items():
             if name in registry_path:
@@ -1938,6 +1953,11 @@ if sys.platform == 'win32':
 
         if triggers_event_delete:
             logger.info("'deleted' {} detected as expected.\n".format("events" if len(value_list) > 1 else "event"))
+
+        log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_end_scan,
+                          update_position=True,
+                          error_message=f'End of scheduled scan not detected after '
+                          f'{global_parameters.default_timeout} seconds')
 
 
     def registry_key_cud(root_key, registry_sub_key, log_monitor, arch=KEY_WOW64_64KEY, key_list=['test_key'],
@@ -2040,6 +2060,11 @@ if sys.platform == 'win32':
         if triggers_event_add:
             logger.info("'added' {} detected as expected.\n".format("events" if len(key_list) > 1 else "event"))
 
+        log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_end_scan,
+                          update_position=True,
+                          error_message=f'End of scheduled scan not detected after '
+                          f'{global_parameters.default_timeout} seconds')
+
         # Modify previous registry subkeys
         for name, _ in key_list.items():
             if name in registry_path:
@@ -2054,6 +2079,11 @@ if sys.platform == 'win32':
         if triggers_event_modified:
             logger.info("'modified' {} detected as expected.\n".format("events" if len(key_list) > 1 else "event"))
 
+        log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_end_scan,
+                          update_position=True,
+                          error_message=f'End of scheduled scan not detected after '
+                          f'{global_parameters.default_timeout} seconds')
+
         # Delete previous registry subkeys
         for name, _ in key_list.items():
             if name in registry_path:
@@ -2066,6 +2096,11 @@ if sys.platform == 'win32':
 
         if triggers_event_delete:
             logger.info("'deleted' {} detected as expected.\n".format("events" if len(key_list) > 1 else "event"))
+
+        log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_end_scan,
+                          update_position=True,
+                          error_message=f'End of scheduled scan not detected after '
+                          f'{global_parameters.default_timeout} seconds')
 
 
 class CustomValidator:

@@ -90,19 +90,19 @@ checks:
    title: PASS -- The file exists
    condition: any
    rules:
-     - d:/var/ossec -> ossec.conf
+     - d:/var/ossec -> agent.conf
 
  - id: 100401
-   title: PASS -- There exist other files in /var/ossec which !ossec.conf
+   title: PASS -- There exist other files in /var/ossec which !agent.conf
    condition: any
    rules:
-     - d:/var/ossec -> !ossec.conf
+     - d:/var/ossec -> !agent.conf
 
  - id: 100402
-   title: FAIL -- There not exists the file ossec.conf
+   title: FAIL -- There not exists the file agent.conf
    condition: none
    rules:
-     - d:/var/ossec -> ossec.conf
+     - d:/var/ossec -> agent.conf
 
  - id: 100403
    title: PASS -- There exist other files in /var/ossec which !fakefile
@@ -120,7 +120,7 @@ checks:
    title: INVALID -- The directory does not exist
    condition: any
    rules:
-     - d:/var/ossec/fakedir -> !ossec.conf
+     - d:/var/ossec/fakedir -> !agent.conf
 
 ########################################
 # Multiple directories content check   #
@@ -154,7 +154,7 @@ checks:
    title: PASS -- Directories exist and one contains the file
    condition: any
    rules:
-     - d:/var/ossec/ruleset,/var/ossec/logs,/var/ossec/etc -> r:ossec.conf
+     - d:/var/ossec/ruleset,/var/ossec/logs,/var/ossec/etc -> r:agent.conf
 
  - id: 100505
    title: FAIL -- Directories exist and no one contains the file

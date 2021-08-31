@@ -42,31 +42,31 @@
     USER_UPDATE: "n"
   shell: "./install.sh"
 
-- name: Copy ossec.conf file
+- name: Copy manager.conf file
   copy:
-    src: ../files/ossec.conf
-    dest: /var/ossec/etc/ossec.conf
+    src: ../files/manager.conf
+    dest: /var/ossec/etc/manager.conf
     owner: wazuh
     group: wazuh
     mode: '0644'
 
 - name: Set cluster key
   lineinfile:
-    path: /var/ossec/etc/ossec.conf
+    path: /var/ossec/etc/manager.conf
     regexp: '<key>(KEY)</key>'
     line: "<key>{{ cluster_key }}</key>"
     backrefs: yes
 
 - name: Set Wazuh Worker name
   lineinfile:
-    path: /var/ossec/etc/ossec.conf
+    path: /var/ossec/etc/manager.conf
     regexp: '<node_name>(.*)</node_name>'
     line: "<node_name>{{ worker_name }}</node_name>"
     backrefs: yes
 
 - name: Set Wazuh Worker IP
   lineinfile:
-    path: /var/ossec/etc/ossec.conf
+    path: /var/ossec/etc/manager.conf
     regexp: '<node>(.*)</node>'
     line: "<node>{{ master_hostname }}</node>"
     backrefs: yes

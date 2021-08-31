@@ -31,13 +31,13 @@ if sys.platform == 'win32':
     no_restart_windows_after_configuration_set = True
     force_restart_after_restoring = True
     location = r'C:\testing\files*'
-    wazuh_configuration = 'ossec.conf'
+    wazuh_configuration = 'agent.conf'
     prefix = AGENT_DETECTOR_PREFIX
 
 else:
     prefix = LOG_COLLECTOR_DETECTOR_PREFIX
     location = '/tmp/testing/files*'
-    wazuh_configuration = 'etc/ossec.conf'
+    wazuh_configuration = 'etc/agent.conf'
 
 
 wazuh_component = get_service()

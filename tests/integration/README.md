@@ -129,7 +129,7 @@ echo 'syscheck.debug=2' >> /Library/Ossec/etc/local_internal_options.conf
 
 # Avoid agent disconnections when travelling in time
 brew install gnu-sed
-gsed -i "s:<time-reconnect>60</time-reconnect>:<time-reconnect>99999999999</time-reconnect>:g" /Library/Ossec/etc/ossec.conf
+gsed -i "s:<time-reconnect>60</time-reconnect>:<time-reconnect>99999999999</time-reconnect>:g" /Library/Ossec/etc/agent.conf
 
 # Disable log rotation
 echo 'monitord.rotate_log=0' >> /Library/Ossec/etc/local_internal_options.conf
@@ -234,7 +234,7 @@ check [pytest](#pytest) section below.
 
 #### data
 
-Folder with the configuration yaml's to create the testing environment. These yaml's have the `ossec.conf` that will be
+Folder with the configuration yaml's to create the testing environment. These yaml's have the configuration that will be
 applied to each module. This is a sample yaml used for `FIM`:
 
 ```yaml
@@ -337,7 +337,7 @@ Folder with all the general tools that could be used in every test. They are gro
 
 - **Init**: `__init__` file with the common information between all these modules (paths set in execution time).
 
-- **Configuration**:  functions to configure our environment (rewrite `ossec.conf`, load it, change metadata...)
+- **Configuration**:  functions to configure our environment (rewrite configuration, load it, change metadata...)
 
 - **File**: functions to work with files.
 

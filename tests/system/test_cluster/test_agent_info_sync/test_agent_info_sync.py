@@ -44,7 +44,7 @@ def clean_cluster_logs():
 def remove_labels():
     """Remove any label set to the modified wazuh-agent and restart it to apply the new config."""
     yield
-    host_manager.add_block_to_file(host=modified_agent, path=f'{WAZUH_PATH}/etc/ossec.conf',
+    host_manager.add_block_to_file(host=modified_agent, path=f'{WAZUH_PATH}/etc/agent.conf',
                                    after='</client>', before='<client_buffer>', replace=os.linesep)
     host_manager.get_host(modified_agent).ansible('command', f'service wazuh-agent restart', check=False)
 
@@ -63,7 +63,7 @@ def test_agent_info_sync(clean_cluster_logs, remove_labels):
     ensure agent-info synchronization is working by modifying one agent."""
 
     # Add a label to one of the agents and restart it to apply the change
-    host_manager.add_block_to_file(host=modified_agent, path=f'{WAZUH_PATH}/etc/ossec.conf',
+    host_manager.add_block_to_file(host=modified_agent, path=f'{WAZUH_PATH}/etc/agent.conf',
                                    after='</client>', before='<client_buffer>',
                                    replace=f'<labels><label key="{label}">value</label></labels>')
     host_manager.get_host(modified_agent).ansible('command', f'service wazuh-agent restart', check=False)

@@ -23,7 +23,7 @@ All notable changes to this project will be documented in this file.
 - Add new integration tests to cover the stats of wazuh-agentd [#1039](https://github.com/wazuh/wazuh-qa/pull/1039)
 - Add the documentation of Wazuh-QA repository [#1066](https://github.com/wazuh/wazuh-qa/pull/1066)
 - Add new functionality for mocking agents [#1054](https://github.com/wazuh/wazuh-qa/pull/1054)
-- Add support to `wodle` sections for ossec.conf generator tool [#1048](https://github.com/wazuh/wazuh-qa/pull/1048)
+- Add support to `wodle` sections for configuration generator tool [#1048](https://github.com/wazuh/wazuh-qa/pull/1048)
 - Add new tests for Active Response [#1029](https://github.com/wazuh/wazuh-qa/pull/1029)
 - Add focal feed and improve vulnerability scan tests [#1025](https://github.com/wazuh/wazuh-qa/pull/1025)
 - Add new cases to test_env_variables to check some possible errors [#1014](https://github.com/wazuh/wazuh-qa/pull/1014)

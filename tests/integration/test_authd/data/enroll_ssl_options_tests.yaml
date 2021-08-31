@@ -37,7 +37,7 @@
         protocol: "ssl_tlsv1_2"
         expect: "open_error"
         error: "handshake failure"
-      # Override ossec.conf
+      # Override configuration
       CIPHERS: "CAMELLIA"
     -
       name: "SSL - Compatible ciphers from Agent"
@@ -59,7 +59,7 @@
         output: "OSSEC K:'"
         ciphers: "HIGH:!ADH:!EXP:!MD5:!RC4:!3DES:!CAMELLIA:@STRENGTH"
         protocol: "ssl_tlsv1_2"
-      # Override ossec.conf
+      # Override configuration
       CIPHERS: "SHA256"
     -
       name: "SSL - Wrong TLS version (TLSV1_1)"
@@ -70,7 +70,7 @@
         protocol: "ssl_tlsv1_1"
         expect: "open_error"
         error: "alert protocol version"
-      # Override ossec.conf
+      # Override configuration
       SSL_AUTO_NEGOTIATE: 'no'
     -
       name: "SSL - Auto Negotiate TLS version (TLSV1_1)"
@@ -82,7 +82,7 @@
         expect: "output"
         input: "OSSEC A:'user1'"
         output: "OSSEC K:'"
-      # Override ossec.conf
+      # Override configuration
       SSL_AUTO_NEGOTIATE: 'yes'
     -
       name: "Valid Certificates - Manager verification without host"

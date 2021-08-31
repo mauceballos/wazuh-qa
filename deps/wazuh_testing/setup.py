@@ -10,7 +10,7 @@ setup(name='wazuh_testing',
       author_email='hello@wazuh.com',
       license='GPLv2',
       packages=find_packages(),
-      package_data={'wazuh_testing': ['data/agent.conf',
+      package_data={'wazuh_testing': ['data/shared.conf',
                                       'data/syscheck_event.json',
                                       'data/syscheck_event_windows.json',
                                       'data/mitre_event.json',
@@ -21,7 +21,10 @@ setup(name='wazuh_testing',
                                       'data/keepalives.txt',
                                       'data/rootcheck.txt',
                                       'data/syscollector.py',
-                                      'data/winevt.py'
+                                      'data/winevt.py',
+                                      'data/sslmanager.key',
+                                      'data/sslmanager.cert',
+                                      'tools/macos_log/log_generator.m'
                                       ]
                     },
       entry_points={

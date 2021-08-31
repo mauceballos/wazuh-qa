@@ -3,9 +3,10 @@
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
-import pytest
 import time
 from secrets import token_hex
+
+import pytest
 from wazuh_testing.tools import WAZUH_PATH
 from wazuh_testing.tools.system import HostManager
 
@@ -32,16 +33,16 @@ files_to_sync = [os.path.join(WAZUH_PATH, "etc", "lists", "test_file"),
 # Files inside directories where not 'all' files have to be synchronized, according to cluster.json.
 files_not_to_sync = [os.path.join(WAZUH_PATH, "etc", "test_file"),
                      os.path.join(WAZUH_PATH, "etc", "lists", 'ar.conf'),
-                     os.path.join(WAZUH_PATH, "etc", "lists", 'ossec.conf'),
+                     os.path.join(WAZUH_PATH, "etc", "lists", 'manager.conf'),
                      os.path.join(WAZUH_PATH, "etc", "lists", 'test.tmp'),
                      os.path.join(WAZUH_PATH, "etc", "lists", 'test.lock'),
                      os.path.join(WAZUH_PATH, "etc", "lists", 'test.swp'),
                      os.path.join(directories_to_create[0], 'test_file'),
                      os.path.join(directories_to_create[1], 'test_file')]
 
-# merged.mg and agent.conf files that must be created after creating a group folder.
+# merged.mg and shared.conf files that must be created after creating a group folder.
 merged_mg_file = os.path.join(directories_to_create[0], "merged.mg")
-agent_conf_file = os.path.join(directories_to_create[0], 'agent.conf')
+agent_conf_file = os.path.join(directories_to_create[0], 'shared.conf')
 
 
 @pytest.fixture(scope='function')
@@ -102,7 +103,7 @@ def test_shared_files():
     for file in files_to_sync:
         host_manager.modify_file_content(host=test_hosts[0], path=file, content=file_test_content_master)
 
-    # Modify the content of the agent.conf file to check if merged.mg file is updated in master and synchronized in
+    # Modify the content of the shared.conf file to check if merged.mg file is updated in master and synchronized in
     # workers.
     host_manager.modify_file_content(host=test_hosts[0], path=agent_conf_file,
                                      content=f"{agent_conf_content}\n")
@@ -119,7 +120,7 @@ def test_shared_files():
     # Check whether the merged.mg file is correctly updated in master and synchronized in workers or not.
     for host in test_hosts:
         result = host_manager.run_command(host, f'cat {merged_mg_file}')
-        # The agent.conf content will be before the !0 test_file line in merged.mg.
+        # The shared.conf content will be before the !0 test_file line in merged.mg.
         assert agent_conf_content in result, f'File {merged_mg_file} inside {host} should contain ' \
                                              f'{agent_conf_content}, but it has: {result} '
 

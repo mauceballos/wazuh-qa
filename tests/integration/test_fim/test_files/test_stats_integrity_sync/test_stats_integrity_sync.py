@@ -28,7 +28,7 @@ pytestmark = [pytest.mark.linux, pytest.mark.tier(level=3), pytest.mark.server]
 
 # variables
 
-agent_conf = os.path.join(WAZUH_PATH, 'etc', 'shared', 'default', 'agent.conf')
+agent_conf = os.path.join(WAZUH_PATH, 'etc', 'shared', 'default', 'shared.conf')
 state_path = os.path.join(WAZUH_PATH, 'var', 'run')
 db_path = '/var/ossec/queue/db/wdb'
 setup_environment_time = 1  # Seconds
@@ -323,7 +323,7 @@ def replace_conf(sync_eps, fim_eps, directory, buffer):
         with open(agent_conf, 'w') as conf:
             conf.write(new_config)
 
-    # Set Read/Write permissions to agent.conf
+    # Set Read/Write permissions to configuration file
     os.chmod(agent_conf, 0o666)
 
 

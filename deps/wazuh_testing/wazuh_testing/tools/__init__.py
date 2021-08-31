@@ -88,9 +88,16 @@ else:
     except (ImportError, KeyError, ModuleNotFoundError):
         pass
 
-state_path = os.path.join(WAZUH_PATH, 'var', 'run')
-db_path = os.path.join(WAZUH_PATH, 'queue', 'db', 'wdb')
-_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
+
+_data_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'data')
+
+CLIENT_KEYS_PATH = os.path.join(WAZUH_PATH, 'etc', 'client.keys')
+SERVER_KEY_PATH = os.path.join(WAZUH_PATH, 'etc', 'manager.key')
+SERVER_CERT_PATH = os.path.join(WAZUH_PATH, 'etc', 'manager.cert')
+
+CLIENT_CUSTOM_KEYS_PATH = os.path.join(_data_path, 'sslmanager.key')
+CLIENT_CUSTOM_CERT_PATH = os.path.join(_data_path, 'sslmanager.cert')
+
 WAZUH_LOGS_PATH = os.path.join(WAZUH_PATH, 'logs')
 ALERT_FILE_PATH = os.path.join(WAZUH_LOGS_PATH, 'alerts', 'alerts.json')
 CLUSTER_LOGS_PATH = os.path.join(WAZUH_LOGS_PATH, 'cluster.log')
@@ -99,7 +106,6 @@ QUEUE_SOCKETS_PATH = os.path.join(WAZUH_PATH, 'queue', 'sockets')
 QUEUE_ALERTS_PATH = os.path.join(WAZUH_PATH, 'queue', 'alerts')
 QUEUE_DB_PATH = os.path.join(WAZUH_PATH, 'queue', 'db')
 CLUSTER_SOCKET_PATH = os.path.join(WAZUH_PATH, 'queue', 'cluster')
-
 
 ANALYSISD_ANALISIS_SOCKET_PATH= os.path.join(QUEUE_SOCKETS_PATH, 'analysis')
 ANALYSISD_QUEUE_SOCKET_PATH= os.path.join(QUEUE_SOCKETS_PATH, 'queue')

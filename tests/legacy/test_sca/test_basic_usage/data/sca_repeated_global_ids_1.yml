@@ -18,10 +18,10 @@ checks:
    title: PASS -- existing file exists
    condition: any
    rules:
-     - f:/var/ossec/etc/ossec.conf
+     - f:/var/ossec/etc/agent.conf
 
  - id: 300101
    title: FAIL -- a non-existing file file should exist
    condition: any
    rules:
-     - f:/var/ossec/etc/ossec.conf_FAKE
+     - f:/var/ossec/etc/agent.conf_FAKE

@@ -29,7 +29,7 @@ else:
     pytestmark = [pytest.mark.skip, pytest.mark.tier(level=0)]
 
 location = r'Security'
-wazuh_configuration = 'ossec.conf'
+wazuh_configuration = 'agent.conf'
 
 parameters = [
     {'LOG_FORMAT': 'eventchannel', 'LOCATION': f'{location}', 'RECONNECT_TIME': '3s'},

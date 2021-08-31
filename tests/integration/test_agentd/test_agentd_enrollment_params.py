@@ -88,7 +88,7 @@ def clean_log_file():
 
 
 def override_wazuh_conf(configuration):
-    """Apply custom settings on ossec.conf file.
+    """Apply custom settings on configuration file.
 
     Settings are obtained from values located under "configuration" section of tests found in a YAML file.
     For this purpose, it stops the wazuh-agentd service, applies the settings and starts it again.

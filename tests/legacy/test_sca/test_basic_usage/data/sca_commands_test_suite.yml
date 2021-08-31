@@ -58,4 +58,4 @@ checks:
    title: INVALID -- Non executable file (will trigger leak reports due to execvp failing)
    condition: any
    rules:
-     - not c:/var/ossec/etc/ossec.conf -n ABC -> r:CBA
+     - not c:/var/ossec/etc/agent.conf -n ABC -> r:CBA

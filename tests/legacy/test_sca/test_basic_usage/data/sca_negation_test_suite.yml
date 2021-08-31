@@ -17,9 +17,9 @@ policy:
 # Invalid = 2
 # Total checks = 6
 
-# - f:/var/ossec/etc/ossec.conf -> TRUE
-# - f:/var/ossec/etc/ossec.conf_FAKE -> FALSE
-# - f:/var/ossec/etc/ossec.conf_FAKE -> r:^FAKE -> INVALID
+# - f:/var/ossec/etc/agent.conf -> TRUE
+# - f:/var/ossec/etc/agent.conf_FAKE -> FALSE
+# - f:/var/ossec/etc/agent.conf_FAKE -> r:^FAKE -> INVALID
 
 checks:
 #########
@@ -29,34 +29,34 @@ checks:
    title: PASS -- TRUE
    condition: any
    rules:
-     - f:/var/ossec/etc/ossec.conf
+     - f:/var/ossec/etc/agent.conf
 
  - id: 700101
    title: FAIL -- FALSE
    condition: any
    rules:
-     - f:/var/ossec/etc/ossec.conf_FAKE
+     - f:/var/ossec/etc/agent.conf_FAKE
 
  - id: 700102
    title: INVALID -- INVALID
    condition: any
    rules:
-     - f:/var/ossec/etc/ossec.conf_FAKE -> r:^FAKE -> INVALID
+     - f:/var/ossec/etc/agent.conf_FAKE -> r:^FAKE -> INVALID
 
  - id: 700103
    title: FAIL -- not TRUE
    condition: any
    rules:
-     - not f:/var/ossec/etc/ossec.conf
+     - not f:/var/ossec/etc/agent.conf
 
  - id: 700104
    title: PASS -- not FALSE
    condition: any
    rules:
-     - not f:/var/ossec/etc/ossec.conf_FAKE
+     - not f:/var/ossec/etc/agent.conf_FAKE
 
  - id: 700105
    title: INVALID -- not INVALID
    condition: any
    rules:
-     - not f:/var/ossec/etc/ossec.conf_FAKE -> r:^FAKE -> INVALID
+     - not f:/var/ossec/etc/agent.conf_FAKE -> r:^FAKE -> INVALID
