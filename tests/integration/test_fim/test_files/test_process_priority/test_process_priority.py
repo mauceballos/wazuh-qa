@@ -13,7 +13,7 @@ from wazuh_testing.tools.services import get_process
 
 # Marks
 
-pytestmark = [pytest.mark.linux, pytest.mark.darwin, pytest.mark.sunos5, pytest.mark.tier(level=1)]
+pytestmark = [pytest.mark.agent, pytest.mark.linux, pytest.mark.darwin, pytest.mark.sunos5, pytest.mark.tier(level=1)]
 
 # variables
 

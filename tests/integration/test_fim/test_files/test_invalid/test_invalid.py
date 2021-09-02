@@ -14,7 +14,7 @@ from wazuh_testing.tools.services import control_service
 
 # Marks
 
-pytestmark = pytest.mark.tier(level=1)
+pytestmark = [pytest.mark.tier(level=1), pytest.mark.agent]
 
 # variables
 

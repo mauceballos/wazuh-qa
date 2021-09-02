@@ -14,7 +14,7 @@ from wazuh_testing.tools.time import reformat_time
 
 # Marks
 
-pytestmark = [pytest.mark.tier(level=1)]
+pytestmark = [pytest.mark.tier(level=1), pytest.mark.agent]
 
 # variables
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')

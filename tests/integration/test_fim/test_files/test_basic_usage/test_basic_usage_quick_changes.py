@@ -15,7 +15,7 @@ from wazuh_testing.tools.monitoring import FileMonitor
 
 # Marks
 
-pytestmark = [pytest.mark.linux, pytest.mark.win32, pytest.mark.tier(level=0)]
+pytestmark = [pytest.mark.agent, pytest.mark.linux, pytest.mark.win32, pytest.mark.tier(level=0)]
 
 # variables
 

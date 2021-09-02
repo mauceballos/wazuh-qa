@@ -13,7 +13,7 @@ from wazuh_testing.tools.monitoring import FileMonitor
 
 # Marks
 
-pytestmark = [pytest.mark.tier(level=1)]
+pytestmark = [pytest.mark.tier(level=1), pytest.mark.agent]
 
 # Variables
 

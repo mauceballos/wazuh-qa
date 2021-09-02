@@ -22,7 +22,7 @@ from wazuh_testing.tools.time import TimeMachine
 
 # Marks
 
-pytestmark = [pytest.mark.linux, pytest.mark.tier(level=1)]
+pytestmark = [pytest.mark.agent, pytest.mark.linux, pytest.mark.tier(level=1)]
 
 # variables
 

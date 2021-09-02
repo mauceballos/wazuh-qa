@@ -19,7 +19,7 @@ from wazuh_testing.tools.services import control_service
 
 # Marks
 
-pytestmark = [pytest.mark.linux, pytest.mark.win32, pytest.mark.tier(level=1)]
+pytestmark = [pytest.mark.agent, pytest.mark.linux, pytest.mark.win32, pytest.mark.tier(level=1)]
 
 # Variables and configuration
 

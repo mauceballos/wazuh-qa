@@ -17,7 +17,7 @@ from test_fim.test_files.test_follow_symbolic_link.common import configurations_
 # noinspection PyUnresolvedReferences
 from test_fim.test_files.test_follow_symbolic_link.common import test_directories
 
-pytestmark = [pytest.mark.linux, pytest.mark.tier(level=1)]
+pytestmark = [pytest.mark.agent, pytest.mark.linux, pytest.mark.tier(level=1)]
 
 wazuh_log_monitor = FileMonitor(fim.LOG_FILE_PATH)
 

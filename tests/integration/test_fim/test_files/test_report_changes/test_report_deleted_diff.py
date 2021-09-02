@@ -18,7 +18,7 @@ from wazuh_testing.tools.services import restart_wazuh_with_new_conf
 
 # Marks
 
-pytestmark = pytest.mark.tier(level=1)
+pytestmark = [pytest.mark.tier(level=1), pytest.mark.agent]
 
 # variables
 

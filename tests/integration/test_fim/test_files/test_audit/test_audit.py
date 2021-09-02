@@ -16,7 +16,7 @@ from wazuh_testing.tools.services import control_service, check_daemon_status
 
 # Marks
 
-pytestmark = [pytest.mark.linux, pytest.mark.tier(level=1)]
+pytestmark = [pytest.mark.agent, pytest.mark.linux, pytest.mark.tier(level=1)]
 
 # variables
 
