@@ -34,7 +34,7 @@ if sys.platform == 'win32':
     import win32security as win32sec
     import ntsecuritycon as ntc
     import pywintypes
-elif sys.platform == 'linux2' or sys.platform == 'linux':
+elif sys.platform == 'linux2' or sys.platform == 'linux' or sys.platform == 'darwin' or sys.platform == "sunos5":
     from jq import jq
 
 _data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
@@ -1580,7 +1580,7 @@ class EventChecker:
 
         def filter_events(events, mask):
             """Returns a list of elements matching a specified mask in the events list using jq module."""
-            if sys.platform in ("win32", 'sunos5', 'darwin'):
+            if sys.platform in ("win32"):
                 stdout = subprocess.check_output(["jq", "-r", mask], input=json.dumps(events).encode())
                 return stdout.decode("utf8").strip().split(os.linesep)
             else:
