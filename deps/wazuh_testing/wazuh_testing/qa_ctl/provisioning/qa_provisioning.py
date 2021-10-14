@@ -14,7 +14,7 @@ from wazuh_testing.qa_ctl.provisioning.wazuh_deployment.manager_deployment impor
 from wazuh_testing.qa_ctl.provisioning.ansible.ansible_runner import AnsibleRunner
 from wazuh_testing.qa_ctl.provisioning.ansible.ansible_task import AnsibleTask
 from wazuh_testing.qa_ctl.provisioning.qa_framework.qa_framework import QAFramework
-from wazuh_testing.tools.thread_executor import ThreadExecutor
+from wazuh_testing.tools.multiprocessing_thread import MultiprocessingThread
 from wazuh_testing.qa_ctl import QACTL_LOGGER
 from wazuh_testing.tools.logging import Logging
 from wazuh_testing.tools.time import get_current_timestamp
@@ -225,16 +225,23 @@ class QAProvisioning():
                 file.remove_file(tmp_config_file)
         else:
             self.__check_hosts_connection()
-            provision_threads = [ThreadExecutor(self.__process_config_data,
+            provision_threads = [MultiprocessingThread(self.__process_config_data,
                                                 parameters={'host_provision_info': host_value})
                                 for _, host_value in self.provision_info['hosts'].items()]
             QAProvisioning.LOGGER.info(f"Provisioning {len(provision_threads)} instances")
 
-            for runner_thread in provision_threads:
-                runner_thread.start()
+            try:
+                for runner_thread in provision_threads:
+                    runner_thread.start()
 
-            for runner_thread in provision_threads:
-                runner_thread.join()
+                for runner_thread in provision_threads:
+                    runner_thread.join()
+
+            except KeyboardInterrupt:
+                for runner_thread in provision_threads:
+                    runner_thread.kill()
+                    runner_thread.close()
+                raise Exception("Provisioning stopped by user")
 
             QAProvisioning.LOGGER.info(f"The instances have been provisioned sucessfully")
 

@@ -1,9 +1,7 @@
-import threading
+import multiprocessing
 
-class ThreadExecutor(threading.Thread):
+class MultiprocessingThread(multiprocessing.Process):
     """Class which allows us to upload the thread exception to the parent process.
-
-    This is useful to cause the pytest test to fail in the event of an exception or failure in any of the threads.
 
     Args:
         function (callable): Function to run in the thread.
@@ -21,23 +19,20 @@ class ThreadExecutor(threading.Thread):
         self.parameters = parameters
         self._return = None
 
-
     def _run(self):
         """Run the target function with its parameters in the thread"""
         self._return = self.function(**self.parameters)
-
-
+    
     def run(self):
         """Overwrite run function of threading Thread module.
 
-        Launch the target function and catch the exception in case it occurs.
-        """
+        Launch the target function and catch the exception in case it occurs."""
         self.exc = None
         try:
             self._run()
         except Exception as e:
             self.exception = e
-
+    
     def join(self):
         """Overwrite join function of threading Thread module.
 
@@ -46,7 +41,7 @@ class ThreadExecutor(threading.Thread):
         Raises:
             Exception: Target function exception if ocurrs
         """
-        super(ThreadExecutor, self).join()
+        super(MultiprocessingThread, self).join()
         if self.exception:
             raise self.exception
 

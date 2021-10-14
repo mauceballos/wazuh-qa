@@ -29,6 +29,7 @@ PROVISION_KEY = 'provision'
 TEST_KEY = 'tests'
 WAZUH_QA_FILES = os.path.join(gettempdir(), 'wazuh_qa_ctl', 'wazuh-qa')
 RUNNING_ON_DOCKER_CONTAINER = True if 'RUNNING_ON_DOCKER_CONTAINER' in os.environ else False
+FORCED_QUIT = False
 
 qactl_logger = Logging(QACTL_LOGGER)
 _data_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'data')
@@ -239,6 +240,7 @@ def main():
     configuration_data = {}
     instance_handler = None
     configuration_file = None
+    global FORCED_QUIT
 
     arguments = get_script_parameters()
 
@@ -286,22 +288,32 @@ def main():
     # Run QACTL modules
     try:
         if DEPLOY_KEY in configuration_data and not arguments.skip_deployment and not RUNNING_ON_DOCKER_CONTAINER:
-            deploy_dict = configuration_data[DEPLOY_KEY]
-            instance_handler = QAInfraestructure(deploy_dict, qactl_configuration)
-            instance_handler.run()
-            launched['instance_handler'] = True
+            try:
+                deploy_dict = configuration_data[DEPLOY_KEY]
+                instance_handler = QAInfraestructure(deploy_dict, qactl_configuration)
+                instance_handler.run()
+                launched['instance_handler'] = True
+            except:
+                instance_handler.halt()
+                FORCED_QUIT = True
 
-        if PROVISION_KEY in configuration_data and not arguments.skip_provisioning:
-            provision_dict = configuration_data[PROVISION_KEY]
-            qa_provisioning = QAProvisioning(provision_dict, qactl_configuration)
-            qa_provisioning.run()
-            launched['qa_provisioning'] = True
+        if PROVISION_KEY in configuration_data and not arguments.skip_provisioning and not FORCED_QUIT:
+            try:
+                provision_dict = configuration_data[PROVISION_KEY]
+                qa_provisioning = QAProvisioning(provision_dict, qactl_configuration)
+                qa_provisioning.run()
+                launched['qa_provisioning'] = True
+            except:
+                FORCED_QUIT = True
 
-        if TEST_KEY in configuration_data and not arguments.skip_testing:
-            test_dict = configuration_data[TEST_KEY]
-            tests_runner = QATestRunner(test_dict, qactl_configuration)
-            tests_runner.run()
-            launched['test_runner'] = True
+        if TEST_KEY in configuration_data and not arguments.skip_testing and not FORCED_QUIT:
+            try:
+                test_dict = configuration_data[TEST_KEY]
+                tests_runner = QATestRunner(test_dict, qactl_configuration)
+                tests_runner.run()
+                launched['test_runner'] = True
+            except:
+                FORCED_QUIT = True
     finally:
         if not arguments.persistent:
             if DEPLOY_KEY in configuration_data and launched['instance_handler']:

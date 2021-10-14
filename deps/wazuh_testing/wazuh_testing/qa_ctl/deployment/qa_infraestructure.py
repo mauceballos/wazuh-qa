@@ -6,7 +6,7 @@ import docker
 
 from wazuh_testing.qa_ctl.deployment.docker_wrapper import DockerWrapper
 from wazuh_testing.qa_ctl.deployment.vagrant_wrapper import VagrantWrapper
-from wazuh_testing.tools.thread_executor import ThreadExecutor
+from wazuh_testing.tools.multiprocessing_thread import MultiprocessingThread
 from wazuh_testing.qa_ctl import QACTL_LOGGER
 from wazuh_testing.tools.logging import Logging
 from wazuh_testing.tools.exceptions import QAValueError
@@ -110,35 +110,43 @@ class QAInfraestructure:
         """Auxiliary function to start and wait for threads
 
         Args:
-            threads (list(ThreadExecutor)): Thread executors
+            threads (list(MultiprocessingThread)): MultiprocessingThread objects
         """
-        for runner_thread in threads:
-            runner_thread.start()
+        try:
 
-        for runner_thread in threads:
-            runner_thread.join()
+            for runner_thread in threads:
+                runner_thread.start()
+
+            for runner_thread in threads:
+                runner_thread.join()
+        except KeyboardInterrupt:
+            for runner_thread in threads:
+                runner_thread.kill()
+                runner_thread.close()
+            raise Exception("Deployment Stopped by user")
+        
 
     def run(self):
         """Run the instances deployment when the local host is UNIX."""
         QAInfraestructure.LOGGER.info(f"Starting {len(self.instances)} instances deployment")
-        self.__threads_runner([ThreadExecutor(instance.run) for instance in self.instances])
+        self.__threads_runner([MultiprocessingThread(instance.run) for instance in self.instances])
         QAInfraestructure.LOGGER.info('The instances deployment has finished sucessfully')
 
     def halt(self):
         """Execute the 'halt' method on every configured instance."""
         QAInfraestructure.LOGGER.info(f"Stopping {len(self.instances)} instances")
-        self.__threads_runner([ThreadExecutor(instance.halt) for instance in self.instances])
+        self.__threads_runner([MultiprocessingThread(instance.halt) for instance in self.instances])
         QAInfraestructure.LOGGER.info('The instances have been stopped sucessfully')
 
     def restart(self):
         """Execute the 'restart' method on every configured instance."""
         QAInfraestructure.LOGGER.info(f"Restarting {len(self.instances)} instances")
-        self.__threads_runner([ThreadExecutor(instance.restart) for instance in self.instances])
+        self.__threads_runner([MultiprocessingThread(instance.restart) for instance in self.instances])
 
     def destroy(self):
         """Execute the 'destroy' method on every configured instance."""
         QAInfraestructure.LOGGER.info(f"Destroying {len(self.instances)} instances")
-        self.__threads_runner([ThreadExecutor(instance.destroy) for instance in self.instances])
+        self.__threads_runner([MultiprocessingThread(instance.destroy) for instance in self.instances])
         QAInfraestructure.LOGGER.info(f"The instances have been destroyed sucessfully")
 
         if self.docker_network:

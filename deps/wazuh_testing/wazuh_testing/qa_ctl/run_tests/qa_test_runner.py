@@ -6,7 +6,7 @@ from wazuh_testing.qa_ctl.provisioning.ansible.ansible_instance import AnsibleIn
 from wazuh_testing.qa_ctl.provisioning.ansible.ansible_inventory import AnsibleInventory
 from wazuh_testing.qa_ctl.run_tests.test_launcher import TestLauncher
 from wazuh_testing.qa_ctl.run_tests.pytest import Pytest
-from wazuh_testing.tools.thread_executor import ThreadExecutor
+from wazuh_testing.tools.multiprocessing_thread import MultiprocessingThread
 from wazuh_testing.qa_ctl import QACTL_LOGGER
 from wazuh_testing.tools.logging import Logging
 from wazuh_testing.tools.time import get_current_timestamp
@@ -175,17 +175,23 @@ class QATestRunner():
             finally:
                 file.remove_file(tmp_config_file)
         else:
-            runner_threads = [ThreadExecutor(test_launcher.run) for test_launcher in self.test_launchers]
+            runner_threads = [MultiprocessingThread(test_launcher.run) for test_launcher in self.test_launchers]
 
             QATestRunner.LOGGER.info(f"Launching {len(runner_threads)} tests")
 
-            for runner_thread in runner_threads:
-                runner_thread.start()
+            try:
+                for runner_thread in runner_threads:
+                    runner_thread.start()
 
-            QATestRunner.LOGGER.info('Waiting for tests to finish')
+                QATestRunner.LOGGER.info('Waiting for tests to finish')
 
-            for runner_thread in runner_threads:
-                runner_thread.join()
+                for runner_thread in runner_threads:
+                    runner_thread.join()
+            except KeyboardInterrupt:
+                for runner_thread in runner_threads:
+                    runner_thread.kill()
+                    runner_thread.close()
+                raise Exception("Test running stopped by  user")
 
             QATestRunner.LOGGER.info('The test run is finished')
 
