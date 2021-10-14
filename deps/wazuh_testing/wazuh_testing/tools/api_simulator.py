@@ -1,6 +1,8 @@
 import json
 import logging
+import time
 from base64 import b64encode
+from os.path import join, dirname, abspath
 from threading import Thread, Event
 from time import sleep, time
 
@@ -22,13 +24,12 @@ class ThreadFilter(logging.Filter):
 
 
 class CustomLogger:
-    def __init__(self, name, file_path='/tmp/wazuh_api_simulator.log', foreground=False, tag='Main',
-                 level=logging.INFO):
+    def __init__(self, name, filename='wazuh_api_simulator.log', foreground=False, tag='Main', level=logging.INFO):
         logger = logging.getLogger(name)
         logger.addFilter(ThreadFilter(tag))
         logger_formatter = logging.Formatter('{asctime} {levelname}: [{thread_name}] {message}', style='{',
                                              datefmt='%Y/%m/%d %H:%M:%S')
-        logging.basicConfig(filename=file_path, filemode='a', level=level,
+        logging.basicConfig(filename=join(dirname(abspath(__file__)), filename), filemode='a', level=level,
                             format='%(asctime)s %(levelname)s: [%(thread_name)s] %(message)s',
                             datefmt='%Y/%m/%d %H:%M:%S')
 
@@ -44,12 +45,13 @@ class CustomLogger:
 
 
 class APISimulator:
-    def __init__(self, host, port, protocol='https', frequency=60, user='wazuh-wui', password='wazuh-wui',
+    def __init__(self, host, port, protocol='https', frequency=60, user='wazuh', password='wazuh', timeout=60,
                  external_logger=None, request_percentage=0, request_template=None):
         self.host = host
         self.port = port
         self.protocol = protocol
         self.frequency = frequency
+        self.timeout = timeout
         self.logger = external_logger if external_logger else logging.getLogger('wazuh-api-requester')
         self.user = user
         self.password = password
@@ -116,30 +118,25 @@ class APISimulator:
 
         try:
             response = getattr(requests, request['method'])(endpoint, headers=headers, params=request['parameters'],
-                                                            data=request['body'], verify=False)
+                                                            data=request['body'], verify=False, timeout=self.timeout)
             if result:
                 return response
-
-        except Exception as exception:
-            self.logger.error(f'Unhandled exception: {exception}')
-            self.logger.info('Waiting 5 seconds...')
-            sleep(5)
+        except requests.exceptions.Timeout:
+            self.logger.error(f"API request timed out: {request['endpoint']}")
             return
 
         if response.status_code == 401:
             self.logger.warning('API token expired')
             self.get_token()
             try:
-                headers = {'Authorization': f'Bearer {self.token}'}
                 response = getattr(requests, request['method'])(endpoint, headers=headers, params=request['parameters'],
-                                                                data=request['body'], verify=False)
+                                                                data=request['body'], verify=False,
+                                                                timeout=self.timeout)
                 if result:
                     return response
 
-            except Exception as exception:
-                self.logger.error(f'Unhandled exception: {exception}')
-                self.logger.info('Waiting 5 seconds...')
-                sleep(5)
+            except requests.exceptions.Timeout:
+                self.logger.error(f'API request timed out. Current timeout: {self.timeout}s')
                 return
 
         self.logger.info(f"API request {request['endpoint']} | {response.status_code}")
@@ -167,7 +164,7 @@ class APISimulator:
             self.logger.info('There are no requests to do. Process aborted')
             exit(0)
         self.logger.info(f'{len(self.requests)} requests per loop')
-        self.logger.info(f'Frequency: {self.frequency}')
+        self.logger.info(f'Frequency: {self.frequency} - Timeout: {self.timeout}')
         self.get_token()
 
         time_per_request = self.frequency / len(self.requests)

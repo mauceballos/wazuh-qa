@@ -8,12 +8,15 @@ import subprocess as sb
 import time
 
 import pytest
-import wazuh_testing.tools as tools
+import wazuh_testing.api as api
 import wazuh_testing.tools.agent_simulator as ag
-from wazuh_testing import TCP, UDP
-from wazuh_testing.tools import file, monitoring
+import wazuh_testing.tools as tools
+from wazuh_testing import UDP, TCP
 from wazuh_testing.tools.monitoring import FileMonitor
+from wazuh_testing.tools import file
+from wazuh_testing.tools import monitoring
 from wazuh_testing.tools.services import control_service
+
 
 REMOTED_GLOBAL_TIMEOUT = 10
 EXAMPLE_MESSAGE_EVENT = '1:/root/test.log:Feb 23 17:18:20 35-u20-manager4 sshd[40657]: Accepted publickey for root' \
@@ -92,8 +95,21 @@ def callback_invalid_value(option, value):
     return monitoring.make_callback(pattern=msg, prefix=monitoring.REMOTED_DETECTOR_PREFIX)
 
 
+def callback_error_in_configuration(severity):
+    """Create a callback to detect configuration error in ossec.conf file.
+
+    Args:
+        severity (str): ERROR or CRITICAL.
+
+    Returns:
+        callable: callback to detect this event.
+    """
+    msg = fr"{severity}: \(\d+\): Configuration error at '{tools.WAZUH_CONF_RELATIVE}'."
+    return monitoring.make_callback(pattern=msg, prefix=monitoring.REMOTED_DETECTOR_PREFIX)
+
+
 def callback_error_invalid_port(port):
-    """Create a callback to detect invalid port.callback_detect_remoted_started
+    """Create a callback to detect invalid port.
 
     Args:
         port (str): Wazuh manager port.
@@ -180,6 +196,19 @@ def callback_queue_size_too_big():
     return monitoring.make_callback(pattern=msg, prefix=monitoring.REMOTED_DETECTOR_PREFIX)
 
 
+def callback_error_invalid_value_for(option):
+    """Create a callback to detect invalid values in ossec.conf file.
+
+    Args:
+        option (str): Wazuh manager configuration option.
+
+    Returns:
+        callable: callback to detect this event.
+    """
+    msg = fr"WARNING: \(\d+\): Invalid value '.*' in '{option}' option. Default value will be used."
+    return monitoring.make_callback(pattern=msg, prefix=monitoring.REMOTED_DETECTOR_PREFIX)
+
+
 def callback_error_invalid_ip(ip):
     """Create a callback to detect if error is created when invalid local ip value is provided.
 
@@ -202,6 +231,18 @@ def callback_info_no_allowed_ips():
     msg = r"INFO: \(\d+\): IP or network must be present in syslog access list \(allowed-ips\). "
     msg += "Syslog server disabled."
     return monitoring.make_callback(pattern=msg, prefix=monitoring.REMOTED_DETECTOR_PREFIX)
+
+
+def compare_config_api_response(configuration):
+    """Assert if configuration values provided are the same that configuration provided for API response.
+
+    Args:
+        configuration (dict): Dictionary with wazuh manager configuration.
+    """
+    # Check that API query return the selected configuration
+    for field in configuration.keys():
+        api_answer = api.get_manager_configuration(section="remote", field=field)
+        assert str(configuration[field]) in api_answer, "Wazuh API answer different from introduced configuration"
 
 
 def get_protocols(all_protocols):
@@ -362,6 +403,7 @@ def check_syslog_event(wazuh_archives_log_monitor, message, port, protocol, time
     for msg in parsed_msg.split("\n"):
         detect_archives_log_event(archives_monitor=wazuh_archives_log_monitor,
                                   callback=callback_detect_syslog_event(msg),
+                                  update_position=False,
                                   timeout=timeout,
                                   error_message="Syslog message wasn't received or took too much time.")
 
@@ -550,12 +592,12 @@ def check_queue_socket_event(raw_events=EXAMPLE_MESSAGE_PATTERN, timeout=30, upd
         control_service('start', daemon='wazuh-analysisd')
 
 
-def check_agent_received_message(message_queue, search_pattern, timeout=5, update_position=True, error_message='',
+def check_agent_received_message(agent, search_pattern, timeout=5, update_position=True, error_message='',
                                  escape=False):
     """Allow to monitor the agent received messages to search a pattern regex.
 
     Args:
-        message_queue (monitoring.Queue): Queue containing the messages received in the agent.
+        agent (Agent): Agent to monitor the received messages in its Queue.
         search_pattern (str): Regex to search in agent received messages.
         timeout (int): Maximum time in seconds to search the event.
         update_position (boolean): True to search in the entire queue, False to search in the current position of the
@@ -567,7 +609,7 @@ def check_agent_received_message(message_queue, search_pattern, timeout=5, updat
         TimeoutError: if search pattern is not found in agent received messages queue in the expected time.
 
     """
-    queue_monitor = monitoring.QueueMonitor(message_queue)
+    queue_monitor = monitoring.QueueMonitor(agent.rcv_msg_queue)
 
     queue_monitor.start(timeout=timeout, callback=monitoring.make_callback(search_pattern, '.*', escape),
                         update_position=update_position, error_message=error_message)
@@ -610,21 +652,21 @@ def check_push_shared_config(agent, sender, injector=None):
         sender.send_event(agent.keep_alive_event)
 
         # Check up file (push start) message
-        check_agent_received_message(agent.rcv_msg_queue, r'#!-up file \w+ merged.mg', timeout=10,
+        check_agent_received_message(agent, r'#!-up file \w+ merged.mg', timeout=10,
                                      error_message="initial up file message not received")
 
         # Check agent.conf message
-        check_agent_received_message(agent.rcv_msg_queue, '#default', timeout=10,
+        check_agent_received_message(agent, '#default', timeout=10,
                                      error_message="agent.conf message not received")
         # Check close file (push end) message
-        check_agent_received_message(agent.rcv_msg_queue, 'close', timeout=35,
+        check_agent_received_message(agent, 'close', timeout=35,
                                      error_message="initial close message not received")
 
         sender.send_event(agent.keep_alive_event)
 
         # Check that push message doesn't appear again
         with pytest.raises(TimeoutError):
-            check_agent_received_message(agent.rcv_msg_queue, r'#!-up file \w+ merged.mg', timeout=5)
+            check_agent_received_message(agent, r'#!-up file \w+ merged.mg', timeout=5)
             raise AssertionError("Same shared configuration pushed twice!")
 
         # Add agent to group and check if the configuration is pushed.
@@ -635,7 +677,7 @@ def check_push_shared_config(agent, sender, injector=None):
             sender.send_event(agent.keep_alive_event)
             time.sleep(1)
 
-        check_agent_received_message(agent.rcv_msg_queue, '#!-up file .* merged.mg', timeout=10,
+        check_agent_received_message(agent, '#!-up file .* merged.mg', timeout=10,
                                      error_message="New group shared config not received")
 
     finally:
