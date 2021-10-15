@@ -58,34 +58,15 @@ def regex_match(regex, string):
     string = string.replace(')', '')
     return re.match(regex, string)
 
-
-@pytest.fixture(scope='module')
-def clean_registered_agents():
-    remove_all_agents('wazuhdb')
-    time.sleep(5)
-
-
 @pytest.fixture(scope='module')
 def restart_wazuh():
     control_service('restart')
 
 
-@pytest.fixture(scope='function')
-def pre_insert_agents():
-    AGENTS_CANT = 14000
-    AGENTS_OFFSET = 20
-    for id in range(AGENTS_OFFSET, AGENTS_OFFSET + AGENTS_CANT):
-        command = f'global insert-agent {{"id":{id},"name":"TestName{id}","date_add":1599223378}}'
-        receiver_sockets[0].send(command, size=True)
-        response = receiver_sockets[0].receive(size=True).decode()
-        data = response.split()
-        assert data[0] == 'ok', f"Unable to add agent {id}"
-
-        command = f'global update-keepalive {{"id":{id},"sync_status":"syncreq","connection_status":"active"}}'
-        receiver_sockets[0].send(command, size=True)
-        response = receiver_sockets[0].receive(size=True).decode()
-        data = response.split()
-        assert data[0] == 'ok', f"Unable to update agent {id}"
+@pytest.fixture(scope='module')
+def clean_registered_agents():
+    remove_all_agents('wazuhdb')
+    time.sleep(5)
 
 
 @pytest.fixture(scope='function')
@@ -124,7 +105,7 @@ def pre_insert_packages():
                               for module_data, module_name in module_tests
                               for case in module_data]
                          )
-def test_wazuh_db_messages(restart_wazuh, clean_registered_agents, configure_sockets_environment, connect_to_sockets_module, test_case):
+def test_wazuh_db_messages(restart_wazuh, configure_sockets_environment, connect_to_sockets_module, clean_registered_agents, test_case):
     """Check that every input message in wazuh-db socket generates the adequate output to wazuh-db socket
 
     Parameters
@@ -147,7 +128,7 @@ def test_wazuh_db_messages(restart_wazuh, clean_registered_agents, configure_soc
                 .format(index + 1, stage['stage'], output, response)
 
 
-def test_wazuh_db_create_agent(restart_wazuh, clean_registered_agents, configure_sockets_environment, connect_to_sockets_module):
+def test_wazuh_db_create_agent(configure_sockets_environment, connect_to_sockets_module, clean_registered_agents):
     """Check that Wazuh DB creates the agent database when a query with a new agent ID is sent"""
     test = {'name': 'Create agent',
             'description': "Wazuh DB creates automatically the agent's database the first time a query with a new agent"
@@ -155,7 +136,7 @@ def test_wazuh_db_create_agent(restart_wazuh, clean_registered_agents, configure
             "test_case": [{'input': 'agent 999 syscheck integrity_check_left',
                            'output': ["err Invalid FIM query syntax, near 'integrity_check_left'"],
                            'stage': 'Syscheck - Agent does not exits yet'}]}
-    test_wazuh_db_messages(clean_registered_agents, restart_wazuh, configure_sockets_environment, connect_to_sockets_module, test['test_case'])
+    test_wazuh_db_messages(restart_wazuh, configure_sockets_environment, connect_to_sockets_module, clean_registered_agents, test['test_case'])
     assert os.path.exists(os.path.join(WAZUH_PATH, 'queue', 'db', '999.db'))
 
 
