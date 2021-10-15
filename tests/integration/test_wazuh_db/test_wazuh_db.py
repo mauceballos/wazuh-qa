@@ -24,7 +24,7 @@ messages_files = os.listdir(test_data_path)
 module_tests = list()
 for file in messages_files:
     with open(os.path.join(test_data_path, file)) as f:
-        module_tests.append((yaml.safe_load(f), file.split("_")[0]))
+        module_tests.append((yaml.safe_load(f), file.split('_')[0]))
 
 # Variables
 
@@ -47,30 +47,30 @@ receiver_sockets, monitored_sockets, log_monitors = None, None, None  # Set in t
 
 
 def regex_match(regex, string):
-    regex = regex.replace("*", ".*")
-    regex = regex.replace("[", "")
-    regex = regex.replace("]", "")
-    regex = regex.replace("(", "")
-    regex = regex.replace(")", "")
-    string = string.replace("[", "")
-    string = string.replace("]", "")
-    string = string.replace("(", "")
-    string = string.replace(")", "")
+    regex = regex.replace('*', '.*')
+    regex = regex.replace('[', '')
+    regex = regex.replace(']', '')
+    regex = regex.replace('(', '')
+    regex = regex.replace(')', '')
+    string = string.replace('[', '')
+    string = string.replace(']', '')
+    string = string.replace('(', '')
+    string = string.replace(')', '')
     return re.match(regex, string)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def clean_registered_agents():
     remove_all_agents('wazuhdb')
     time.sleep(5)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def restart_wazuh():
     control_service('restart')
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 def pre_insert_agents():
     AGENTS_CANT = 14000
     AGENTS_OFFSET = 20
@@ -78,29 +78,29 @@ def pre_insert_agents():
         command = f'global insert-agent {{"id":{id},"name":"TestName{id}","date_add":1599223378}}'
         receiver_sockets[0].send(command, size=True)
         response = receiver_sockets[0].receive(size=True).decode()
-        data = response.split(" ", 1)
-        assert data[0] == 'ok', f'Unable to add agent {id}'
+        data = response.split()
+        assert data[0] == 'ok', f"Unable to add agent {id}"
 
         command = f'global update-keepalive {{"id":{id},"sync_status":"syncreq","connection_status":"active"}}'
         receiver_sockets[0].send(command, size=True)
         response = receiver_sockets[0].receive(size=True).decode()
-        data = response.split(" ", 1)
-        assert data[0] == 'ok', f'Unable to update agent {id}'
+        data = response.split()
+        assert data[0] == 'ok', f"Unable to update agent {id}"
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 def pre_set_sync_info():
     """Asign the last_attempt value to last_completion in sync_info table to force the synced status"""
 
-    command = 'agent 000 sql UPDATE sync_info SET last_completion = 10, last_attempt = 10 ' \
-              'where component = "syscollector-packages"'
+    command = "agent 000 sql UPDATE sync_info SET last_completion = 10, last_attempt = 10 " \
+              "where component = 'syscollector-packages'"
     receiver_sockets[0].send(command, size=True)
     response = receiver_sockets[0].receive(size=True).decode()
-    data = response.split(" ", 1)
+    data = response.split()
     assert data[0] == 'ok', 'Unable to set sync_info table'
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 def pre_insert_packages():
     """Insert a set of dummy packages into sys_programs table"""
 
@@ -114,8 +114,8 @@ def pre_insert_packages():
         NULL,0,NULL,NULL,"{random.getrandbits(128)}","{random.getrandbits(128)}")'
         receiver_sockets[0].send(command, size=True)
         response = receiver_sockets[0].receive(size=True).decode()
-        data = response.split(" ", 1)
-        assert data[0] == 'ok', f'Unable to insert package {pkg_n}'
+        data = response.split()
+        assert data[0] == 'ok', f"Unable to insert package {pkg_n}"
 
 
 @pytest.mark.parametrize('test_case',
@@ -133,7 +133,7 @@ def test_wazuh_db_messages(restart_wazuh, clean_registered_agents, configure_soc
         List of test_case stages (dicts with input, output and stage keys).
     """
     for index, stage in enumerate(test_case):
-        if 'ignore' in stage and stage['ignore'] == "yes":
+        if 'ignore' in stage and stage['ignore'] == 'yes':
             continue
 
         receiver_sockets[0].send(stage['input'], size=True)
@@ -149,33 +149,34 @@ def test_wazuh_db_messages(restart_wazuh, clean_registered_agents, configure_soc
 
 def test_wazuh_db_create_agent(restart_wazuh, clean_registered_agents, configure_sockets_environment, connect_to_sockets_module):
     """Check that Wazuh DB creates the agent database when a query with a new agent ID is sent"""
-    test = {"name": "Create agent",
-            "description": "Wazuh DB creates automatically the agent's database the first time a query with a new agent"
-                           " ID reaches it. Once the database is created, the query is processed as expected.",
-            "test_case": [{"input": "agent 999 syscheck integrity_check_left",
-                           "output": ["err Invalid FIM query syntax, near 'integrity_check_left'"],
-                           "stage": "Syscheck - Agent does not exits yet"}]}
+    test = {'name': 'Create agent',
+            'description': "Wazuh DB creates automatically the agent's database the first time a query with a new agent"
+                           ' ID reaches it. Once the database is created, the query is processed as expected.',
+            "test_case": [{'input': 'agent 999 syscheck integrity_check_left',
+                           'output': ["err Invalid FIM query syntax, near 'integrity_check_left'"],
+                           'stage': 'Syscheck - Agent does not exits yet'}]}
     test_wazuh_db_messages(clean_registered_agents, restart_wazuh, configure_sockets_environment, connect_to_sockets_module, test['test_case'])
-    assert os.path.exists(os.path.join(WAZUH_PATH, 'queue', 'db', "999.db"))
+    assert os.path.exists(os.path.join(WAZUH_PATH, 'queue', 'db', '999.db'))
 
 
 def test_wazuh_db_timeout(configure_sockets_environment, connect_to_sockets_module,
                           pre_insert_packages, pre_set_sync_info):
     """Check that effectively the socket is closed after timeout is reached"""
+    wazuh_db_send_sleep = 2
 
     command = 'agent 000 package get'
     receiver_sockets[0].send(command, size=True)
-    time.sleep(2)
+    # Waiting Wazuh-DB to process command
+    time.sleep(wazuh_db_send_sleep)
     socket_closed = False
     cmd_counter = 0
-    while True:
+    status = 'due'
+    while not socket_closed and status == 'due':
         cmd_counter += 1
         response = receiver_sockets[0].receive(size=True).decode()
-        if response == "":
+        if response == '':
             socket_closed = True
-            break
-        status = response.split(" ", 1)[0]
-        if status != "due":
-            break
+        else:
+            status = response.split()[0]
 
-    assert socket_closed, f'Socket never closed. Received {cmd_counter} commands. Last command: {response}'
+    assert socket_closed, f"Socket never closed. Received {cmd_counter} commands. Last command: {response}"
