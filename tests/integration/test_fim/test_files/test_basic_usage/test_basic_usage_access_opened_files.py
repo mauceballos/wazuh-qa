@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2020, Wazuh Inc.
+# Copyright (C) 2015-2021, Wazuh Inc.
 # Created by Wazuh, Inc. <info@wazuh.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -35,9 +35,9 @@ testdir1 = test_directories[0]
 
 conf_params = {'TEST_DIRECTORIES': directory_str, 'MODULE_NAME': __name__}
 
-p, m = generate_params(extra_params=conf_params)
+parameters, metadata = generate_params(extra_params=conf_params)
 
-configurations = load_wazuh_configurations(configurations_path, __name__, params=p, metadata=m)
+configurations = load_wazuh_configurations(configurations_path, __name__, params=parameters, metadata=metadata)
 
 # Fixtures
 
@@ -103,9 +103,9 @@ def test_basic_usage_access_opened_files(operation, tags_to_apply, get_configura
         try:
             os.rename(file_path, changed_path)
         except (OSError, IOError, PermissionError):
-            pytest.fail("Could not rename file")
+            pytest.fail('Could not rename file')
     elif operation == 'delete':
         try:
             os.remove(file_path)
         except (OSError, IOError, PermissionError):
-            pytest.fail("Could not delete file")
+            pytest.fail('Could not delete file')
