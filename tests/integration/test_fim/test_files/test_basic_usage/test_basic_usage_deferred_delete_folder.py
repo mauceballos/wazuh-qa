@@ -46,6 +46,7 @@ def callback_detect_delete_event(line):
     try:
         paso(12)
         event = json.loads(match.group(1))
+        paso(18)
         if (event['type'] == 'event' and
                 event['data']['type'] == 'deleted' and
                 'process_name' not in event['data']['audit']):
