@@ -42,16 +42,20 @@ configurations = load_wazuh_configurations(configurations_path, __name__, params
 def callback_detect_delete_event(line):
     msg = r'.*Sending FIM event: (.+)$'
     match = re.match(msg, line)
-
+    paso(11)
     try:
+        paso(12)
         event = json.loads(match.group(1))
         if (event['type'] == 'event' and
                 event['data']['type'] == 'deleted' and
                 'process_name' not in event['data']['audit']):
+            paso(13)
             return event
+        paso(14)
     except (AttributeError, JSONDecodeError, KeyError):
+        paso(15)
         pass
-
+    paso(16)
     return None
 
 # fixtures
@@ -60,6 +64,7 @@ def callback_detect_delete_event(line):
 @pytest.fixture(scope='module', params=configurations)
 def get_configuration(request):
     """Get configurations from the module."""
+    paso(17)
     return request.param
 
 
@@ -92,6 +97,7 @@ def test_deferred_delete_file(folder, file_list, filetype, tags_to_apply,
     """
     paso(0)
     check_apply_test(tags_to_apply, get_configuration['tags'])
+    print(type(tags_to_apply))
     paso(1)
     # Create files inside subdir folder
     for file in file_list:
