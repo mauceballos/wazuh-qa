@@ -90,38 +90,50 @@ def test_deferred_delete_file(folder, file_list, filetype, tags_to_apply,
     filetype : str
         Type of the files that will be created.
     """
+    paso(0)
     check_apply_test(tags_to_apply, get_configuration['tags'])
-
+    paso(1)
     # Create files inside subdir folder
     for file in file_list:
         create_file(filetype, folder, file, content='')
-
+    paso(2)
     # Wait for the added events
     wazuh_log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_event,
                             accum_results=len(file_list), error_message='Did not receive expected '
                             '"Sending FIM event: ..." event')
-
+    paso(3)
     # Delete the files under 'folder'
     command = 'del "{}"\n'.format(folder)
-
+    paso(4)
     cmd = Popen(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=DEVNULL, universal_newlines=True)
     try:
         stdout = cmd.communicate(timeout=global_parameters.default_timeout)
+        paso(5)
     except TimeoutError:
+        paso(6)
         pass
 
     # Find the windows confirmation character
     confirmation = re.search(r'\((\w)\/\w\)\?', stdout[0])
     assert confirmation
-
+    paso(7)
     # Run the command again and this time delete the files
     cmd = Popen(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=DEVNULL, universal_newlines=True)
     try:
         stdout = cmd.communicate('{}\n'.format(confirmation.group(1)), timeout=global_parameters.default_timeout)
+        paso(8)
     except TimeoutError:
+        paso(9)
         pass
 
     # Start monitoring
     wazuh_log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_delete_event,
                             accum_results=len(file_list), error_message='Did not receive expected '
                             '"Sending FIM event: ..." event')
+    paso(10)
+
+
+def paso(nro):
+    print("\n\n")
+    print("################## - PASO " + str(nro) + " - ##################")
+    print("\n\n")
