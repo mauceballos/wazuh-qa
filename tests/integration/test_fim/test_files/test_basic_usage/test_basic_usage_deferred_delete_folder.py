@@ -155,10 +155,10 @@ def test_deferred_delete_file(folder, file_list, filetype, tags_to_apply,
         pass
 
     # Start monitoring
-    wazuh_log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_delete_event,
-                            accum_results=len(file_list), error_message='Did not receive expected '
-                            '"Sending FIM event: ..." event')
-    paso(10)
+    # wazuh_log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_delete_event,
+    #                         accum_results=len(file_list), error_message='Did not receive expected '
+    #                         '"Sending FIM event: ..." event')
+    # paso(10)
 
 
 def paso(nro):
