@@ -41,7 +41,22 @@ configurations = load_wazuh_configurations(configurations_path, __name__, params
 # callback
 def callback_detect_delete_event(line):
     msg = r'.*Sending FIM event: (.+)$'
+    print(type(msg))
+    print(msg)
+    print("\n\n")
+    print("########################################################\n")
+   
+    print(type(line))
+    print(line)
+    print("\n\n")
+    print("########################################################\n")
+
     match = re.match(msg, line)
+    print(type(match))
+    print(match)
+    print("\n\n")
+    print("########################################################\n")
+
     paso(11)
     try:
         paso(12)
