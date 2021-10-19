@@ -77,8 +77,9 @@ def callback_detect_delete_event(line):
     # paso(16)
     # return None
     except (JSONDecodeError, AttributeError, KeyError) as e:
+        paso(15)
         logger.warning(f"Couldn't load a log line into json object. Reason {e}")
-
+    paso(16)
 # fixtures
 
 
