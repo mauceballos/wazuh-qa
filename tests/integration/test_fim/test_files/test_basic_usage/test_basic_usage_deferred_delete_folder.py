@@ -46,8 +46,8 @@ def callback_detect_delete_event(line):
     try:
         event = json.loads(match.group(1))
         if (event['type'] == 'event' and
-                event['data']['type'] == 'deleted' and
-                'process_name' not in event['data']['audit']):
+                event['data']['type'] == 'deleted'):# and
+                # 'process_name' not in event['data']['audit']):
             return event
     except (AttributeError, JSONDecodeError, KeyError):
         pass
@@ -123,6 +123,6 @@ def test_deferred_delete_file(folder, file_list, filetype, tags_to_apply,
 
    
     # Start monitoring
-    wazuh_log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_event,
+    wazuh_log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_delete_event,
                             accum_results=len(file_list), error_message='Did not receive expected '
                             '"Sending FIM event: ..." event')
