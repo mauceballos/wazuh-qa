@@ -57,7 +57,7 @@ def test_DOS_blocking_system(tags_to_apply, get_configuration, configure_api_env
 
     # Request within the same minute
     get_response = requests.get(api_details['base_url'], headers=api_details['auth_headers'], verify=False)
-    assert get_response.status_code == 200, f'Expected status code was 429, ' \
+    assert get_response.status_code == 429, f'Expected status code was 429, ' \
                                             f'but {get_response.status_code} was returned. \nFull response: {get_response.text}'
 
     # Request after the minute.
