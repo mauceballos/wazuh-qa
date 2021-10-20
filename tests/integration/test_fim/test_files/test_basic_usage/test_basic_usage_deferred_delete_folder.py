@@ -121,12 +121,8 @@ def test_deferred_delete_file(folder, file_list, filetype, tags_to_apply,
     except TimeoutError:
         pass
 
-    print("\n######################################################\n")
-    for file in file_list:
-        print(file)
-    print("\n######################################################\n")
-    
+   
     # Start monitoring
-    wazuh_log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_delete_event,
+    wazuh_log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_event,
                             accum_results=len(file_list), error_message='Did not receive expected '
                             '"Sending FIM event: ..." event')
