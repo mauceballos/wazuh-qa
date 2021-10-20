@@ -92,8 +92,7 @@ def test_deferred_delete_file(folder, file_list, filetype, tags_to_apply,
     """
     
     check_apply_test(tags_to_apply, get_configuration['tags'])
-    print(type(tags_to_apply))
-
+    
     # Create files inside subdir folder
     for file in file_list:
         create_file(filetype, folder, file, content='')
@@ -122,16 +121,12 @@ def test_deferred_delete_file(folder, file_list, filetype, tags_to_apply,
     except TimeoutError:
         pass
 
-    print("\n#####################################\n")
-    print(global_parameters.default_timeout)
-    print("\n")
-    print(len(file_list))
-    print("\n")
-    print('Did not receive expected '
-                            '"Sending FIM event: ..." event')
-    print("\n#####################################\n")
-
+    print("\n######################################################\n")
+    for file in file_list:
+        print(file)
+    print("\n######################################################\n")
+    
     # Start monitoring
-    wazuh_log_monitor.start(timeout=global_parameters.default_timeout*10, callback=callback_detect_delete_event,
+    wazuh_log_monitor.start(timeout=global_parameters.default_timeout, callback=callback_detect_delete_event,
                             accum_results=len(file_list), error_message='Did not receive expected '
                             '"Sending FIM event: ..." event')
