@@ -8,4 +8,4 @@
   - config2
   configuration:
     access:
-      max_request_per_minute: 10
+      max_request_per_minute: 50
