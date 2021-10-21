@@ -6,4 +6,4 @@
 - tags:
   - drop_privileges_disabled
   configuration:
-    drop_privileges: no
+    drop_privileges: yes
