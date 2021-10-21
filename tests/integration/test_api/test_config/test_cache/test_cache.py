@@ -158,7 +158,11 @@ def test_cache(tags_to_apply, get_configuration, configure_api_environment, rest
     first_response = requests.get(api_details['base_url'],
                                   headers=api_details['auth_headers'],
                                   verify=False).json()['data']['total_affected_items']
-    print(api_details['base_url'])
+    
+    print("\n#############################################################\n")
+    print(requests.get(api_details['base_url'],
+                                  headers=api_details['auth_headers'],
+                                  verify=False).json())
     print("\n#############################################################\n")
     # Create a new file inside /var/ossec/ruleset/rules
     create_file(REGULAR, rules_directory, test_file)
@@ -167,9 +171,11 @@ def test_cache(tags_to_apply, get_configuration, configure_api_environment, rest
     second_response = requests.get(api_details['base_url'],
                                    headers=api_details['auth_headers'],
                                    verify=False).json()['data']['total_affected_items']
-    print(api_details['base_url'])
     print("\n#############################################################\n")
-    
+    print(requests.get(api_details['base_url'],
+                                  headers=api_details['auth_headers'],
+                                  verify=False).json())
+    print("\n#############################################################\n")
     # If cache is enabled, number of files should be the same in the first and second response even with a new one.
     if cache:
         assert first_response == second_response, 'Total_affected_items should be equal in first and second response ' \
@@ -181,7 +187,10 @@ def test_cache(tags_to_apply, get_configuration, configure_api_environment, rest
                                       headers=api_details['auth_headers'],
                                       verify=False).json()['data']['total_affected_items']
         assert first_response + 1 == third_response, 'Cache should have expired but the response is still outdated.'
-        print(api_details['base_url'])
+        print("\n#############################################################\n")
+        print(requests.get(api_details['base_url'],
+                                  headers=api_details['auth_headers'],
+                                  verify=False).json())
         print("\n#############################################################\n")
     else:
         # Verify that the second response is updated when cache is disabled.
