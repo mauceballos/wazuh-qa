@@ -159,11 +159,6 @@ def test_cache(tags_to_apply, get_configuration, configure_api_environment, rest
                                   headers=api_details['auth_headers'],
                                   verify=False).json()['data']['total_affected_items']
 
-    print("\n\n##############################################################\n\n")
-    print(rules_directory)
-    print(test_file)
-    print(REGULAR)
-    print("\n\n##############################################################\n\n")
     # Create a new file inside /var/ossec/ruleset/rules
     create_file(REGULAR, rules_directory, test_file)
 
