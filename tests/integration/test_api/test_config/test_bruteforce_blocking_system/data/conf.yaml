@@ -11,5 +11,5 @@
   configuration:
     access:
       block_time: 6
-      max_login_attempts: 6
+      max_login_attempts: 10
       max_request_per_minute: 300
