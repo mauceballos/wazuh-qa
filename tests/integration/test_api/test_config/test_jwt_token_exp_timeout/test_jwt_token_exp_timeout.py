@@ -95,7 +95,7 @@ def test_jwt_token_exp_timeout(tags_to_apply, get_configuration, configure_api_e
                  an expiration time is set for the token, and API requests are made before
                  and after the expiration time, waiting for a valid `HTTP status code`.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

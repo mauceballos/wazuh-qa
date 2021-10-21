@@ -51,8 +51,8 @@ os_version:
     - Windows 8
     - Windows 7
     - Windows Server 2016
-    - Windows server 2012
-    - Windows server 2003
+    - Windows Server 2012
+    - Windows Server 2003
 
 references:
     - https://documentation.wazuh.com/current/user-manual/registering/index.html
@@ -245,7 +245,7 @@ def test_agentd_reconection_enrollment_with_keys(configure_authd_server, configu
                  the `wazuh-authd` daemon.
                  In this case, the agent starts with keys.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - configure_authd_server:

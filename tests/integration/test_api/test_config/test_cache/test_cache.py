@@ -113,7 +113,7 @@ def test_cache(tags_to_apply, get_configuration, configure_api_environment, rest
                  a period established in the configuration, even though a new file
                  has been created during the process.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

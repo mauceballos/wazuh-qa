@@ -97,7 +97,7 @@ def test_cors(origin, tags_to_apply, get_configuration, configure_api_environmen
                  request origin matches the one established in the `CORS` configuration
                  of the API.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - origin:

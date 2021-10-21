@@ -100,7 +100,7 @@ def test_https(tags_to_apply, get_configuration, configure_api_environment,
         and makes requests to it, waiting for a correct response.
 
     wazuh_min_version:
-        4.2
+        4.2.0
 
     parameters:
         - tags_to_apply:

@@ -113,7 +113,7 @@ def test_logs(tags_to_apply, get_configuration, configure_api_environment, resta
                  In this test the API log has a different path and `debug` level configured.
                  It checks if logs are saved in the new path and with `debug` level.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

@@ -93,7 +93,7 @@ def test_experimental_features(tags_to_apply, get_configuration, configure_api_e
                  to the configuration. For this purpose, it configures the API to use
                  this functionality and makes requests to it, waiting for a correct response.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

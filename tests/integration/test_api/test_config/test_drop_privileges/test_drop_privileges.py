@@ -96,7 +96,7 @@ def test_drop_privileges(tags_to_apply, get_configuration, configure_api_environ
                  it gets the user (`root` or `wazuh`) and checks if it matches the
                  `drop_privileges` setting.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

@@ -93,7 +93,7 @@ def test_bruteforce_blocking_system(tags_to_apply, get_configuration, configure_
                  For this purpose, the test causes an IP blocking, make a request before
                  the blocking time finishes and one after the blocking time.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

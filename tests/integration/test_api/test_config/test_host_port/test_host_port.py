@@ -100,7 +100,7 @@ def test_host_port(expected_exception, tags_to_apply,
                  combinations of host and port, verify that the `aiohttp` http framework correctly
                  publishes that value in the `api.log` and check that the request returns the expected one.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         -  expected_exception:

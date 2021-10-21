@@ -407,7 +407,7 @@ def test_os_exec(set_debug_mode, get_configuration, configure_environment, resta
                  (string and `JSON`) are sent to the socket of the `wazuh-analisysd` daemon,
                  which should process them correctly.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - set_debug_mode:

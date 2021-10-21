@@ -95,7 +95,7 @@ def test_DOS_blocking_system(tags_to_apply, get_configuration, configure_api_env
                  For this purpose, the test causes an IP blocking, makes a request within
                  the same minute, makes a request after the minute.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:
