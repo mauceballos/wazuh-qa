@@ -178,8 +178,18 @@ def test_cache(tags_to_apply, get_configuration, configure_api_environment, rest
                                       headers=api_details['auth_headers'],
                                       verify=False).json()['data']['total_affected_items']
         assert first_response + 1 == third_response, 'Cache should have expired but the response is still outdated.'
-
+        print("First: " + first_response)
+        print("\n##########################################################\n")
+        print("Second: " + second_response)
+        print("\n##########################################################\n")
+        print("Third: " + third_response)
+        print("\n##########################################################\n")
+        
     else:
         # Verify that the second response is updated when cache is disabled.
+        print("First: " + first_response)
+        print("\n##########################################################\n")
+        print("Second: " + second_response)
+        print("\n##########################################################\n")
         assert first_response + 1 == second_response, 'Total_affected_items should be smaller in first response if ' \
                                                       'cache is disabled.'
