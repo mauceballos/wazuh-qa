@@ -52,17 +52,14 @@ def test_DOS_blocking_system(tags_to_apply, get_configuration, configure_api_env
 
     # Provoke an api block (default: 300 requests)
     api_details['base_url'] += '/agents'
+    
+    for _ in range(max_request_per_minute*5):
+        requests.get(api_details['base_url'], headers=api_details['auth_headers'], verify=False)
 
-    print(api_details)
-    print("\n")
-    print(str(max_request_per_minute))
-    print("\n###############################################################\n")
-    for _ in range(max_request_per_minute):
-        print(requests.get(api_details['base_url'], headers=api_details['auth_headers'], verify=False))
-        
-    print("\n###############################################################\n")
     # Request within the same minute
     get_response = requests.get(api_details['base_url'], headers=api_details['auth_headers'], verify=False)
+    print("\n#######################################################\n")
+    print(get_response)
     assert get_response.status_code == 429, f'Expected status code was 429, ' \
                                             f'but {get_response.status_code} was returned. \nFull response: {get_response.text}'
 
