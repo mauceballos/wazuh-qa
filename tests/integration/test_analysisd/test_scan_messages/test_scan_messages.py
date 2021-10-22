@@ -104,7 +104,7 @@ def test_scan_messages(configure_sockets_environment, connect_to_sockets_module,
                  a file scanning-related event, it generates the corresponding alert
                  that sends to the `wazuh-db` daemon socket.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - configure_sockets_environment:

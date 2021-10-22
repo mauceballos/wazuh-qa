@@ -101,7 +101,7 @@ def test_error_messages(configure_sockets_environment, connect_to_sockets_module
     description: Check if when the `wazuh-analysisd` daemon socket receives a message with an invalid event,
                  it generates the corresponding error that sends to the `wazuh-db` daemon socket.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - configure_sockets_environment:

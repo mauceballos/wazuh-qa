@@ -105,7 +105,7 @@ def test_validate_rare_socket_responses(configure_sockets_environment, connect_t
                  to the `wazuh-db` daemon socket using rare `syscheck` events
                  that include weird characters.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - configure_sockets_environment:

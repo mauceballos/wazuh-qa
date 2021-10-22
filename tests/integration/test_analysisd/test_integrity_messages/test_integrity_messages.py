@@ -108,7 +108,7 @@ def test_integrity_messages(configure_sockets_environment, connect_to_sockets_mo
                  The `validate_analysis_integrity_state` function checks if an `analysisd`
                  integrity message is properly formatted.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - configure_sockets_environment:

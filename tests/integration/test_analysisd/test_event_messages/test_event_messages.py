@@ -108,7 +108,7 @@ def test_event_messages(configure_sockets_environment, connect_to_sockets_module
                  The `validate_analysis_alert` function checks if an `analysisd` event
                  is properly formatted.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - configure_sockets_environment:

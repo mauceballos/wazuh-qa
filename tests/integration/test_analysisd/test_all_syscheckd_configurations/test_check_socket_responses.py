@@ -104,7 +104,7 @@ def test_validate_socket_responses(configure_sockets_environment, connect_to_soc
     description: Validate every response from the `wazuh-analysisd` daemon socket
                  to the `wazuh-db` daemon socket using `syscheck` common events.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - configure_sockets_environment:

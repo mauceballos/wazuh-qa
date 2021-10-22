@@ -97,7 +97,7 @@ def test_mitre_check_alert(get_configuration, configure_local_rules, restart_waz
                  so that the alerts generated include this information which
                  will be finally validated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - get_configuration:

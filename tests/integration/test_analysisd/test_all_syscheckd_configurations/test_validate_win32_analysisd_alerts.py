@@ -110,7 +110,7 @@ def test_validate_all_win32_alerts(configure_sockets_environment, connect_to_soc
                  function checks if an `analysisd` alert is properly formatted in
                  reference to its `syscheck` event.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - configure_sockets_environment:
