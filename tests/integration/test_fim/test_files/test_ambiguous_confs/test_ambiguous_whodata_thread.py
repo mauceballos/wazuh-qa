@@ -7,10 +7,10 @@ copyright: Copyright (C) 2015-2021, Wazuh Inc.
 
 type: integration
 
-brief: These tests will check if the `who-data` feature of the File Integrity Monitoring (`FIM`)
-       system works properly. `who-data` information contains the user who made the changes
+brief: These tests will check if the 'who-data' feature of the File Integrity Monitoring (FIM)
+       system works properly. 'who-data' information contains the user who made the changes
        on the monitored files and also the program name or process used to carry them out.
-       The `FIM` capability is managed by the `wazuh-syscheckd` daemon, which checks
+       The FIM capability is managed by the 'wazuh-syscheckd' daemon, which checks
        configured files for changes to the checksums, permissions, and ownership.
 
 tier: 2
@@ -49,9 +49,11 @@ os_version:
     - Windows 10
     - Windows 8
     - Windows 7
+    - Windows Server 2019
     - Windows Server 2016
-    - Windows server 2012
-    - Windows server 2003
+    - Windows Server 2012
+    - Windows Server 2003
+    - Windows XP
 
 references:
     - https://documentation.wazuh.com/current/user-manual/capabilities/auditing-whodata/who-linux.html
@@ -60,11 +62,15 @@ references:
 
 pytest_args:
     - fim_mode:
-        realtime: Enable real-time monitoring on Linux (using the `inotify` system calls) and Windows systems.
-        whodata: Implies real-time monitoring but adding the `who-data` information.
+        realtime: Enable real-time monitoring on Linux (using the 'inotify' system calls) and Windows systems.
+        whodata: Implies real-time monitoring but adding the 'who-data' information.
+    - tier:
+        0: Only level 0 tests are performed, they check basic functionalities and are quick to perform.
+        1: Only level 1 tests are performed, they check functionalities of medium complexity.
+        2: Only level 2 tests are performed, they check advanced functionalities and are slow to perform.
 
 tags:
-    - fim
+    - fim_ambiguous_confs
 '''
 import os
 
@@ -116,10 +122,10 @@ def get_configuration(request):
 def test_ambiguous_whodata_thread(whodata_enabled, tags_to_apply, get_configuration, configure_environment,
                                   restart_syscheckd):
     '''
-    description: Check if the `wazuh-syscheckd` daemon starts the `whodata` thread when the configuration
-                 is ambiguous. For example, when using `whodata` on the same directory using conflicting
-                 values (`yes` and `no`). For this purpose, the configuration is applied and it checks
-                 that the last value detected for `whodata` in the `ossec.conf` file is the one used.
+    description: Check if the 'wazuh-syscheckd' daemon starts the 'whodata' thread when the configuration
+                 is ambiguous. For example, when using 'whodata' on the same directory using conflicting
+                 values ('yes' and 'no'). For this purpose, the configuration is applied and it checks
+                 that the last value detected for 'whodata' in the 'ossec.conf' file is the one used.
 
     wazuh_min_version: 4.2
 
@@ -138,14 +144,14 @@ def test_ambiguous_whodata_thread(whodata_enabled, tags_to_apply, get_configurat
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
 
     assertions:
-        - Verify that `whodata` thread is started when the last `whodata` value detected is set to `yes`.
-        - Verify that `whodata` thread is not started when the last `whodata` value detected is set to `no`.
+        - Verify that 'whodata' thread is started when the last 'whodata' value detected is set to 'yes'.
+        - Verify that 'whodata' thread is not started when the last 'whodata' value detected is set to 'no'.
 
-    input_description: Two test cases are contained in external `YAML` file (wazuh_conf_whodata_thread.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and testing
+    input_description: Two test cases are contained in external YAML file (wazuh_conf_whodata_thread.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and testing
                        directories to monitor.
 
     expected_output:

@@ -7,13 +7,13 @@ copyright: Copyright (C) 2015-2021, Wazuh Inc.
 
 type: integration
 
-brief: These tests will check if the File Integrity Monitoring (`FIM`) system watches selected files
-       and triggering alerts when these files are modified. All these tests will be performed using
-       ambiguous directory configurations, such as directories and subdirectories with opposite
-       monitoring settings. In particular, it will be tested that changes in the files are correctly
-       detected through their properties. Several monitoring attribute are also tested,
-       such as recursion level, file restrictions, tags, or changes reporting.
-       The `FIM` capability is managed by the `wazuh-syscheckd` daemon, which checks configured files
+brief: File Integrity Monitoring (FIM) system watches selected files and triggering alerts when these
+       files are modified. All these tests will be performed using ambiguous directory configurations,
+       such as directories and subdirectories with opposite monitoring settings. In particular, it
+       will be tested that changes in the files are correctly detected through their properties.
+       Several monitoring attribute are also tested, such as recursion level, file restrictions, tags,
+       or changes reporting.
+       The FIM capability is managed by the 'wazuh-syscheckd' daemon, which checks configured files
        for changes to the checksums, permissions, and ownership.
 
 tier: 2
@@ -25,7 +25,6 @@ components:
     - agent
 
 daemons:
-    - wazuh-agentd
     - wazuh-syscheckd
 
 os_platform:
@@ -53,9 +52,11 @@ os_version:
     - Windows 10
     - Windows 8
     - Windows 7
+    - Windows Server 2019
     - Windows Server 2016
-    - Windows server 2012
-    - Windows server 2003
+    - Windows Server 2012
+    - Windows Server 2003
+    - Windows XP
 
 references:
     - https://documentation.wazuh.com/current/user-manual/capabilities/file-integrity/index.html
@@ -63,11 +64,15 @@ references:
 
 pytest_args:
     - fim_mode:
-        realtime: Enable real-time monitoring on Linux (using the `inotify` system calls) and Windows systems.
-        whodata: Implies real-time monitoring but adding the `who-data` information.
+        realtime: Enable real-time monitoring on Linux (using the 'inotify' system calls) and Windows systems.
+        whodata: Implies real-time monitoring but adding the 'who-data' information.
+    - tier:
+        0: Only level 0 tests are performed, they check basic functionalities and are quick to perform.
+        1: Only level 1 tests are performed, they check functionalities of medium complexity.
+        2: Only level 2 tests are performed, they check advanced functionalities and are slow to perform.
 
 tags:
-    - fim
+    - fim_ambiguous_confs
 '''
 import os
 import sys
@@ -191,11 +196,11 @@ def _test_recursion_cud(ini, fin, path, recursion_subdir, scheduled,
 def test_ambiguous_restrict(folders, tags_to_apply, get_configuration, configure_environment, restart_syscheckd,
                             wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects regular file changes (add, modify, delete) depending
-                 on the value set in the `restrict` attribute. This attribute limit checks to files containing
+    description: Check if the 'wazuh-syscheckd' daemon detects regular file changes (add, modify, delete) depending
+                 on the value set in the 'restrict' attribute. This attribute limit checks to files containing
                  the entered string in the file name.
-                 For example, if `/testdir` has a `restrict` configuration and `/testdir/subdir` has not,
-                 only /testdir/subdir events should appear in the `ossec.log`file.
+                 For example, if '/testdir' has a 'restrict' configuration and '/testdir/subdir' has not,
+                 only /testdir/subdir events should appear in the 'ossec.log'file.
                  For this purpose, the two previous paths are monitored, and modifications are made to the files
                  to check if alerts are generated when required.
 
@@ -216,24 +221,24 @@ def test_ambiguous_restrict(folders, tags_to_apply, get_configuration, configure
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that no alerts are generated after modifying files in the directory specified in the `restrict` option.
+        - Verify that no alerts are generated after modifying files in the directory specified in the 'restrict' option.
         - Verify that alerts are generated after modifying files in the subdirectory that is not specified
-          in the `restrict` option, but whose parent directory is restricted.
+          in the 'restrict' option, but whose parent directory is restricted.
 
-    input_description: Different test cases are contained in external `YAML` files
+    input_description: Different test cases are contained in external YAML files
                        (wazuh_conf_simple.yaml or wazuh_conf_simple_win32.yaml) which includes
-                       configuration settings for the `wazuh-syscheckd` daemon and testing
+                       configuration settings for the 'wazuh-syscheckd' daemon and testing
                        directories to monitor.
 
     expected_output:
         - r'.*Sending FIM event: (.+)$' (Initial scan when restarting Wazuh)
-        - Multiple logs of `FIM` events in the monitored directories.
+        - Multiple logs of FIM events in the monitored directories.
 
     tags:
         - scheduled
@@ -258,10 +263,10 @@ def test_ambiguous_restrict(folders, tags_to_apply, get_configuration, configure
 def test_ambiguous_report(folders, tags_to_apply, get_configuration, configure_environment, restart_syscheckd,
                           wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects or not the `content_changes` field for each event
-                 depending on the value set in the `report_changes` attribute. This attribute allows reporting
+    description: Check if the 'wazuh-syscheckd' daemon detects or not the 'content_changes' field for each event
+                 depending on the value set in the 'report_changes' attribute. This attribute allows reporting
                  the modifications made on a monitored file. For this purpose, two folders are monitored,
-                 and modifications are made to the files to check if the `content_changes` field
+                 and modifications are made to the files to check if the 'content_changes' field
                  is generated in the events when required.
 
     wazuh_min_version: 4.2
@@ -281,23 +286,23 @@ def test_ambiguous_report(folders, tags_to_apply, get_configuration, configure_e
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that the `content_changes` field is not generated in events when `report_changes == no`.
-        - Verify that the `content_changes` field is generated in events when `report_changes == yes`.
+        - Verify that the 'content_changes' field is not generated in events when 'report_changes == no'.
+        - Verify that the 'content_changes' field is generated in events when 'report_changes == yes'.
 
-    input_description: Different test cases are contained in external `YAML` files
+    input_description: Different test cases are contained in external YAML files
                        (wazuh_conf_simple.yaml or wazuh_conf_simple_win32.yaml) which includes
-                       configuration settings for the `wazuh-syscheckd` daemon and testing
+                       configuration settings for the 'wazuh-syscheckd' daemon and testing
                        directories to monitor.
 
     expected_output:
         - r'.*Sending FIM event: (.+)$' (Initial scan when restarting Wazuh)
-        - Multiple logs of `FIM` events in the monitored directories.
+        - Multiple logs of FIM events in the monitored directories.
 
     tags:
         - scheduled
@@ -350,10 +355,10 @@ def test_ambiguous_report(folders, tags_to_apply, get_configuration, configure_e
 def test_ambiguous_tags(folders, tags_to_apply, get_configuration, configure_environment, restart_syscheckd,
                         wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects or not the `tags` field for each event
-                 depending on the value(s) set in the `tags` attribute. This attribute allows adding
+    description: Check if the 'wazuh-syscheckd' daemon detects or not the 'tags' field for each event
+                 depending on the value(s) set in the 'tags' attribute. This attribute allows adding
                  tags to alerts for monitored directories. For this purpose, two folders are monitored,
-                 and modifications are made to the files to check if the `tags` field is generated
+                 and modifications are made to the files to check if the 'tags' field is generated
                  in the events when required.
 
     wazuh_min_version: 4.2
@@ -373,23 +378,23 @@ def test_ambiguous_tags(folders, tags_to_apply, get_configuration, configure_env
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that the `tags` field is not generated in events when the `tags` attribute not exists or is empty.
-        - Verify that the `tags` field is generated in events when the `tags` attribute has content.
+        - Verify that the 'tags' field is not generated in events when the 'tags' attribute not exists or is empty.
+        - Verify that the 'tags' field is generated in events when the 'tags' attribute has content.
 
-    input_description: Different test cases are contained in external `YAML` files
+    input_description: Different test cases are contained in external YAML files
                        (wazuh_conf_simple.yaml or wazuh_conf_simple_win32.yaml) which includes
-                       configuration settings for the `wazuh-syscheckd` daemon and testing
+                       configuration settings for the 'wazuh-syscheckd' daemon and testing
                        directories to monitor.
 
     expected_output:
         - r'.*Sending FIM event: (.+)$' (Initial scan when restarting Wazuh)
-        - Multiple logs of `FIM` events in the monitored directories.
+        - Multiple logs of FIM events in the monitored directories.
 
     tags:
         - scheduled
@@ -416,11 +421,11 @@ def test_ambiguous_tags(folders, tags_to_apply, get_configuration, configure_env
 def test_ambiguous_recursion(dirname, recursion_level, tags_to_apply, get_configuration, configure_environment,
                              restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects alerts for each directory level defined in
-                 the `recursion_level` attribute. This attribute limits the maximum level of recursion allowed.
-                 For example, if `recursion_level=1` is set, and the `/testdir` directory is monitored,
-                 it will only monitor `/testdir` and `/testdir/subdir`.
-                 If `/testdir/subdir/subdir2` exists, `/subdir2` wouldn't be monitored.
+    description: Check if the 'wazuh-syscheckd' daemon detects alerts for each directory level defined in
+                 the 'recursion_level' attribute. This attribute limits the maximum level of recursion allowed.
+                 For example, if 'recursion_level=1' is set, and the '/testdir' directory is monitored,
+                 it will only monitor '/testdir' and '/testdir/subdir'.
+                 If '/testdir/subdir/subdir2' exists, '/subdir2' wouldn't be monitored.
                  For this purpose, a testing folder with several levels of subdirectories is monitored,
                  and modifications are made in each level to see if events are generated when required.
 
@@ -432,7 +437,7 @@ def test_ambiguous_recursion(dirname, recursion_level, tags_to_apply, get_config
             brief: Name of the monitored directory.
         - recursion_level:
             type: int
-            brief: Value of the `recursion_level` attribute.
+            brief: Value of the 'recursion_level' attribute.
         - tags_to_apply:
             type: set
             brief: Run test if match with a configuration identifier, skip otherwise.
@@ -444,22 +449,22 @@ def test_ambiguous_recursion(dirname, recursion_level, tags_to_apply, get_config
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that `FIM` events are generated up to the specified subdirectory depth.
+        - Verify that FIM events are generated up to the specified subdirectory depth.
 
-    input_description: Different test cases are contained in external `YAML` files
+    input_description: Different test cases are contained in external YAML files
                        (wazuh_conf_simple.yaml or wazuh_conf_simple_win32.yaml) which includes
-                       configuration settings for the `wazuh-syscheckd` daemon and testing
+                       configuration settings for the 'wazuh-syscheckd' daemon and testing
                        directories to monitor.
 
     expected_output:
         - r'.*Sending FIM event: (.+)$' (Initial scan when restarting Wazuh)
-        - Multiple logs of `FIM` events in the monitored directories.
+        - Multiple logs of FIM events in the monitored directories.
 
     tags:
         - scheduled
@@ -490,14 +495,14 @@ def test_ambiguous_recursion(dirname, recursion_level, tags_to_apply, get_config
 def test_ambiguous_recursion_tag(dirnames, recursion_level, triggers_event, tags_to_apply, get_configuration,
                                  configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects alerts for each directory level defined in
-                 the `recursion_level` attribute and if it detects the 'tags' field for each of them.
-                 The `tags` attribute allows adding tags to alerts for monitored directories,
-                 and the `recursion_level` attribute limits the maximum level of recursion allowed.
+    description: Check if the 'wazuh-syscheckd' daemon detects alerts for each directory level defined in
+                 the 'recursion_level' attribute and if it detects the 'tags' field for each of them.
+                 The 'tags' attribute allows adding tags to alerts for monitored directories,
+                 and the 'recursion_level' attribute limits the maximum level of recursion allowed.
                  For this purpose, a testing folder with several levels of subdirectories is monitored,
                  and modifications are made in each level to see if events are generated when required.
                  Once the events have been generated, they are checked to see whether or not they
-                 should include the `tag` field.
+                 should include the 'tag' field.
 
     wazuh_min_version: 4.2
 
@@ -507,7 +512,7 @@ def test_ambiguous_recursion_tag(dirnames, recursion_level, triggers_event, tags
             brief: Monitored directories.
         - recursion_level:
             type: int
-            brief: Value of the `recursion_level` attribute.
+            brief: Value of the 'recursion_level' attribute.
         - triggers_event:
             type: bool
             brief: Determine if the event should be raised or not.
@@ -522,23 +527,23 @@ def test_ambiguous_recursion_tag(dirnames, recursion_level, triggers_event, tags
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that `FIM` events are generated up to the specified subdirectory depth.
-        - Verify that the generated `FIM` events should or not contain the `tag` field.
+        - Verify that FIM events are generated up to the specified subdirectory depth.
+        - Verify that the generated FIM events should or not contain the 'tag' field.
 
-    input_description: Different test cases are contained in external `YAML` files
+    input_description: Different test cases are contained in external YAML files
                        (wazuh_conf_simple.yaml or wazuh_conf_simple_win32.yaml) which includes
-                       configuration settings for the `wazuh-syscheckd` daemon and testing
+                       configuration settings for the 'wazuh-syscheckd' daemon and testing
                        directories to monitor.
 
     expected_output:
         - r'.*Sending FIM event: (.+)$' (Initial scan when restarting Wazuh)
-        - Multiple logs of `FIM` events in the monitored directories.
+        - Multiple logs of FIM events in the monitored directories.
 
     tags:
         - scheduled
@@ -567,13 +572,13 @@ def test_ambiguous_recursion_tag(dirnames, recursion_level, triggers_event, tags
 def test_ambiguous_check(dirname, checkers, tags_to_apply, get_configuration, configure_environment, restart_syscheckd,
                          wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects in the generated events the checks specified in
+    description: Check if the 'wazuh-syscheckd' daemon detects in the generated events the checks specified in
                  the configuration. These checks are attributes indicating that a monitored file has been modified.
-                 For example, if `check_all=yes` and `check_inode=no` are set for the same directory, `syscheck` must
+                 For example, if 'check_all=yes' and 'check_inode=no' are set for the same directory, 'syscheck' must
                  send an event containing every possible check except the inode one.
-                 For this purpose, different `checks` are set in several subdirectories, and files are modified
+                 For this purpose, different 'checks' are set in several subdirectories, and files are modified
                  to generate events. Finally, verification is performed to ensure that the events contain only
-                 the fields of the `checks` specified for the monitored folder.
+                 the fields of the 'checks' specified for the monitored folder.
 
     wazuh_min_version: 4.2
 
@@ -595,22 +600,22 @@ def test_ambiguous_check(dirname, checkers, tags_to_apply, get_configuration, co
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that the `FIM` events generated contain only the `check` fields specified in the configuration.
+        - Verify that the FIM events generated contain only the 'check' fields specified in the configuration.
 
-    input_description: Different test cases are contained in external `YAML` files
+    input_description: Different test cases are contained in external YAML files
                        (wazuh_conf_simple.yaml or wazuh_conf_simple_win32.yaml) which includes
-                       configuration settings for the `wazuh-syscheckd` daemon and testing
+                       configuration settings for the 'wazuh-syscheckd' daemon and testing
                        directories to monitor.
 
     expected_output:
         - r'.*Sending FIM event: (.+)$' (Initial scan when restarting Wazuh)
-        - Multiple logs of `FIM` events in the monitored directories.
+        - Multiple logs of FIM events in the monitored directories.
 
     tags:
         - scheduled

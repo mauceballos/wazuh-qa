@@ -7,11 +7,11 @@ copyright: Copyright (C) 2015-2021, Wazuh Inc.
 
 type: integration
 
-brief: These tests will check if the File Integrity Monitoring (`FIM`) system doesn't add audit rules for
-       non-existing directories. The `who-data` feature of the `FIM` system uses the Linux Audit subsystem
+brief: These tests will check if the File Integrity Monitoring (FIM) system does not add 'audit' rules for
+       non-existing directories. The 'who-data' feature of the FIM system uses the Linux Audit subsystem
        to get the information about who made the changes in a monitored directory. These changes produce
-       audit events that are processed by `syscheck` and reported to the manager. The `FIM` capability
-       is managed by the `wazuh-syscheckd` daemon, which checks configured files for changes
+       audit events that are processed by 'syscheck' and reported to the manager. The FIM capability
+       is managed by the 'wazuh-syscheckd' daemon, which checks configured files for changes
        to the checksums, permissions, and ownership.
 
 tier: 1
@@ -56,12 +56,15 @@ references:
 
 pytest_args:
     - fim_mode:
-        realtime: Enable real-time monitoring on Linux (using the `inotify` system calls) and Windows systems.
-        whodata: Implies real-time monitoring but adding the `who-data` information.
+        realtime: Enable real-time monitoring on Linux (using the 'inotify' system calls) and Windows systems.
+        whodata: Implies real-time monitoring but adding the 'who-data' information.
+    - tier:
+        0: Only level 0 tests are performed, they check basic functionalities and are quick to perform.
+        1: Only level 1 tests are performed, they check functionalities of medium complexity.
+        2: Only level 2 tests are performed, they check advanced functionalities and are slow to perform.
 
 tags:
-    - fim
-    - auditd
+    - fim_audit
 '''
 import os
 import shutil
@@ -123,13 +126,13 @@ def extra_configuration_after_yield():
 ])
 def test_audit_no_dir(tags_to_apply, get_configuration, configure_environment, restart_syscheckd):
     '''
-    description: Monitor non-existent directory with `who-data` and check that it is added
+    description: Monitor non-existent directory with 'who-data' and check that it is added
                  to the rules after creating it. For this purpose, the test will monitor
-                 a non-existing folder using `who-data`. Once FIM starts, the test
+                 a non-existing folder using 'who-data'. Once FIM starts, the test
                  will check that the audit rule is not added. Then, it will create
                  the folder and wait until the rule is added again.
                  The audit thread runs always a directory that is configured to be monitored
-                 in `who-data` mode. Does not matter if it exists at start-up or not. Once that
+                 in 'who-data' mode. Does not matter if it exists at start-up or not. Once that
                  thread is up, the audit rules are reloaded every 30 seconds (not configurable),
                  so when the directory is created, it starts to be monitored.
 
@@ -147,14 +150,14 @@ def test_audit_no_dir(tags_to_apply, get_configuration, configure_environment, r
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
 
     assertions:
-        - Verify that `FIM` does not add rules for non-existing directories.
-        - Verify that `FIM` is able to monitor a folder after it's creation.
+        - Verify that FIM does not add rules for non-existing directories.
+        - Verify that FIM is able to monitor a folder after it's creation.
 
-    input_description: A test case (audit_no_dir) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon
+    input_description: A test case (audit_no_dir) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon
                        and, it is combined with the testing directories to be monitored
                        defined in this module.
 

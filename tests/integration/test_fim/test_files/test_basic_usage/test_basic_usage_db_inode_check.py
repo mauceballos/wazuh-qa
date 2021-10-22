@@ -7,10 +7,10 @@ copyright: Copyright (C) 2015-2021, Wazuh Inc.
 
 type: integration
 
-brief: These tests will check if the File Integrity Monitoring (`FIM`) system watches selected files
-       and triggering alerts when these files are modified. Specifically, they will check for
-       false positives due to possible inconsistencies with inodes in the `FIM` database.
-       The FIM capability is managed by the `wazuh-syscheckd` daemon, which checks configured files
+brief: File Integrity Monitoring (FIM) system watches selected files and triggering alerts when
+       these files are modified. Specifically, these tests will check for false positives due
+       to possible inconsistencies with 'inodes' in the FIM database.
+       The FIM capability is managed by the 'wazuh-syscheckd' daemon, which checks configured files
        for changes to the checksums, permissions, and ownership.
 
 tier: 0
@@ -23,7 +23,6 @@ components:
     - manager
 
 daemons:
-    - wazuh-agentd
     - wazuh-syscheckd
 
 os_platform:
@@ -55,15 +54,15 @@ references:
 
 pytest_args:
     - fim_mode:
-        realtime: Enable real-time monitoring on Linux (using the `inotify` system calls) and Windows systems.
-        whodata: Implies real-time monitoring but adding the `who-data` information.
+        realtime: Enable real-time monitoring on Linux (using the 'inotify' system calls) and Windows systems.
+        whodata: Implies real-time monitoring but adding the 'who-data' information.
     - tier:
         0: Only level 0 tests are performed, they check basic functionalities and are quick to perform.
         1: Only level 1 tests are performed, they check functionalities of medium complexity.
         2: Only level 2 tests are performed, they check advanced functionalities and are slow to perform.
 
 tags:
-    - fim
+    - fim_basic_usage
 '''
 import os
 import shutil

@@ -7,13 +7,13 @@ copyright: Copyright (C) 2015-2021, Wazuh Inc.
 
 type: integration
 
-brief: These tests will check if the `wazuh-syscheckd` and `auditd` daemons work together properly.
-       In particular, it will be verified that when there is no `auditd` package installed on
-       the system, the directories monitored with `who-data` mode are monitored with `realtime`.
-       The `who-data` feature of the of the File Integrity Monitoring (`FIM`) system uses
+brief: These tests will check if the 'wazuh-syscheckd' and 'auditd' daemons work together properly.
+       In particular, it will be verified that when there is no 'auditd' package installed on
+       the system, the directories monitored with 'who-data' mode are monitored with 'realtime'.
+       The 'who-data' feature of the of the File Integrity Monitoring (FIM) system uses
        the Linux Audit subsystem to get the information about who made the changes in a monitored directory.
-       These changes produce audit events that are processed by `syscheck` and reported to the manager.
-       The `FIM` capability is managed by the `wazuh-syscheckd` daemon, which checks configured files
+       These changes produce audit events that are processed by 'syscheck' and reported to the manager.
+       The FIM capability is managed by the 'wazuh-syscheckd' daemon, which checks configured files
        for changes to the checksums, permissions, and ownership.
 
 tier: 1
@@ -58,12 +58,15 @@ references:
 
 pytest_args:
     - fim_mode:
-        realtime: Enable real-time monitoring on Linux (using the `inotify` system calls) and Windows systems.
-        whodata: Implies real-time monitoring but adding the `who-data` information.
+        realtime: Enable real-time monitoring on Linux (using the 'inotify' system calls) and Windows systems.
+        whodata: Implies real-time monitoring but adding the 'who-data' information.
+    - tier:
+        0: Only level 0 tests are performed, they check basic functionalities and are quick to perform.
+        1: Only level 1 tests are performed, they check functionalities of medium complexity.
+        2: Only level 2 tests are performed, they check advanced functionalities and are slow to perform.
 
 tags:
-    - fim
-    - auditd
+    - fim_audit
 '''
 import os
 import re
@@ -137,12 +140,12 @@ def uninstall_install_audit():
 def test_move_folders_to_realtime(tags_to_apply, get_configuration, uninstall_install_audit,
                                   configure_environment, restart_syscheckd):
     '''
-    description: Check if `FIM` switches the monitoring mode of the testing directories from `who-data`
-                 to `realtime` when the `auditd` package is not installed. For this purpose, the test
-                 will monitor several folders using `whodata` and uninstall the `authd` package.
-                 Once `FIM` starts, it will wait until the monitored directories using `whodata`
-                 are monitored with `realtime` verifying that the proper `FIM` events are generated.
-                 Finally, the test will install the `auditd` package again.
+    description: Check if FIM switches the monitoring mode of the testing directories from 'who-data'
+                 to 'realtime' when the 'auditd' package is not installed. For this purpose, the test
+                 will monitor several folders using 'whodata' and uninstall the 'authd' package.
+                 Once FIM starts, it will wait until the monitored directories using 'whodata'
+                 are monitored with 'realtime' verifying that the proper FIM events are generated.
+                 Finally, the test will install the 'auditd' package again.
 
     wazuh_min_version: 4.2
 
@@ -155,20 +158,20 @@ def test_move_folders_to_realtime(tags_to_apply, get_configuration, uninstall_in
             brief: Get configurations from the module.
         - uninstall_install_audit:
             type: fixture
-            brief: Uninstall `auditd` before the test and install it again after the test run.
+            brief: Uninstall 'auditd' before the test and install it again after the test run.
         - configure_environment:
             type: fixture
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
 
     assertions:
-        - Verify that `FIM` switches the monitoring mode of the testing directories from `whodata` to `realtime`
-          if the `authd` package is not installed.
+        - Verify that FIM switches the monitoring mode of the testing directories from 'whodata' to 'realtime'
+          if the 'authd' package is not installed.
 
-    input_description: A test case (config1) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon
+    input_description: A test case (config1) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon
                        and, it is combined with the testing directories to be monitored
                        defined in this module.
 
