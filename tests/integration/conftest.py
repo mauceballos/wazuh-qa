@@ -210,6 +210,14 @@ def pytest_addoption(parser):
         type=str,
         help="add file to the HTML report"
     )
+    parser.addoption(
+        "--wpk_package_path",
+        action="append",
+        metavar="wpk_package_path",
+        default=None,
+        type=str,
+        help="run tests using a specific WPK package path"
+    )
 
 
 def pytest_configure(config):
@@ -270,6 +278,10 @@ def pytest_configure(config):
     # Set files to add to the HTML report
     set_report_files(config.getoption("--save-file"))
 
+   # Set WPK package path
+    global_parameters.wpk_package_path = config.getoption("--wpk_package_path")
+    if global_parameters.wpk_package_path:
+        global_parameters.wpk_package_path = global_parameters.wpk_package_path
 
 def pytest_html_results_table_header(cells):
     cells.insert(4, html.th('Tier', class_='sortable tier', col='tier'))
@@ -439,7 +451,9 @@ def close_sockets(receiver_sockets):
 def connect_to_sockets_module(request):
     """Module scope version of connect_to_sockets."""
     receiver_sockets = connect_to_sockets(request)
+
     yield receiver_sockets
+
     close_sockets(receiver_sockets)
 
 
@@ -447,7 +461,19 @@ def connect_to_sockets_module(request):
 def connect_to_sockets_function(request):
     """Function scope version of connect_to_sockets."""
     receiver_sockets = connect_to_sockets(request)
+
     yield receiver_sockets
+
+    close_sockets(receiver_sockets)
+
+
+@pytest.fixture(scope='module')
+def connect_to_sockets_configuration(request, get_configuration):
+    """Configuration scope version of connect_to_sockets."""
+    receiver_sockets = connect_to_sockets(request)
+
+    yield receiver_sockets
+
     close_sockets(receiver_sockets)
 
 
@@ -681,7 +707,7 @@ def configure_local_internal_options_module(request):
     logger.debug(f"Restore local_internal_option to {str(backup_local_internal_options)}")
     conf.set_local_internal_options_dict(backup_local_internal_options)
 
-    
+
 @pytest.fixture(scope='module')
 def daemons_handler(get_configuration, request):
     """Handler of Wazuh daemons.
@@ -752,7 +778,7 @@ def daemons_handler(get_configuration, request):
             logger.debug(f"Stopping {daemon}")
             control_service('stop', daemon=daemon)
 
-            
+
 @pytest.fixture(scope='function')
 def file_monitoring(request):
     """Fixture to handle the monitoring of a specified file.
