@@ -14,10 +14,16 @@ def get_configuration():
 # Functions
 def get_admin_resources(api_details, endpoint):
     response = requests.get(f"{api_details['base_url']}{endpoint}", headers=api_details['auth_headers'], verify=False)
-    assert response.status_code == 200, f'Expected status code was 200. Full response: {response.text}'
+    print(response) 
+    print("\n######################################################\n")
+    print(response.status_code)
+    print("\n######################################################\n")
+    #assert response.status_code == 200, f'Expected status code was 200. Full response: {response.text}'
 
     admin_ids = [item['id'] for item in response.json()['data']['affected_items'] if item['id'] < 100]
-
+    print("\n######################################################\n")
+    print(admin_ids)
+    
     return admin_ids
 
 
