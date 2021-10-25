@@ -136,17 +136,17 @@ def wait_for_fim_start_function(get_configuration, request):
 def test_db_inode_check(test_cases, get_configuration, configure_environment, restart_syscheck_function,
                         wait_for_fim_start_function):
     '''
-    description: Check for false positives due to possible inconsistencies with inodes in the `FIM` database.
-                 For example, with `check_mtime=no` and `check_inode=no`, no modification events should appear,
-                 and using `check_mtime=yes` and `check_inode=yes`, since the `mtime` and `inode` attributes
+    description: Check for false positives due to possible inconsistencies with inodes in the FIM database.
+                 For example, with 'check_mtime=no' and 'check_inode=no', no modification events should appear,
+                 and using 'check_mtime=yes' and 'check_inode=yes', since the 'mtime' and 'inode' attributes
                  are modified, modification events should appear.
-                 For this purpose, the test will monitor a folder using the `scheduled` monitoring mode,
+                 For this purpose, the test will monitor a folder using the 'scheduled' monitoring mode,
                  create ten files with some content and wait for the scan. Then, remove the files and
                  create them again (adding one more at the beginning or deleting it) with different inodes.
                  Finally, the test changes the system time until the next scheduled scan and check
                  if there are any unexpected events in the log.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - test_cases:
@@ -160,18 +160,18 @@ def test_db_inode_check(test_cases, get_configuration, configure_environment, re
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that the `FIM` database does not become inconsistent due to the change of inodes,
-          whether or not `check_mtime` and `check_inode` are enabled.
+        - Verify that the FIM database does not become inconsistent due to the change of inodes,
+          whether or not 'check_mtime' and 'check_inode' are enabled.
 
     input_description: Two test cases defined in this module, and the configuration settings for
-                       the `wazuh-syscheckd` daemon (tag ossec_conf) which are contained in external
-                       `YAML` file (wazuh_conf_check_inodes.yaml).
+                       the 'wazuh-syscheckd' daemon (tag ossec_conf) which are contained in external
+                       YAML file (wazuh_conf_check_inodes.yaml).
 
     expected_output:
         - r'.*Sending FIM event: (.+)$'

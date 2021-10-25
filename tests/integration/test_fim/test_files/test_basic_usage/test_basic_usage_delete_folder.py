@@ -124,16 +124,16 @@ def test_delete_folder(folder, file_list, filetype, tags_to_apply,
                        get_configuration, configure_environment,
                        restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects 'deleted' events from the files contained
-                 in a folder that is being deleted. For example, the folder `/testdir` is monitored, and
-                 the files `r1`, `r2` and `r3` are inside `/testdir`. If `/testdir` is deleted, three
-                 events of type `deleted` must be generated, one for each of the regular files.
-                 For this purpose, the test will monitor a folder using the `scheduled` monitoring mode,
+    description: Check if the 'wazuh-syscheckd' daemon detects 'deleted' events from the files contained
+                 in a folder that is being deleted. For example, the folder '/testdir' is monitored, and
+                 the files 'r1', 'r2' and 'r3' are inside '/testdir'. If '/testdir' is deleted, three
+                 events of type 'deleted' must be generated, one for each of the regular files.
+                 For this purpose, the test will monitor a folder using the 'scheduled' monitoring mode,
                  create the testing files inside it, and change the system time until the next
                  scheduled scan. Then, remove the monitored folder, and finally, the test
-                 verifies that the `deleted` events have been generated.
+                 verifies that the 'deleted' events have been generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - folder:
@@ -156,17 +156,17 @@ def test_delete_folder(folder, file_list, filetype, tags_to_apply,
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
         - Verify that when a monitored folder is deleted, the files inside it
-          generate `FIM` events of the type `deleted`.
+          generate FIM events of the type 'deleted'.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:

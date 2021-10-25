@@ -11,7 +11,7 @@ brief: File Integrity Monitoring (FIM) system watches selected files and trigger
        files are modified. Specifically, these tests will check if FIM events generated contain only
        the 'check_' fields specified in the configuration when using the 'check_all' attribute along
        with other' check_' attributes.
-       The 'FIM' capability is managed by the 'wazuh-syscheckd' daemon, which checks configured files
+       The FIM capability is managed by the 'wazuh-syscheckd' daemon, which checks configured files
        for changes to the checksums, permissions, and ownership.
 
 tier: 1
@@ -279,10 +279,10 @@ def test_check_all_no(path, checkers, get_configuration, configure_environment, 
     description: Check if the 'wazuh-syscheckd' daemon adds in the generated events the checks specified in
                  the configuration. These checks are attributes indicating that a monitored file has been modified.
                  For example, when setting 'check_all' to 'no', only the 'type' and 'checksum' attributes should
-                 appear in every 'FIM' event. This will avoid any modification event. For this purpose, the test
+                 appear in every FIM event. This will avoid any modification event. For this purpose, the test
                  will monitor a testing folder using the 'check_all=no' attribute, create a testing file inside it,
                  and verify that only the 'type' and 'checksum' attributes are in the 'added' event. Then, it
-                 will modify the testing file and verify that no 'FIM' events of type 'modified' are generated.
+                 will modify the testing file and verify that no FIM events of type 'modified' are generated.
                  Finally, the test will delete the testing file and verify that only the 'type' and
                  'checksum' attributes are in the 'deleted' event.
 
@@ -314,7 +314,7 @@ def test_check_all_no(path, checkers, get_configuration, configure_environment, 
         - Verify that FIM events generated only contain the 'type' and 'checksum' attributes
           when the 'check_all=no' attribute is used.
 
-    input_description: Different test cases are contained in external 'YAML' files
+    input_description: Different test cases are contained in external YAML files
                        (wazuh_check_all.yaml or wazuh_check_all_windows.yaml) which includes
                        configuration settings for the 'wazuh-syscheckd' daemon and testing
                        directories to monitor.

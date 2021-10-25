@@ -134,14 +134,14 @@ def extra_configuration_after_yield():
 ])
 def test_new_directory(tags_to_apply, get_configuration, configure_environment, restart_syscheckd):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects `CUD` (creation, update, and delete) events after
+    description: Check if the 'wazuh-syscheckd' daemon detects 'CUD' (creation, update, and delete) events after
                  the next scheduled scan. For this purpose, the test will create a monitored folder and several
                  testing files inside it. Then, it will perform different operations over the testing files and
                  verify that no events are generated before the next scheduled scan. Finally, the test
                  will perform operations on another set of testing files and wait to the next scheduled scan for
-                 the expected `FIM` events to be generated.
+                 the expected FIM events to be generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:
@@ -155,18 +155,18 @@ def test_new_directory(tags_to_apply, get_configuration, configure_environment, 
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
 
     assertions:
-        - Verify that `FIM` events are generated after the next scheduled scan using the `scheduled` monitoring mode.
+        - Verify that FIM events are generated after the next scheduled scan using the 'scheduled' monitoring mode.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file
+    input_description: A test case (ossec_conf) is contained in external YAML file
                        (wazuh_conf_new_dirs.yaml or wazuh_conf_new_dirs_win32.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:
-        - r'.*Sending FIM event: (.+)$' (`added`, `modified`, and `deleted` events)
+        - r'.*Sending FIM event: (.+)$' ('added', 'modified', and 'deleted' events)
 
     tags:
         - scheduled

@@ -141,12 +141,12 @@ def extra_configuration_after_yield():
 def test_move_dir(source_folder, target_folder, subdir, tags_to_apply, triggers_delete_event, triggers_add_event,
                   get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects `added` and `deleted` events when moving a subdirectory
+    description: Check if the 'wazuh-syscheckd' daemon detects 'added' and 'deleted' events when moving a subdirectory
                  from a monitored folder to another one. For this purpose, the test will move a testing subfolder
                  from the source directory to the target directory and change the system time until the next
-                 scheduled scan. Finally, it verifies that the expected `FIM` events have been generated.
+                 scheduled scan. Finally, it verifies that the expected FIM events have been generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - source_folder:
@@ -163,10 +163,10 @@ def test_move_dir(source_folder, target_folder, subdir, tags_to_apply, triggers_
             brief: Run test if match with a configuration identifier, skip otherwise.
         - triggers_delete_event:
             type: bool
-            brief: True if it expects a `deleted` event in the source folder. False otherwise.
+            brief: True if it expects a 'deleted' event in the source folder. False otherwise.
         - triggers_add_event:
             type: bool
-            brief: True if it expects an `added` event in the target folder. False otherwise.
+            brief: True if it expects an 'added' event in the target folder. False otherwise.
         - get_configuration:
             type: fixture
             brief: Get configurations from the module.
@@ -175,21 +175,21 @@ def test_move_dir(source_folder, target_folder, subdir, tags_to_apply, triggers_
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that `FIM` events of type `added` and `deleted` are generated
+        - Verify that FIM events of type 'added' and 'deleted' are generated
           when subfolders are moved between monitored directories.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:
-        - r'.*Sending FIM event: (.+)$' (`added` and `deleted` events)
+        - r'.*Sending FIM event: (.+)$' ('added' and 'deleted' events)
 
     tags:
         - scheduled

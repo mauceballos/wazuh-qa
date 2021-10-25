@@ -116,11 +116,11 @@ def get_configuration(request):
 
 def test_disabled(get_configuration, configure_environment, restart_syscheckd):
     '''
-    description: Check if the `wazuh-syscheckd` daemon generates `FIM` events when it is disabled
+    description: Check if the 'wazuh-syscheckd' daemon generates FIM events when it is disabled
                  in the main configuration file. For this purpose, the test will monitor a testing
-                 folder and finally verifies that no `FIM` events have been generated.
+                 folder and finally verifies that no FIM events have been generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - get_configuration:
@@ -131,17 +131,17 @@ def test_disabled(get_configuration, configure_environment, restart_syscheckd):
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
 
     assertions:
-        - Verify that when the `wazuh-syscheckd` daemon is disabled, no `FIM` events are generated.
+        - Verify that when the 'wazuh-syscheckd' daemon is disabled, no FIM events are generated.
 
-    input_description: A test case is contained in external `YAML` file (wazuh_conf_disabled.yaml) which
-                       includes configuration settings for the `wazuh-syscheckd` daemon and, it is combined
+    input_description: A test case is contained in external YAML file (wazuh_conf_disabled.yaml) which
+                       includes configuration settings for the 'wazuh-syscheckd' daemon and, it is combined
                        with the testing directory to be monitored defined in this module.
 
     expected_output:
-        - No `FIM` events should be generated.
+        - No FIM events should be generated.
 
     tags:
         - scheduled
@@ -151,7 +151,7 @@ def test_disabled(get_configuration, configure_environment, restart_syscheckd):
         event = wazuh_log_monitor.start(timeout=10, callback=callback_detect_end_scan)
         raise AttributeError(f'Unexpected event {event}')
 
-    # Use `regular_file_cud` and don't expect any event
+    # Use 'regular_file_cud' and don't expect any event
     scheduled = get_configuration['metadata']['fim_mode'] == 'scheduled'
     if scheduled:
         with pytest.raises(TimeoutError):

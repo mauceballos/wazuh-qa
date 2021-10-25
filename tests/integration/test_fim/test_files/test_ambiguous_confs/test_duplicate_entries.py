@@ -180,7 +180,7 @@ def test_duplicate_entries(get_configuration, configure_environment, restart_sys
                  For this purpose, it applies the test case configuration, adds a test file in the directory,
                  and finally checks that only one FIM event has been generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - get_configuration:
@@ -247,7 +247,7 @@ def test_duplicate_entries_sregex(get_configuration, configure_environment,
                  the directory, checks that only one FIM event has been generated for each operation, and finally
                  verifies that only one FIM event has been generated for each operation.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - get_configuration:
@@ -318,7 +318,7 @@ def test_duplicate_entries_report(get_configuration, configure_environment, rest
                  in the directory, checks that FIM event has been generated for each operation,
                  and finally verifies that a 'diff' file has not been created.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - get_configuration:
@@ -391,7 +391,7 @@ def test_duplicate_entries_complex(get_configuration, configure_environment, res
                  modifying the size or permissions of the test file, and finally verify that
                  the 'size' and 'permissions' fields have been generated in that event.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - get_configuration:

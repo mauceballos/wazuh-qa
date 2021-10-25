@@ -126,12 +126,12 @@ def get_configuration(request):
 def test_regular_file_changes(sleep, tags_to_apply, get_configuration, configure_environment, restart_syscheckd,
                               wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` regular file changes (add, modify, delete) with a very specific delay
+    description: Check if the 'wazuh-syscheckd' regular file changes (add, modify, delete) with a very specific delay
                  between every operation. For this purpose, the test will perform the above operations over
                  a testing file and wait for the specified time between each operation. Finally, the test
-                 will check that the  expected `FIM` events have been generated.
+                 will check that the  expected FIM events have been generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - sleep:
@@ -148,17 +148,17 @@ def test_regular_file_changes(sleep, tags_to_apply, get_configuration, configure
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that `FIM` events of type `added`, `modified`, and `deleted` are generated
+        - Verify that FIM events of type 'added', 'modified', and 'deleted' are generated
           when the related operations are performed in specific time intervals.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:

@@ -136,13 +136,13 @@ def get_configuration(request):
 def test_events_from_existing_files(filename, tags_to_apply, get_configuration,
                                     configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects `modified` and `deleted` events when modifying
+    description: Check if the 'wazuh-syscheckd' daemon detects 'modified' and 'deleted' events when modifying
                  files that exist before the Wazuh agent is started. For this purpose, the test will modify
                  the testing file, change the system time to the next scheduled scan, and verify that
-                 the proper `FIM` event is generated. Finally, the test will perform
+                 the proper FIM event is generated. Finally, the test will perform
                  the above steps but deleting the testing file.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - filename:
@@ -159,21 +159,21 @@ def test_events_from_existing_files(filename, tags_to_apply, get_configuration,
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that `FIM` events of type `modified` and `deleted` are generated
+        - Verify that FIM events of type 'modified' and 'deleted' are generated
           when files that exist before starting the Wazuh agent are modified.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:
-        - r'.*Sending FIM event: (.+)$' (`modified` and `deleted` events)
+        - r'.*Sending FIM event: (.+)$' ('modified' and 'deleted' events)
 
     tags:
         - scheduled

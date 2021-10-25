@@ -132,9 +132,9 @@ def test_basic_usage_wildcards(subfolder_name, file_name, tags_to_apply,
                  and ones that do not match the expressions set in the directories to be monitored.
                  Then, the test will create, modify and delete files inside a folder given as an argument.
                  Finally, the test will wait for events only if the folder where the changes are made
-                 matches the expression previously set in the `wazuh-syscheckd` daemon configuration.
+                 matches the expression previously set in the 'wazuh-syscheckd' daemon configuration.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - subfolder_name:
@@ -154,21 +154,21 @@ def test_basic_usage_wildcards(subfolder_name, file_name, tags_to_apply,
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait until the first FIM scan is completed.
 
     assertions:
-        - Verify that `FIM` monitors newly added directories that match a wildcard used in the configuration.
+        - Verify that FIM monitors newly added directories that match a wildcard used in the configuration.
 
-    input_description: A test case (ossec_conf_wildcards) is contained in external `YAML` file
+    input_description: A test case (ossec_conf_wildcards) is contained in external YAML file
                        (wazuh_conf_wildcards.yaml) which includes configuration settings for
-                       the `wazuh-syscheckd` daemon and, it is combined with the testing
+                       the 'wazuh-syscheckd' daemon and, it is combined with the testing
                        directories to be monitored defined in this module.
 
     expected_output:
-        - r'.*Sending FIM event: (.+)$' (`added`, `modified` and `deleted` events)
+        - r'.*Sending FIM event: (.+)$' ('added', 'modified' and 'deleted' events)
 
     tags:
         - scheduled

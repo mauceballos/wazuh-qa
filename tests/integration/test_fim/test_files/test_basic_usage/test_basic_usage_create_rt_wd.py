@@ -155,13 +155,13 @@ def test_create_file_realtime_whodata(folder, name, filetype, content, checkers,
                                       get_configuration,
                                       configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if a special or regular file creation is detected by the `wazuh-syscheckd` daemon using
-                 the `realtime` and `whodata` monitoring modes. Regular files must be monitored, special files
+    description: Check if a special or regular file creation is detected by the 'wazuh-syscheckd' daemon using
+                 the 'realtime' and 'whodata' monitoring modes. Regular files must be monitored, special files
                  must not. For this purpose, the test creates the testing directories and files using different
                  character encodings in their names. Finally, it verifies that only the regular testing
-                 files have generated `FIM` events.
+                 files have generated FIM events.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - folder:
@@ -193,22 +193,22 @@ def test_create_file_realtime_whodata(folder, name, filetype, content, checkers,
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that `FIM` events are only generated for the regular testing files,
-          and these contain all `check_` fields specified in the configuration.
+        - Verify that FIM events are only generated for the regular testing files,
+          and these contain all 'check_' fields specified in the configuration.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:
         - r'.*Sending FIM event: (.+)$' (Initial scan when restarting Wazuh)
-        - Multiple `FIM` events logs of the monitored directories.
+        - Multiple FIM events logs of the monitored directories.
 
     tags:
         - realtime

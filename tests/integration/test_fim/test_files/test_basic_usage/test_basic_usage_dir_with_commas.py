@@ -119,13 +119,13 @@ def get_configuration(request):
 def test_directories_with_commas(directory, get_configuration, put_env_variables, configure_environment,
                                  restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon generates `FIM` events from monitoring folders
+    description: Check if the 'wazuh-syscheckd' daemon generates FIM events from monitoring folders
                  whose name contains commas. For this purpose, the test will monitor a testing folder
-                 using the `scheduled` monitoring mode, and create the testing files inside it.
+                 using the 'scheduled' monitoring mode, and create the testing files inside it.
                  Then, perform CUD (creation, update, and delete) operations and finally verify that
-                 the `FIM` events are generated correctly.
+                 the FIM events are generated correctly.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - directory:
@@ -142,20 +142,20 @@ def test_directories_with_commas(directory, get_configuration, put_env_variables
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that `FIM` events are generated on a monitored folder whose name contains commas.
+        - Verify that FIM events are generated on a monitored folder whose name contains commas.
 
-    input_description: A test case is contained in external `YAML` file (wazuh_conf.yaml) which includes
-                       configuration settings for the `wazuh-syscheckd` daemon and, it is combined with
+    input_description: A test case is contained in external YAML file (wazuh_conf.yaml) which includes
+                       configuration settings for the 'wazuh-syscheckd' daemon and, it is combined with
                        the testing directories to be monitored defined in this module.
 
     expected_output:
-        - Multiple `FIM` events logs of the monitored directories.
+        - Multiple FIM events logs of the monitored directories.
 
     tags:
         - scheduled

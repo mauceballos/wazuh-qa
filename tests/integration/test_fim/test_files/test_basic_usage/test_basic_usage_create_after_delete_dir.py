@@ -121,13 +121,13 @@ def get_configuration(request):
 def test_create_after_delete(tags_to_apply, get_configuration, configure_environment, restart_syscheckd,
                              wait_for_fim_start):
     '''
-    description: Check if a monitored directory keeps reporting `FIM` events after deleting and creating it again.
+    description: Check if a monitored directory keeps reporting FIM events after deleting and creating it again.
                  Under Windows systems, it verifies that the directory watcher is refreshed (checks the SACLs)
                  after directory re-creation one second after. For this purpose, the test creates the testing
-                 directory to be monitored, checks that `FIM` events are generated, and then deletes it.
+                 directory to be monitored, checks that FIM events are generated, and then deletes it.
                  Finally, it creates the directory again and verifies that the events are still generated correctly.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:
@@ -141,22 +141,22 @@ def test_create_after_delete(tags_to_apply, get_configuration, configure_environ
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that `FIM` events are still generated when a monitored directory is deleted and created again.
+        - Verify that FIM events are still generated when a monitored directory is deleted and created again.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file
+    input_description: A test case (ossec_conf) is contained in external YAML file
                        (wazuh_conf.yaml or wazuh_conf_win32.yaml) which includes configuration
-                       settings for the `wazuh-syscheckd` daemon and, it is combined with
+                       settings for the 'wazuh-syscheckd' daemon and, it is combined with
                        the testing directories to be monitored defined in this module.
 
     expected_output:
         - r'.*Sending FIM event: (.+)$' (Initial scan when restarting Wazuh)
-        - Multiple `FIM` events logs of the monitored directories.
+        - Multiple FIM events logs of the monitored directories.
 
     tags:
         - realtime

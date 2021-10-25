@@ -117,7 +117,7 @@ def test_audit_health_check(tags_to_apply, get_configuration,
                  'who-data' and it will check that the health check passed
                  verifying that the proper FIM event is generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:
@@ -165,7 +165,7 @@ def test_added_rules(tags_to_apply, get_configuration,
                  Once FIM starts, the test will check if the a rule for every monitored
                  directory is added verifying that the proper FIM event is generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:
@@ -223,7 +223,7 @@ def test_readded_rules(tags_to_apply, get_configuration,
                  will check that the 'audit' rule is added again verifying that
                  the proper FIM event is generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:
@@ -287,7 +287,7 @@ def test_readded_rules_on_restart(tags_to_apply, get_configuration,
                  After 'auditd' is running, the test will wait for the FIM 'connect' and
                  'load rule' events to be generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:
@@ -356,7 +356,7 @@ def test_move_rules_realtime(tags_to_apply, get_configuration,
                  Then it will wait until the monitored directories using 'whodata' are monitored with
                  'realtime', verifying that the proper FIM events are generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:
@@ -421,7 +421,7 @@ def test_audit_key(audit_key, path, get_configuration, configure_environment, re
                  will manually add a rule for a monitored path using a custom 'audit' key. After FIM starts,
                  the test will check that the events that are generated with the custom key are processed.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - audit_key:
@@ -492,7 +492,7 @@ def test_restart_audit(tags_to_apply, should_restart, get_configuration, configu
                  by the 'auditd' daemon and monitoring the 'auditd' process to see if it restart and
                  and finally, it checks if the deleted plugin is created again.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

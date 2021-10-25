@@ -147,7 +147,7 @@ def test_move_folders_to_realtime(tags_to_apply, get_configuration, uninstall_in
                  are monitored with 'realtime' verifying that the proper FIM events are generated.
                  Finally, the test will install the 'auditd' package again.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

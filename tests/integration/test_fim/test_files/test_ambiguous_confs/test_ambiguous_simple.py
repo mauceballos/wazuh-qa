@@ -204,7 +204,7 @@ def test_ambiguous_restrict(folders, tags_to_apply, get_configuration, configure
                  For this purpose, the two previous paths are monitored, and modifications are made to the files
                  to check if alerts are generated when required.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - folders:
@@ -269,7 +269,7 @@ def test_ambiguous_report(folders, tags_to_apply, get_configuration, configure_e
                  and modifications are made to the files to check if the 'content_changes' field
                  is generated in the events when required.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - folders:
@@ -361,7 +361,7 @@ def test_ambiguous_tags(folders, tags_to_apply, get_configuration, configure_env
                  and modifications are made to the files to check if the 'tags' field is generated
                  in the events when required.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - folders:
@@ -429,7 +429,7 @@ def test_ambiguous_recursion(dirname, recursion_level, tags_to_apply, get_config
                  For this purpose, a testing folder with several levels of subdirectories is monitored,
                  and modifications are made in each level to see if events are generated when required.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - dirname:
@@ -504,7 +504,7 @@ def test_ambiguous_recursion_tag(dirnames, recursion_level, triggers_event, tags
                  Once the events have been generated, they are checked to see whether or not they
                  should include the 'tag' field.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - dirnames:
@@ -580,7 +580,7 @@ def test_ambiguous_check(dirname, checkers, tags_to_apply, get_configuration, co
                  to generate events. Finally, verification is performed to ensure that the events contain only
                  the fields of the 'checks' specified for the monitored folder.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - dirname:

@@ -121,7 +121,7 @@ def test_remove_and_read_folder(tags_to_apply, folder, get_configuration,
                  the folder and checks if the 'audit' rule associated to that folder has been removed.
                  Finally, it creates again the same folder and checks that the 'audit' rule is added.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:
@@ -183,7 +183,7 @@ def test_reconnect_to_audit(tags_to_apply, get_configuration, configure_environm
                  after restarting. For this purpose, restart the 'auditd' daemon and check that
                  the connection closing and opening events are generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

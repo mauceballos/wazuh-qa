@@ -136,7 +136,7 @@ def test_audit_no_dir(tags_to_apply, get_configuration, configure_environment, r
                  thread is up, the audit rules are reloaded every 30 seconds (not configurable),
                  so when the directory is created, it starts to be monitored.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

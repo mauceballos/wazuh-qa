@@ -144,12 +144,12 @@ def test_regular_file_changes(folder, name, encoding, checkers, tags_to_apply,
                               get_configuration, configure_environment,
                               restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects regular file changes (add, modify, delete).
+    description: Check if the 'wazuh-syscheckd' daemon detects regular file changes (add, modify, delete).
                  For this purpose, the test uses different character encodings in the names of the testing
                  directories and files and performs operations on them. Finally, it verifies that
-                 the `FIM` events have been generated properly.
+                 the FIM events have been generated properly.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - folder:
@@ -175,22 +175,22 @@ def test_regular_file_changes(folder, name, encoding, checkers, tags_to_apply,
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that all `FIM` events are generated for the operations performed,
-          and these contain all `check_` fields specified in the configuration.
+        - Verify that all FIM events are generated for the operations performed,
+          and these contain all 'check_' fields specified in the configuration.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:
         - r'.*Sending FIM event: (.+)$' (Initial scan when restarting Wazuh)
-        - Multiple `FIM` events logs of the monitored directories.
+        - Multiple FIM events logs of the monitored directories.
 
     tags:
         - scheduled

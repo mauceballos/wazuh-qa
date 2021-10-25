@@ -7,11 +7,11 @@ copyright: Copyright (C) 2015-2021, Wazuh Inc.
 
 type: integration
 
-brief: File Integrity Monitoring ('FIM') system watches selected files and triggering alerts when these
+brief: File Integrity Monitoring (FIM) system watches selected files and triggering alerts when these
        files are modified. Specifically, these tests will check if FIM events generated contain only
        the 'check_' fields specified in the configuration when using the 'check_' attributes individually
        without using the 'check_all=yes' attribute.
-       The 'FIM' capability is managed by the 'wazuh-syscheckd' daemon, which checks configured files
+       The FIM capability is managed by the 'wazuh-syscheckd' daemon, which checks configured files
        for changes to the checksums, permissions, and ownership.
 
 tier: 1

@@ -129,13 +129,13 @@ def test_move_file(file, file_content, tags_to_apply, source_folder, target_fold
                    get_configuration, configure_environment,
                    restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects `added` and `deleted` events when moving a file
+    description: Check if the 'wazuh-syscheckd' daemon detects 'added' and 'deleted' events when moving a file
                  from a monitored folder to another one. For this purpose, the test will create a testing file and
                  move it from the source directory to the target directory. Then, it changes the system time until
                  the next scheduled scan, and finally, it removes the testing file and verifies that
-                 the expected `FIM` events have been generated.
+                 the expected FIM events have been generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - file:
@@ -155,10 +155,10 @@ def test_move_file(file, file_content, tags_to_apply, source_folder, target_fold
             brief: Path to the destination directory where the testing file will be moved.
         - triggers_delete_event:
             type: bool
-            brief: True if it expects a `deleted` event in the source folder. False otherwise.
+            brief: True if it expects a 'deleted' event in the source folder. False otherwise.
         - triggers_add_event:
             type: bool
-            brief: True if it expects an `added` event in the target folder. False otherwise.
+            brief: True if it expects an 'added' event in the target folder. False otherwise.
         - get_configuration:
             type: fixture
             brief: Get configurations from the module.
@@ -167,21 +167,21 @@ def test_move_file(file, file_content, tags_to_apply, source_folder, target_fold
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that `FIM` events of type `added` and `deleted` are generated
+        - Verify that FIM events of type 'added' and 'deleted' are generated
           when files are moved between monitored directories.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:
-        - r'.*Sending FIM event: (.+)$' (`added` and `deleted` events)
+        - r'.*Sending FIM event: (.+)$' ('added' and 'deleted' events)
 
     tags:
         - scheduled

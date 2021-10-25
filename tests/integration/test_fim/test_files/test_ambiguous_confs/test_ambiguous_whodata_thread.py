@@ -127,7 +127,7 @@ def test_ambiguous_whodata_thread(whodata_enabled, tags_to_apply, get_configurat
                  values ('yes' and 'no'). For this purpose, the configuration is applied and it checks
                  that the last value detected for 'whodata' in the 'ossec.conf' file is the one used.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - whodata_enabled:

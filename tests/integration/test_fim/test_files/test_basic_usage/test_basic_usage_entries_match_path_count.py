@@ -128,13 +128,13 @@ def extra_configuration_before_yield():
 
 def test_entries_match_path_count(get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if `FIM` events contain the correct number of file paths when `hard`
-                 and `symbolic` links are used. For this purpose, the test will monitor
-                 a testing folder and create two regular files, a `symlink` and a `hard link`
-                 before the scan starts. Finally, it verifies in the generated `FIM` event
+    description: Check if FIM events contain the correct number of file paths when 'hard'
+                 and 'symbolic' links are used. For this purpose, the test will monitor
+                 a testing folder and create two regular files, a 'symlink' and a 'hard link'
+                 before the scan starts. Finally, it verifies in the generated FIM event
                  that three inodes and four file paths are detected.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - get_configuration:
@@ -145,17 +145,17 @@ def test_entries_match_path_count(get_configuration, configure_environment, rest
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that when using hard and symbolic links, the `FIM` events contain
+        - Verify that when using hard and symbolic links, the FIM events contain
           the number of inodes and paths to files consistent.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:

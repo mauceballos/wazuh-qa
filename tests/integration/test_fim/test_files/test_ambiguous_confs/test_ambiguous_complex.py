@@ -279,7 +279,7 @@ def test_ambiguous_complex(tags_to_apply,
                  FIM settings for each subdirectory and finally verifies that
                  these have been applied correctly.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

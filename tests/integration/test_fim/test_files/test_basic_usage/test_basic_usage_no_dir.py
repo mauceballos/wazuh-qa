@@ -120,12 +120,12 @@ def get_configuration(request):
 ])
 def test_new_directory(tags_to_apply, get_configuration, configure_environment, restart_syscheckd):
     '''
-    description: Check if the `wazuh-syscheckd` daemon shows a debug message when an empty `directories` tag is found.
+    description: Check if the 'wazuh-syscheckd' daemon shows a debug message when an empty 'directories' tag is found.
                  For this purpose, the test uses a configuration without specifying the directory to monitor.
                  It will then verify that the appropriate debug message is generated. Finally, the test will use
                  a valid directory and verify that the above message is not generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:
@@ -139,16 +139,16 @@ def test_new_directory(tags_to_apply, get_configuration, configure_environment, 
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
 
     assertions:
-        - Verify that the `wazuh-syscheckd` daemon generates a debug log when
-          the `directories` configuration tag is empty.
-        - Verify that the `wazuh-syscheckd` daemon does not generate a debug log when
-          the `directories` configuration tag is not empty.
+        - Verify that the 'wazuh-syscheckd' daemon generates a debug log when
+          the 'directories' configuration tag is empty.
+        - Verify that the 'wazuh-syscheckd' daemon does not generate a debug log when
+          the 'directories' configuration tag is not empty.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:

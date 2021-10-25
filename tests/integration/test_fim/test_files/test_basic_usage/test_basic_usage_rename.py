@@ -137,15 +137,15 @@ def test_rename(folder, tags_to_apply,
                 get_configuration, clean_directories, configure_environment,
                 restart_syscheckd, wait_for_fim_start):
     '''
-    description: Check if the `wazuh-syscheckd` daemon detects events when renaming directories or files.
-                 When changing directory or file names, `FIM` events of type `deleted` and `added`
+    description: Check if the 'wazuh-syscheckd' daemon detects events when renaming directories or files.
+                 When changing directory or file names, FIM events of type 'deleted' and 'added'
                  should be generated. For this purpose, the test will create the directory and testing files
                  to be monitored and verify that they have been created correctly. It will then verify two cases,
-                 on the one hand that the proper `FIM` events are generated when the testing files are renamed
+                 on the one hand that the proper FIM events are generated when the testing files are renamed
                  in the monitored directory, and on the other hand, that these events are generated
                  when the monitored directory itself is renamed.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - folder:
@@ -165,21 +165,21 @@ def test_rename(folder, tags_to_apply,
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_fim_start:
             type: fixture
             brief: Wait for realtime start, whodata start, or end of initial FIM scan.
 
     assertions:
-        - Verify that `FIM` events of type `added` and `deleted` are generated
+        - Verify that FIM events of type 'added' and 'deleted' are generated
           when monitored directories or files are renamed.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:
-        - r'.*Sending FIM event: (.+)$' (`added` and `deleted` events)
+        - r'.*Sending FIM event: (.+)$' ('added' and 'deleted' events)
 
     tags:
         - scheduled

@@ -133,13 +133,13 @@ def extra_configuration_before_yield():
 
 def test_wait_until_baseline(get_configuration, configure_environment, restart_syscheckd):
     '''
-    description: Check if `FIM` events are appearing after the `baseline`. The log message
-                 `File integrity monitoring scan ended` informs about the end of the first scan,
-                 which generates the `baseline`. For this purpose, the test creates a test file
+    description: Check if FIM events are appearing after the 'baseline'. The log message
+                 'File integrity monitoring scan ended' informs about the end of the first scan,
+                 which generates the 'baseline'. For this purpose, the test creates a test file
                  while the initial scan is being performed. When the baseline has been generated
-                 it checks if the `FIM` addition event has been triggered.
+                 it checks if the FIM addition event has been triggered.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - get_configuration:
@@ -150,13 +150,13 @@ def test_wait_until_baseline(get_configuration, configure_environment, restart_s
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
 
     assertions:
-        - Verify that a `FIM` addition event was generated during the initial scan.
+        - Verify that a FIM addition event was generated during the initial scan.
 
-    input_description: A test case (ossec_conf) is contained in external `YAML` file (wazuh_conf.yaml)
-                       which includes configuration settings for the `wazuh-syscheckd` daemon and, it
+    input_description: A test case (ossec_conf) is contained in external YAML file (wazuh_conf.yaml)
+                       which includes configuration settings for the 'wazuh-syscheckd' daemon and, it
                        is combined with the testing directories to be monitored defined in this module.
 
     expected_output:

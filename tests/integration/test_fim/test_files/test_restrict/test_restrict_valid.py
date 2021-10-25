@@ -190,7 +190,7 @@ def test_restrict(folder, filename, mode, content, triggers_event, tags_to_apply
     input_description: Different test cases are contained in external YAML file (wazuh_conf.yaml) which
                        includes configuration settings for the 'wazuh-syscheckd' daemon and, these
                        are combined with the testing directories to be monitored defined in the module.
-    
+
     inputs: 864 test cases including multiple regular expressions and names for testing files and directories.
 
     expected_output:

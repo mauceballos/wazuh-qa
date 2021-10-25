@@ -117,7 +117,7 @@ def test_whodata_prevails_over_realtime(directory, get_configuration, put_env_va
                  'who-data' is set to 'yes', the 'realtime' value is not taken into account,
                  enabling in this case the real-time file monitoring.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - directory:

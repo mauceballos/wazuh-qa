@@ -117,7 +117,7 @@ def test_remove_rule_five_times(tags_to_apply, folder, audit_key,
                  directory using 'whodata' is monitored with 'realtime' verifying that
                  the proper FIM events are generated.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - tags_to_apply:

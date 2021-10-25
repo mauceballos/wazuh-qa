@@ -118,7 +118,7 @@ def wait_for_initial_scan():
 
 @pytest.fixture()
 def create_test_folders():
-    """Fixture that creates all the folders specified in the `test_subdirectories` list"""
+    """Fixture that creates all the folders specified in the 'test_subdirectories' list"""
     for dir in test_subdirectories:
         recursive_directory_creation(os.path.join(test_folder, dir))
 
@@ -147,13 +147,13 @@ def test_basic_usage_wildcards_runtime(subfolder_name, file_name, tags_to_apply,
     '''
     description: Check if the number of directories to monitor grows when using wildcards to specify them.
                  For this purpose, the test will configure wildcards expressions and create an empty folder.
-                 Once the `FIM` module has started, and the `baseline` scan is completed, the test will create
+                 Once the FIM module has started, and the 'baseline' scan is completed, the test will create
                  folders that may match a configured expression, and it waits until the wildcards are expanded
                  again (in the next scan). Once the wildcards are reloaded, the test will create, modify and
                  delete files inside those folders. Finally, the test will wait for events of a folder
                  only if it matches a configured expression.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - subfolder_name:
@@ -173,7 +173,7 @@ def test_basic_usage_wildcards_runtime(subfolder_name, file_name, tags_to_apply,
             brief: Configure a custom environment for testing.
         - restart_syscheckd:
             type: fixture
-            brief: Clear the `ossec.log` file and start a new monitor.
+            brief: Clear the 'ossec.log' file and start a new monitor.
         - wait_for_initial_scan:
             type: fixture
             brief: Wait until the first FIM scan is completed.
@@ -185,15 +185,15 @@ def test_basic_usage_wildcards_runtime(subfolder_name, file_name, tags_to_apply,
             brief: Wait until the end of wildcards scan event is triggered.
 
     assertions:
-        - Verify that `FIM` monitors newly added directories that match a wildcard used in the configuration.
+        - Verify that FIM monitors newly added directories that match a wildcard used in the configuration.
 
-    input_description: A test case (ossec_conf_wildcards_runtime) is contained in external `YAML` file
+    input_description: A test case (ossec_conf_wildcards_runtime) is contained in external YAML file
                        (wazuh_conf_wildcards_rt.yaml) which includes configuration settings for
-                       the `wazuh-syscheckd` daemon and, it is combined with the testing directories
+                       the 'wazuh-syscheckd' daemon and, it is combined with the testing directories
                        to be monitored defined in this module.
 
     expected_output:
-        - r'.*Sending FIM event: (.+)$' (`added`, `modified` and `deleted` events)
+        - r'.*Sending FIM event: (.+)$' ('added', 'modified' and 'deleted' events)
 
     tags:
         - scheduled

@@ -132,7 +132,7 @@ def test_ignore_works_over_restrict(folder, filename, triggers_event, tags_to_ap
                  For this purpose, the test case configuration is applied, and it is checked if FIM events
                  are generated when required.
 
-    wazuh_min_version: 4.2
+    wazuh_min_version: 4.2.0
 
     parameters:
         - folder:
