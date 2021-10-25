@@ -9,3 +9,13 @@
   configuration:
     access:
       max_request_per_minute: 10
+- tags:
+  - config1
+  configuration:
+    access:
+      max_request_per_minute: 50
+- tags:
+  - config2
+  configuration:
+    access:
+      max_request_per_minute: 10
