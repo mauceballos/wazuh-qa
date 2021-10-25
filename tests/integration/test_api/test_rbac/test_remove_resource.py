@@ -57,6 +57,7 @@ tags:
     - api
 '''
 import requests
+import pytest
 from wazuh_testing.api import get_security_resource_information
 
 # Variables
@@ -105,6 +106,7 @@ def check_resources(deleted_resource, resource_id):
 
 
 # Tests
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_remove_rule(set_security_resources, get_api_details):
     '''
     description: Check if relationships between security resources stay the same
@@ -156,6 +158,7 @@ def test_remove_rule(set_security_resources, get_api_details):
     check_relationships(relationships, new_relationships, 'rules')
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_remove_policy(set_security_resources, get_api_details):
     '''
     description: Check if relationships between security resources stay the same
@@ -207,6 +210,7 @@ def test_remove_policy(set_security_resources, get_api_details):
     check_relationships(relationships, new_relationships, 'policies')
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_remove_user(set_security_resources, get_api_details):
     '''
     description: Check if relationships between security resources stay the same
@@ -258,6 +262,7 @@ def test_remove_user(set_security_resources, get_api_details):
     check_relationships(relationships, new_relationships, 'users')
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_remove_role(set_security_resources, get_api_details):
     '''
     description: Check if relationships between security resources stay the same

@@ -131,6 +131,7 @@ def modify_admin_resources(api_details, admin_ids, endpoint, body):
 
 
 # Tests
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_admin_users(restart_api, get_api_details):
     '''
     description: Check if the admin security users can be removed. For this purpose,
@@ -174,6 +175,7 @@ def test_admin_users(restart_api, get_api_details):
     remove_admin_resources(api_details, admin_ids, endpoint, resource, 5004)
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_admin_roles(restart_api, get_api_details):
     '''
     description: Check if the admin security roles can be removed. For this purpose,
@@ -220,6 +222,7 @@ def test_admin_roles(restart_api, get_api_details):
     modify_admin_resources(api_details, admin_ids, endpoint, body)
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_admin_policies(restart_api, get_api_details):
     '''
     description: Check if the admin security policies can be removed. For this purpose,
@@ -267,6 +270,7 @@ def test_admin_policies(restart_api, get_api_details):
     modify_admin_resources(api_details, admin_ids, endpoint, body)
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_admin_rules(restart_api, get_api_details):
     '''
     description: Check if the admin security rules can be removed. For this purpose,

@@ -7,11 +7,8 @@ copyright: Copyright (C) 2015-2021, Wazuh Inc.
 
 type: integration
 
-brief:
-    These tests will check if the `CORS` (Cross-origin resource sharing) feature of the API handled
-    by the `wazuh-apid` daemon is working properly. The Wazuh API is an open source `RESTful` API
-    that allows for interaction with the Wazuh manager from a web browser, command line tool
-    like `cURL` or any script or program that can make web requests.
+brief: These tests will check if the CORS (Cross-origin resource sharing) feature
+       of the API handled by the `wazuh-apid` daemon is working properly.
 
 tier: 0
 
@@ -20,6 +17,8 @@ modules:
 
 components:
     - manager
+
+path: tests/integration/test_api/test_config/test_cors/test_cors.py
 
 daemons:
     - wazuh-apid
@@ -89,12 +88,13 @@ def get_configuration(request):
     ('https://test_url.com', {'cors'}),
     ('http://other_url.com', {'cors'}),
 ])
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_cors(origin, tags_to_apply, get_configuration, configure_api_environment,
               restart_api, wait_for_start, get_api_details):
     '''
-    description: Check if expected headers are returned when `CORS` is enabled.
-                 When `CORS` is enabled, special headers must be returned in case the
-                 request origin matches the one established in the `CORS` configuration
+    description: Check if expected headers are returned when CORS is enabled.
+                 When CORS is enabled, special headers must be returned in case the
+                 request origin matches the one established in the CORS configuration
                  of the API.
 
     wazuh_min_version: 4.2

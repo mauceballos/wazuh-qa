@@ -128,6 +128,7 @@ def add_role_policy(api_details, p_id, position):
 
 
 # Tests
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_policy_position(set_security_resources, add_new_policies, get_api_details):
     '''
     description: Check if the correct order between role-policy relationships remain after

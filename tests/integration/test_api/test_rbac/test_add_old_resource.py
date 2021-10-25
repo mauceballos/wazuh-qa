@@ -57,6 +57,7 @@ tags:
     - api
 '''
 import requests
+import pytest
 from wazuh_testing.api import get_security_resource_information
 
 # Variables
@@ -64,6 +65,7 @@ user_id, role_id, policy_id, rule_id = None, None, None, None
 
 
 # Tests
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_add_old_user(set_security_resources, get_api_details):
     '''
     description: Check if the security relationships of a previous user are maintained
@@ -118,6 +120,7 @@ def test_add_old_user(set_security_resources, get_api_details):
             assert not value, f'Relationships are not empty: {key}->{value}'
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_add_old_role(set_security_resources, get_api_details):
     '''
     description: Check if the security relationships of a previous role are maintained
@@ -171,6 +174,7 @@ def test_add_old_role(set_security_resources, get_api_details):
             assert not value, f'Relationships are not empty: {key}->{value}'
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_add_old_policy(set_security_resources, get_api_details):
     '''
     description: Check if the security relationships of a previous policy are maintained
@@ -227,6 +231,7 @@ def test_add_old_policy(set_security_resources, get_api_details):
             assert not value, f'Relationships are not empty: {key}->{value}'
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_add_old_rule(set_security_resources, get_api_details):
     '''
     description: Check if the security relationships of a previous rule are maintained

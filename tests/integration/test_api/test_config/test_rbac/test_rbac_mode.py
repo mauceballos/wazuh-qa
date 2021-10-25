@@ -114,6 +114,7 @@ def extra_configuration_after_yield():
     {'rbac_white'},
     {'rbac_black'}
 ])
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_rbac_mode(tags_to_apply, get_configuration, configure_api_environment, restart_api,
                    wait_for_start, get_api_details):
     '''

@@ -86,6 +86,7 @@ def get_configuration(request):
     {'experimental_enabled'},
     {'experimental_disabled'},
 ])
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_experimental_features(tags_to_apply, get_configuration, configure_api_environment,
                                restart_api, wait_for_start, get_api_details):
     '''

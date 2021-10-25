@@ -57,6 +57,7 @@ tags:
     - api
 '''
 import requests
+import pytest
 from wazuh_testing.api import get_security_resource_information
 
 # Variables
@@ -96,6 +97,7 @@ def remove_relationship(api_details, endpoint, resource, related_resource, relat
 
 
 # Tests
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_remove_user_role_relationship(set_security_resources, get_api_details):
     '''
     description: Check if the user and role still exist after removing their relationship.
@@ -140,6 +142,7 @@ def test_remove_user_role_relationship(set_security_resources, get_api_details):
     remove_relationship(api_details, endpoint, resource, related_resource, relation)
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_remove_role_policy_relationship(set_security_resources, get_api_details):
     '''
     description: Check if the role and policy still exist after removing their relationship.
@@ -184,6 +187,7 @@ def test_remove_role_policy_relationship(set_security_resources, get_api_details
     remove_relationship(api_details, endpoint, resource, related_resource, relation)
 
 
+@pytest.mark.filterwarnings('ignore::urllib3.exceptions.InsecureRequestWarning')
 def test_remove_role_rule_relationship(set_security_resources, get_api_details):
     '''
     description: Check if the role and rule still exist after removing their relationship.

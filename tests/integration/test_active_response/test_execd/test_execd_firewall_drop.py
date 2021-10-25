@@ -20,6 +20,8 @@ modules:
 components:
     - agent
 
+path: tests/integration/test_active_response/test_execd/test_execd_restart.py
+
 daemons:
     - wazuh-analysisd
     - wazuh-authd

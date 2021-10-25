@@ -39,10 +39,12 @@ Temporary Items
 
 ### Pycharm ###
 .idea/*
+.idea/
 
 ### VisualStudioCode ###
 .vscode/*
 .mypy_cache/
+.vs/*
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
@@ -53,9 +55,9 @@ deps/wazuh_testing/build/
 deps/wazuh_testing/dist/
 deps/wazuh_testing/wazuh_testing.egg-info/
 
-# DocGenerator default output path
-docs/output/
-# DocGenerator logs path
-docs/DocGenerator/logs
+# SearchUI package-lock
+deps/wazuh_testing/wazuh_testing/qa_docs/Search-UI/package-lock.json
 
-.idea/
+
+# GCP tests configuration file
+tests/integration/test_gcloud/data/configuration.yaml

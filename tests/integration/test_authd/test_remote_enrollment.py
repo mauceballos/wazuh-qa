@@ -88,7 +88,7 @@ metadata = [
 ]
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
-configurations_path = os.path.join(test_data_path, 'wazuh_conf.yaml')
+configurations_path = os.path.join(test_data_path, 'wazuh_authd_configuration.yaml')
 configurations = load_wazuh_configurations(configurations_path, __name__, params=parameters, metadata=metadata)
 
 # Variables
