@@ -84,8 +84,9 @@ def restart_api(get_configuration, request):
     setattr(request.module, 'wazuh_log_monitor', file_monitor)
 
     # Start Wazuh API
-    for process_name in ['wazuh-apid', 'wazuh-modulesd', 'wazuh-analysisd', 'wazuh-execd', 'wazuh-dbd', 'wazuh-remoted', 
-    'wazuh-monitord', 'wazuh-logcollector', 'wazuh-syscheckd', 'wazuh-authd']:
+    for process_name in ['wazuh-apid', 'wazuh-modulesd', 'wazuh-analysisd', 'wazuh-execd', 'wazuh-db', 'wazuh-remoted', 
+    'wazuh-monitord', 'wazuh-logcollector', 'wazuh-syscheckd', 'wazuh-authd',
+    'wazuh-clusterd', 'wazuh-maild', 'wazuh-agentlessd', 'wazuh-integratord', 'wazuh-dbd', 'wazuh-csyslogd']:
         control_service('start', daemon=process_name)
     #control_service('start')
 
