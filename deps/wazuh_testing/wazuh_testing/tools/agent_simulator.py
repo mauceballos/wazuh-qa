@@ -25,6 +25,7 @@ from random import randint, sample, choice, getrandbits
 from stat import S_IFLNK, S_IFREG, S_IRWXU, S_IRWXG, S_IRWXO
 from string import ascii_letters, digits
 from struct import pack
+from sys import getsizeof
 from time import mktime, localtime, sleep, time
 
 import wazuh_testing.data.syscollector as syscollector
@@ -39,7 +40,7 @@ from wazuh_testing.tools.utils import retry, get_random_ip, get_random_string
 _data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
 
 os_list = ["debian7", "debian8", "debian9", "debian10", "ubuntu12.04",
-           "ubuntu14.04", "ubuntu16.04", "ubuntu18.04", "mojave"]
+           "ubuntu14.04", "ubuntu16.04", "ubuntu18.04", "mojave". 'solaris11']
 agent_count = 1
 
 
@@ -66,6 +67,7 @@ class Agent:
         fim_integrity_eps (int, optional): Set the maximum database synchronization message throughput.
         authd_password (str), optional: Password for registration if needed.
         registration_address (str, optional): Manager registration IP address.
+        retry_enrollment (bool, optional): retry then enrollment in case of error.
 
     Attributes:
         id (str): ID of the agent.
@@ -109,14 +111,15 @@ class Agent:
         keepalive_frequency (int): frequency to send keepalive messages. 0 to continuously send keepalive messages.
         sca_frequency (int): frequency to run sca_label scans. 0 to continuously send sca_label events.
         syscollector_batch_size (int): Size of the syscollector type batch events.
+        fixed_message_size (int): Fixed size of the agent modules messages in KB.
         registration_address (str): Manager registration IP address.
     """
     def __init__(self, manager_address, cypher="aes", os=None, rootcheck_sample=None, id=None, name=None, key=None,
-                 version="v3.12.0", fim_eps=100, fim_integrity_eps=100, sca_eps=100, syscollector_eps=100, labels=None,
+                 version="v4.3.0", fim_eps=100, fim_integrity_eps=100, sca_eps=100, syscollector_eps=100, labels=None,
                  rootcheck_eps=100, logcollector_eps=100, authd_password=None, disable_all_modules=False,
-                 rootcheck_frequency=60.0, rcv_msg_limit=0, keepalive_frequency=10, sca_frequency=60,
+                 rootcheck_frequency=60.0, rcv_msg_limit=0, keepalive_frequency=10.0, sca_frequency=60,
                  syscollector_frequency=60.0, syscollector_batch_size=10, hostinfo_eps=100, winevt_eps=100,
-                 registration_address=None):
+                 fixed_message_size=None, registration_address=None, retry_enrollment=False):
         self.id = id
         self.name = name
         self.key = key
@@ -159,17 +162,17 @@ class Agent:
         self.fim_integrity = None
         self.syscollector = None
         self.modules = {
-            "keepalive": {"status": "enabled", "frequency": self.keepalive_frequency},
-            "fim": {"status": "enabled", "eps": self.fim_eps},
-            "fim_integrity": {"status": "disabled", "eps": self.fim_integrity_eps},
-            "syscollector": {"status": "disabled", "frequency": self.syscollector_frequency,
-                             "eps": self.syscollector_eps},
-            "rootcheck": {"status": "disabled", "frequency": self.rootcheck_frequency, "eps": self.rootcheck_eps},
-            "sca": {"status": "disabled", "frequency": self.sca_frequency, "eps": self.sca_eps},
-            "hostinfo": {"status": "disabled", "eps": self.hostinfo_eps},
-            "winevt": {"status": "disabled", "eps": self.winevt_eps},
-            "logcollector": {"status": "disabled", "eps": self.logcollector_eps},
-            "receive_messages": {"status": "enabled"},
+            'keepalive': {'status': 'enabled', 'frequency': self.keepalive_frequency},
+            'fim': {'status': 'enabled', 'eps': self.fim_eps},
+            'fim_integrity': {'status': 'disabled', 'eps': self.fim_integrity_eps},
+            'syscollector': {'status': 'disabled', 'frequency': self.syscollector_frequency,
+                             'eps': self.syscollector_eps},
+            'rootcheck': {'status': 'disabled', 'frequency': self.rootcheck_frequency, 'eps': self.rootcheck_eps},
+            'sca': {'status': 'disabled', 'frequency': self.sca_frequency, 'eps': self.sca_eps},
+            'hostinfo': {'status': 'disabled', 'eps': self.hostinfo_eps},
+            'winevt': {'status': 'disabled', 'eps': self.winevt_eps},
+            'logcollector': {'status': 'disabled', 'eps': self.logcollector_eps},
+            'receive_messages': {'status': 'enabled'},
         }
         self.sha_key = None
         self.upgrade_exec_result = None
@@ -225,7 +228,7 @@ class Agent:
 
     def set_name(self):
         """Set a random agent name."""
-        random_string = ''.join(sample('0123456789abcdef' * 2, 8))
+        random_string = ''.join(sample(f"0123456789{ascii_letters}", 16))
         self.name = f"{agent_count}-{random_string}-{self.os}"
 
     def register(self):
