@@ -40,7 +40,7 @@ from wazuh_testing.tools.utils import retry, get_random_ip, get_random_string
 _data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
 
 os_list = ["debian7", "debian8", "debian9", "debian10", "ubuntu12.04",
-           "ubuntu14.04", "ubuntu16.04", "ubuntu18.04", "mojave". 'solaris11']
+           "ubuntu14.04", "ubuntu16.04", "ubuntu18.04", "mojave", 'solaris11']
 agent_count = 1
 
 
@@ -180,8 +180,10 @@ class Agent:
         self.upgrade_script_result = 0
         self.stop_receive = 0
         self.stage_disconnect = None
-        self.setup(disable_all_modules=disable_all_modules)
+        self.retry_enrollment = retry_enrollment
         self.rcv_msg_queue = Queue(rcv_msg_limit)
+        self.fixed_message_size = fixed_message_size * 1024 if fixed_message_size is not None else None
+        self.setup(disable_all_modules=disable_all_modules)
 
     def update_checksum(self, new_checksum):
         self.keep_alive_raw_msg = self.keep_alive_raw_msg.replace(self.merged_checksum, new_checksum)
@@ -215,7 +217,7 @@ class Agent:
         Args:
             sha (str): Shared key between manager and agent for remote upgrading.
             upgrade_exec_result (int): Upgrade result status code.
-            upgrade_notification (boolean): If True, it will be sent the upgrade status message after "upgrading".
+            upgrade_notification (boolean): If <True, it will be sent the upgrade status message after "upgrading".
             upgrade_script_result (int): Variable to mock the upgrade script result. Used for simulating a remote
                                          upgrade.
             stage_disconnect (str): WPK process state variable.
@@ -231,7 +233,8 @@ class Agent:
         random_string = ''.join(sample(f"0123456789{ascii_letters}", 16))
         self.name = f"{agent_count}-{random_string}-{self.os}"
 
-    def register(self):
+
+    def _register_helper(self):
         """Request to register the agent in the manager.
 
         In addition, it sets the agent id and agent key with the response data.
@@ -240,26 +243,48 @@ class Agent:
         context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
         context.check_hostname = False
         context.verify_mode = ssl.CERT_NONE
+        try:
+            ssl_socket = context.wrap_socket(sock, server_hostname=self.registration_address)
+            ssl_socket.connect((self.registration_address, 1515))
 
-        ssl_socket = context.wrap_socket(sock, server_hostname=self.registration_address)
-        ssl_socket.connect((self.registration_address, 1515))
+            if self.authd_password is None:
+                event = f"OSSEC A:'{self.name}'\n".encode()
+            else:
+                event = f"OSSEC PASS: {self.authd_password} OSSEC A:'{self.name}'\n".encode()
 
-        if self.authd_password is None:
-            event = f"OSSEC A:'{self.name}'\n".encode()
-        else:
-            event = f"OSSEC PASS: {self.authd_password} OSSEC A:'{self.name}'\n".encode()
+            ssl_socket.send(event)
+            recv = ssl_socket.recv(4096)
+            registration_info = recv.decode().split("'")[1].split(" ")
 
-        ssl_socket.send(event)
-        recv = ssl_socket.recv(4096)
-        registration_info = recv.decode().split("'")[1].split(" ")
-
-        self.id = registration_info[0]
-        self.key = registration_info[3]
-
-        ssl_socket.close()
-        sock.close()
+            self.id = registration_info[0]
+            self.key = registration_info[3]
+        finally:
+            ssl_socket.close()
+            sock.close()
 
         logging.debug(f"Registration - {self.name}({self.id}) in {self.registration_address}")
+
+
+    def register(self):
+        """Request to register the agent in the manager.
+
+        In addition, it sets the agent id and agent key with the response data.
+        """
+        if self.retry_enrollment:
+            retries = 20
+            while retries >= 0:
+                try:
+                    self._register_helper()
+                except Exception:
+                    retries -= 1
+                    sleep(6)
+                else:
+                    break
+            else:
+                raise ValueError(f"The agent {self.name} was not correctly enrolled.")
+        else:
+            self._register_helper()
+
 
     @staticmethod
     def wazuh_padding(compressed_event):
