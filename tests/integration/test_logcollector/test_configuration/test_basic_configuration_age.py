@@ -202,7 +202,7 @@ def get_configuration(request):
 def test_configuration_age(get_configuration, configure_environment):
     '''
     description: Check if the 'wazuh-logcollector' daemon detects invalid configurations for the 'age' tag.
-                 For this purpose, the test will configure that module using valid/invalid values for that
+                 For this purpose, the test will set a 'localfile' section using valid/invalid values for that
                  tag. Then, it will check if the 'analyzing' event is triggered when using a valid value, or
                  if an error event is generated when using an invalid one. Finally, the test will verify that
                  the Wazuh API returns the same values for the 'localfile' section that the configured one.
@@ -218,7 +218,7 @@ def test_configuration_age(get_configuration, configure_environment):
             brief: Configure a custom environment for testing.
 
     assertions:
-        - Verify that the logcollector generates error events when invalid configurations are used.
+        - Verify that the logcollector generates error events when using invalid values for the 'age' tag.
         - Verify that the Wazuh API returns the same values for the 'localfile' section as the configured one.
 
     input_description: A configuration template (test_basic_configuration_age) is contained in an external YAML file

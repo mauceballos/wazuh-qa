@@ -165,7 +165,7 @@ def test_configuration_command(get_local_internal_options, configure_local_inter
         - Verify that the logcollector monitors the command specified in the 'command' tag.
         - Verify that the Wazuh API returns the same values for the 'localfile' section as the configured one.
 
-    input_description: A configuration template (test_basic_configuration_command) is contained in an external
+    input_description: A configuration template (test_basic_configuration_location) is contained in an external
                        YAML file (wazuh_basic_configuration.yaml). That template is combined with different
                        test cases defined in the module. Those include configuration settings for
                        the 'wazuh-logcollector' daemon.
