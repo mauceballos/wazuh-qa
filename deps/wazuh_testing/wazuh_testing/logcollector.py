@@ -353,7 +353,7 @@ def callback_event_log_service_down(location, severity='WARNING'):
         callable: callback to detect this event.
     """
     log_format_message = f"{severity}: The eventlog service is down. Unable to collect logs from '{location}' channel."
-    return monitoring.make_callback(pattern=log_format_message, prefix=monitoring.AGENT_DETECTOR_PREFIX)
+    return monitoring.make_callback(pattern=log_format_message, prefix=prefix)
 
 
 def callback_trying_to_reconnect(location, reconnect_time):
