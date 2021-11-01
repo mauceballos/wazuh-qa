@@ -45,7 +45,7 @@
     - directories:
         value: TEST_DIRECTORIES
         attributes:
-        - whodata: 'no'
+        - whodata: 'yes'
     - directories:
         value: TEST_DIRECTORIES
         attributes:
