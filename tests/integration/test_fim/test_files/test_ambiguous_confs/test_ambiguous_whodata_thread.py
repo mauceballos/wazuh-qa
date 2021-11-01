@@ -68,3 +68,6 @@ def test_ambiguous_whodata_thread(whodata_enabled, tags_to_apply, get_configurat
             wazuh_log_monitor.start(timeout=global_parameters.default_timeout,
                                     callback=callback_real_time_whodata_started)
             raise AttributeError(f'Unexpected event "File integrity monitoring real-time Whodata engine started"')
+
+
+
