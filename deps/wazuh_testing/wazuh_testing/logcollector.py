@@ -365,7 +365,7 @@ def callback_trying_to_reconnect(location, reconnect_time):
         callable: callback to detect this event.
     """
     log_format_message = f"DEBUG: Trying to reconnect {location} channel in {reconnect_time} seconds."
-    return monitoring.make_callback(pattern=log_format_message, prefix=monitoring.AGENT_DETECTOR_PREFIX)
+    return monitoring.make_callback(pattern=log_format_message, prefix=prefix)
 
 
 def callback_log_stream_exited_error():
