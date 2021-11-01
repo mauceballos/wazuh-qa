@@ -45,11 +45,11 @@
     - directories:
         value: TEST_DIRECTORIES
         attributes:
-        - whodata: 'yes'
+        - whodata: 'no'
     - directories:
         value: TEST_DIRECTORIES
         attributes:
-        - whodata: 'yes'
+        - whodata: 'no'
   - section: sca
     elements:
     - enabled:
