@@ -130,7 +130,6 @@ if sys.platform != 'win32':
 for value in file_structure:
     if value['folder_path'] == os.path.join(temp_dir, 'wazuh-testing', 'multiple-logs'):
         for i in range(2000):
-            print(i)
             value['filename'].append(f'multiple{i}.txt')
 
 
