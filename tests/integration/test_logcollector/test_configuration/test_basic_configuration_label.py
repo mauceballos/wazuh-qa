@@ -160,6 +160,7 @@ def test_configuration_label(get_configuration, configure_environment, restart_l
         - r'Analyzing file.*'
 
     tags:
+        - invalid_settings
         - logs
     '''
     cfg = get_configuration['metadata']

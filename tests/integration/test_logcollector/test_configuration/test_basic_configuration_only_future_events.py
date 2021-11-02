@@ -241,10 +241,10 @@ def get_configuration(request):
 def test_only_future_events(get_configuration, configure_environment, restart_logcollector):
     '''
     description: Check if the 'wazuh-logcollector' daemon detects invalid settings for the 'only-future-events',
-                 and 'max-size' tags. For this purpose, the test will set a 'localfile' section using both,
-                 valida and invalid values for those tags. Then, it will check if the 'analyzing' or
-                 'monitoring' event (depending on the OS) is triggered when using a valid value,
-                 or if an error event is generated when using an invalid one.
+                 and 'max-size' tags. For this purpose, the test will set a 'localfile' section using both
+                 valid and invalid values for those tags. Finally, it will verify that the 'analyzing' or
+                 'monitoring' event (depending on the OS) is triggered when using a valid value, or if an
+                 error event is generated when using an invalid one.
 
     wazuh_min_version: 4.2.0
 
@@ -262,6 +262,8 @@ def test_only_future_events(get_configuration, configure_environment, restart_lo
     assertions:
         - Verify that the logcollector generates error events when using invalid values
           for the 'only-future-events' tag.
+        - Verify that the logcollector generates 'analyzing' or 'monitoring' events when using valid values
+          for the 'only-future-events' tag.
 
     input_description: A configuration template (test_basic_configuration_only_future_events) is contained in an
                        external YAML file (wazuh_basic_configuration.yaml). That template is combined with
@@ -277,6 +279,7 @@ def test_only_future_events(get_configuration, configure_environment, restart_lo
 
     tags:
         - invalid_settings
+        - logs
     '''
     cfg = get_configuration['metadata']
 

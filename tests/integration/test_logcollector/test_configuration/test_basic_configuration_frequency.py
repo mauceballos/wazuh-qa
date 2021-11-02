@@ -254,6 +254,7 @@ def test_configuration_frequency(get_local_internal_options, configure_local_int
 
     assertions:
         - Verify that the logcollector generates error events when using invalid values for the 'frequency' tag.
+        - Verify that the logcollector generates 'monitoring' events when using valid values for the 'frequency' tag.
         - Verify that the Wazuh API returns the same values for the 'localfile' section as the configured one.
 
     input_description: A configuration template (test_basic_configuration_frequency) is contained in an external

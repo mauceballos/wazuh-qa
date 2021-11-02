@@ -158,6 +158,9 @@ def test_configuration_location(get_configuration, configure_environment, restar
 
     expected_output:
         - Boolean values to indicate the state of the Wazuh component.
+
+    tags:
+        - invalid_settings
     '''
     cfg = get_configuration['metadata']
 
