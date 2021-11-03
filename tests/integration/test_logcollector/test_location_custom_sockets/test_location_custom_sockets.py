@@ -296,23 +296,62 @@ def test_location_custom_sockets(get_local_internal_options, configure_local_int
 def test_location_custom_sockets_offline(get_local_internal_options, configure_local_internal_options,
                                          get_configuration, configure_environment, create_file_structure_module,
                                          batch, create_socket, restart_logcollector):
-    """Verify that event drops occur when the socket to which they are sent becomes unavailable.
+    '''
+    description: Check if the 'wazuh-logcollector' drops events when they are sent to a custom socket
+                 that is unavailable. For this purpose, the test will create a UNIX 'named socket' and
+                 add it to the configuration through the 'socket' section and the 'target' tag of the
+                 'localfile' section. After this, the test will verify that logcollector is connected
+                 to that socket. Then, it will close the socket and generate event batches of increasing
+                 size that will be added to the testing log file. Finally, the test will verify that
+                 all events sent are dropped by analyzing the 'wazuh-logcollector.state' file.
 
-    To do this logcollector is configured to forward events to a socket, and when the connection
-    has been established one event is written to the log file to force logcollector to connect
-    to the socket, then the socket is closed and batch of events is written to the log file,
-    in which case the event drops should be detected.
+    wazuh_min_version: 4.2.0
 
-    Args:
-        get_local_internal_options (fixture): Get internal configuration.
-        configure_local_internal_options (fixture): Set internal configuration for testing.
-        get_configuration (fixture): Get configurations from the module.
-        configure_environment (fixture): Configure a custom environment for testing.
-        create_file_structure_module (fixture): Module scope version of create_file_structure.
-        batch (fixture): Event batches to be added to the test log file.
-        create_socket (fixture): Create a UNIX named socket for testing.
-        restart_logcollector (fixture): Reset log file and start a new monitor.
-    """
+    parameters:
+        - get_local_internal_options:
+            type: fixture
+            brief: Get internal configuration.
+        - configure_local_internal_options:
+            type: fixture
+            brief: Set internal configuration for testing.
+        - get_configuration:
+            type: fixture
+            brief: Get configurations from the module.
+        - configure_environment:
+            type: fixture
+            brief: Configure a custom environment for testing.
+        - create_file_structure_module:
+            type: fixture
+            brief: Create the specified file tree structure.
+        - batch:
+            type: fixture
+            brief: Event batches to be added to the testing log file.
+        - create_socket:
+            type: fixture
+            brief: Create a UNIX named socket for testing.
+        - restart_logcollector:
+            type: fixture
+            brief: Clear the 'ossec.log' file and start a new monitor.
+
+    assertions:
+        - Verify that the logcollector monitors the log file specified in the 'location' tag.
+        - Verify that the logcollector connects to the custom socket specified in the 'target tag'.
+        - Verify that the logcollector closes the custom socket specified in the 'target tag'.
+        - Verify that all events from the monitored log file are dropped because the custom socket is closed.
+
+    input_description: A configuration template (test_location_custom_sockets) is contained in an external YAML
+                       file (wazuh_location_custom_sockets_conf.yaml). That template is combined with different
+                       test cases defined in the module. Those include configuration settings
+                       for the 'wazuh-logcollector' daemon.
+
+    expected_output:
+        - r'Analyzing file.*'
+        - r'Connected to socket .*'
+        - r'Unable to connect to socket .*'
+
+    tags:
+        - logs
+    '''
     config = get_configuration['metadata']
     global test_socket
 
