@@ -20,7 +20,7 @@ GENERIC_CALLBACK_ERROR_TARGET_SOCKET_NOT_FOUND = "The expected target socket not
 GENERIC_CALLBACK_ERROR_READING_FILE = "The expected invalid content error log has not been produced"
 GENERIC_CALLBACK_ERROR = 'The expected error output has not been produced'
 
-LOG_COLLECTOR_GLOBAL_TIMEOUT = 20
+LOG_COLLECTOR_GLOBAL_TIMEOUT = 30
 
 DEFAULT_AUTHD_REMOTED_SIMULATOR_CONFIGURATION = {
     'ip_address': 'localhost',
