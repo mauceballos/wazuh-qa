@@ -252,7 +252,7 @@ class QAProvisioning():
             finally:
                 file.remove_file(tmp_config_file)
         else:
-            self.__check_hosts_connection()
+            #self.__check_hosts_connection()
             provision_threads = [ThreadExecutor(self.__process_config_data,
                                                 parameters={'host_provision_info': host_value})
                                  for _, host_value in self.provision_info['hosts'].items()]
