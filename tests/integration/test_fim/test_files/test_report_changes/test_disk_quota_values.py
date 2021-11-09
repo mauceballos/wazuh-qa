@@ -141,7 +141,6 @@ def create_specific_size_file(get_configuration, request):
 
 
 # Tests
-@pytest.mark.skip(reason="It will be blocked by #1602, when it was solve we can enable again this test")
 def test_disk_quota_values(get_configuration, configure_environment, create_specific_size_file, restart_syscheckd):
     '''
     description: Check if the 'wazuh-syscheckd' daemon limits the size of the folder where the data
