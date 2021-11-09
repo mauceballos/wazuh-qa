@@ -9,7 +9,11 @@ import sys
 from wazuh_testing.tools.configuration import load_wazuh_configurations
 import wazuh_testing.generic_callbacks as gc
 import wazuh_testing.logcollector as logcollector
+<<<<<<< HEAD
 from wazuh_testing.tools.monitoring import FileMonitor, LOG_COLLECTOR_DETECTOR_PREFIX, WINDOWS_AGENT_DETECTOR_PREFIX
+=======
+from wazuh_testing.tools.monitoring import WINDOWS_AGENT_DETECTOR_PREFIX, FileMonitor, LOG_COLLECTOR_DETECTOR_PREFIX
+>>>>>>> b32574eddcc88c1a2d685ccc94375740ff79cf52
 from wazuh_testing.tools import get_service, LOG_FILE_PATH
 from tempfile import gettempdir
 from wazuh_testing.tools.utils import lower_case_key_dictionary_array
