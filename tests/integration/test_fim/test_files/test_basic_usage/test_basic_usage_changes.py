@@ -91,8 +91,7 @@ from wazuh_testing.tools import WAZUH_PATH
 
 # Marks
 
-pytestmark = [pytest.mark.tier(level=1), pytest.mark.win32]
-sys_platform = platform.system()
+pytestmark = pytest.mark.tier(level=1)
 
 # variables
 
@@ -103,7 +102,7 @@ wazuh_log_monitor = FileMonitor(LOG_FILE_PATH)
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
 configurations_path = os.path.join(test_data_path, 'wazuh_conf.yaml')
 testdir1, testdir2 = test_directories
-mark_skip_agentWindows = pytest.mark.skipif(sys_platform != 'Linux' and sys_platform != 'solaris11' and sys_platform != 'darwin', reason="It will be blocked by wazuh/wazuh-qa#2174")
+mark_skip_agentWindows = pytest.mark.skipif(sys.platform == 'win32', reason="It will be blocked by wazuh/wazuh-qa#2174")
 
 # configurations
 
