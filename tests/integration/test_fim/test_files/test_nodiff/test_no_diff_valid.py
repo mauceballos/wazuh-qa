@@ -46,7 +46,6 @@ def get_configuration(request):
     """Get configurations from the module."""
     return request.param
 
-@pytest.mark.skip(reason="It will be blocked by #1602, when it is resolved will could enable again this test")
 @pytest.mark.parametrize('folder, filename, content, hidden_content, tags_to_apply', [
     (testdir1, 'testfile', "Sample content", False, {'valid_regex', 'valid_no_regex'}),
     (testdir1, 'btestfile', b"Sample content", False, {'valid_regex', 'valid_no_regex'}),
@@ -71,6 +70,7 @@ def get_configuration(request):
     (testdir1, 'whatever.txt', "test", True, {'valid_empty'}),
     (testdir2, 'whatever2.txt', "test", True, {'valid_empty'})
 ])
+@pytest.mark.skip(reason="Test blocked. It needs a refactor")
 def test_no_diff_subdirectory(folder, filename, content, hidden_content,
                               tags_to_apply, get_configuration,
                               configure_environment, restart_syscheckd,
