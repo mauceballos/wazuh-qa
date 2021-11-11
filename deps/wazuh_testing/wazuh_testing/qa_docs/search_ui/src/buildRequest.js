@@ -70,15 +70,16 @@ export default function buildRequest(state) {
     },
     //https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-request-source-filtering.html#search-request-source-filtering
     _source: {
-        "includes": ["brief", "id", "metadata.modules", "name", "group_id", "tests"]
+        "includes": ["name", "id", "type", "brief", "tier", "modules", "daemons", "components", "os_platform", "os_version", "tests"]
     },
     aggs: {
       name: { terms: { field: "name.keyword" } },
       brief: { terms: { field: "brief.keyword" } },
-      group_id: { terms: { field: "group_id" } },
-      tiers: {terms: {field: "metadata.tiers" } },
-      operating_system: {terms: {field: "metadata.operating_system.keyword" } },
-      modules: {terms: {field: "metadata.modules.keyword" } },
+      tiers: {terms: {field: "tiers" } },
+      os_platform: {terms: {field: "os_platform.keyword" } },
+      modules: {terms: {field: "modules.keyword" } },
+      daemons: {terms: {field: "daemons.keyword" } },
+      components: {terms: {field: "components.keyword" } },
     },
 
     // Dynamic values based on current Search UI state

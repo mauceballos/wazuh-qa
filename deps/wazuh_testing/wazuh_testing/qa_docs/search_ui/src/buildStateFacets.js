@@ -22,18 +22,20 @@ function getValueFacet(aggregations, fieldName) {
 export default function buildStateFacets(aggregations) {
   const brief = getValueFacet(aggregations, "brief");
   const name = getValueFacet(aggregations, "name");
-  const group_id = getValueFacet(aggregations, "group_id");
   const tiers = getValueFacet(aggregations, "tiers");
-  const operating_system = getValueFacet(aggregations, "operating_system");
+  const os_platform = getValueFacet(aggregations, "os_platform");
   const modules = getValueFacet(aggregations, "modules");
+  const daemons = getValueFacet(aggregations, "daemons");
+  const components = getValueFacet(aggregations, "components");
 
   const facets = {
     ...(brief && { brief }),
     ...(name && { name }),
-    ...(group_id && {group_id}),
     ...(tiers && {tiers}),
-    ...(operating_system && {operating_system}),
-    ...(modules && {modules})
+    ...(os_platform && {os_platform}),
+    ...(modules && {modules}),
+    ...(daemons && {daemons}),
+    ...(components && {components})
   };
 
   if (Object.keys(facets).length > 0) {

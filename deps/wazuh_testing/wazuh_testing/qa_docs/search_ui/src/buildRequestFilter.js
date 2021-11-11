@@ -6,10 +6,11 @@ function getTermFilterValue(field, fieldValue) {
   // TODO We need better approach for boolean values
   if (fieldValue === "false" || fieldValue === "true") {
     return { [field]: fieldValue === "true" };
-  // We need to find another way to concatenate the root path if possible.
-  } else if (field === "tiers" || field === "modules" || field === "operating_system") {
-    field = `metadata.${field}`
   }
+  // We need to find another way to concatenate the root path if possible.
+  // } else if (field === "tiers" || field === "modules" || field === "os_platform") {
+  //   field = `metadata.${field}`
+  // }
 
   // If the value is a number it doesn't need the keyword term to be added.
   if (!isNaN(fieldValue)) {
@@ -44,7 +45,7 @@ export default function buildRequestFilter(filters) {
   if (!filters) return;
 
   filters = filters.reduce((acc, filter) => {
-    if (["states", "world_heritage_site", "group_id", "tiers", "modules", "operating_system"].includes(filter.field)) {
+    if (["states", "world_heritage_site", "tiers", "modules", "os_platform", "daemons", "components"].includes(filter.field)) {
       return [...acc, getTermFilter(filter)];
     }
     return acc;

@@ -47,7 +47,7 @@ const config = {
     const responseJsonWithDisjunctiveFacetCounts = await applyDisjunctiveFaceting(
       responseJson,
       state,
-      ["group_id", "tiers", "operating_system", "modules"]
+      ["group_id", "tiers", "os_platform", "modules", "daemons", "components"]
     );
     return buildState(responseJsonWithDisjunctiveFacetCounts, resultsPerPage);
   }
@@ -94,10 +94,11 @@ export default function App() {
                         ]}
                       />
                     )}
-                    <Facet field="group_id" label="Group ID:" filterType="any" />
-                    <Facet field="tiers" label="Tiers:" filterType="any"/>
-                    <Facet field="operating_system" label="Operating System:" filterType="any"/>
-                    <Facet field="modules" label="Modules:" filterType="any"/>
+                    <Facet field="tier" label="tier:" filterType="any"/>
+                    <Facet field="os_platform" label="os_platform:" filterType="any"/>
+                    <Facet field="modules" label="modules:" filterType="any"/>
+                    <Facet field="daemons" label="daemons:" filterType="any"/>
+                    <Facet field="components" label="components:" filterType="any"/>
                   </div>
                 }
                 bodyContent={
