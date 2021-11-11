@@ -19,6 +19,7 @@ import buildRequest from "./buildRequest";
 import runRequest from "./runRequest";
 import applyDisjunctiveFaceting from "./applyDisjunctiveFaceting";
 import buildState from "./buildState";
+import "./styles/result.css";
 
 const config = {
   debug: true,
@@ -47,7 +48,7 @@ const config = {
     const responseJsonWithDisjunctiveFacetCounts = await applyDisjunctiveFaceting(
       responseJson,
       state,
-      ["group_id", "tiers", "os_platform", "modules", "daemons", "components"]
+      ["tiers", "os_platform", "modules", "daemons", "components"]
     );
     return buildState(responseJsonWithDisjunctiveFacetCounts, resultsPerPage);
   }
