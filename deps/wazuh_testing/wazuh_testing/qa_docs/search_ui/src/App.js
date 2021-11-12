@@ -19,18 +19,13 @@ import buildRequest from "./buildRequest";
 import runRequest from "./runRequest";
 import applyDisjunctiveFaceting from "./applyDisjunctiveFaceting";
 import buildState from "./buildState";
-import "./styles/result.css";
+import ResultView from "./ResultView";
 
 const config = {
   debug: true,
   alwaysSearchOnInitialLoad: true,
   hasA11yNotifications: true,
-  onResultClick: () => {
-    /* Not implemented */
-  },
-  onAutocompleteResultClick: () => {
-    /* Not implemented */
-  },
+
   onAutocomplete: async ({ searchTerm }) => {
     const requestBody = buildRequest({ searchTerm });
     const json = await runRequest(requestBody);
@@ -48,16 +43,17 @@ const config = {
     const responseJsonWithDisjunctiveFacetCounts = await applyDisjunctiveFaceting(
       responseJson,
       state,
-      ["tiers", "os_platform", "modules", "daemons", "components"]
+      ["group_id", "tiers", "os_platform", "modules", "daemons", "components"]
     );
     return buildState(responseJsonWithDisjunctiveFacetCounts, resultsPerPage);
-  }
+  },
 };
 
 export default function App() {
   return (
     <SearchProvider config={config}>
-      <WithSearch mapContextToProps={({ wasSearched }) => ({ wasSearched })}>
+      <WithSearch 
+      mapContextToProps={({ wasSearched }) => ({ wasSearched })}>
         {({ wasSearched }) => (
           <div className="App">
             <ErrorBoundary>
@@ -104,7 +100,9 @@ export default function App() {
                 }
                 bodyContent={
                   <Results
-                    titleField="name"
+                    label={"Name"}
+                    titleField='name'
+                    resultView={ResultView}
                     shouldTrackClickThrough={true}
                   />
                 }
