@@ -1,4 +1,5 @@
 import React from "react";
+import Image from 'react-native';
 
 import {
   ErrorBoundary,
@@ -14,12 +15,14 @@ import {
 } from "@elastic/react-search-ui";
 import { Layout} from "@elastic/react-search-ui-views";
 import "@elastic/react-search-ui-views/lib/styles/styles.css";
+import "./styles/resultView.css";
 
 import buildRequest from "./buildRequest";
 import runRequest from "./runRequest";
 import applyDisjunctiveFaceting from "./applyDisjunctiveFaceting";
 import buildState from "./buildState";
 import ResultView from "./ResultView";
+import wazuhHeaderLogo from './data/wazuh_logo_w.png'
 
 const config = {
   debug: true,
@@ -59,6 +62,10 @@ export default function App() {
             <ErrorBoundary>
               <Layout
                 header={
+                  // <Image
+                  // style={{ width: 30, height: 30, margin: 20 }}
+                  // source={require(wazuhHeaderLogo)}
+                  // />,
                   <SearchBox
                     autocompleteMinimumCharacters={3}
                     autocompleteResults={{
