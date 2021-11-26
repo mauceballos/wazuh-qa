@@ -38,8 +38,8 @@ scripts_list = [
     'wazuh-log-metrics=wazuh_testing.scripts.wazuh_log_metrics:main',
     'qa-docs=wazuh_testing.scripts.qa_docs:main',
     'qa-ctl=wazuh_testing.scripts.qa_ctl:main',
-    'add-agents=wazuh_testing.scripts.add-agents:main',
-    'add-agents-to-group=wazuh_testing.scripts.add-agents-to-group:main',
+    'add-agents=wazuh_testing.scripts.add_agents:main',
+    'add-agents-to-group=wazuh_testing.scripts.add_agents_to_group:main',
     'unsync=wazuh_testing.scripts.unsync:main',
 ]
 
