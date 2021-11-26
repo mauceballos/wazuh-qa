@@ -1,7 +1,8 @@
 import logging
 import random
-import time
+import socket
 import subprocess
+import time
 
 LOGGER_NAME = "add_agents.log"
 
@@ -26,29 +27,31 @@ class CustomLogger:
 
 
 def main():
-    logger = CustomLogger('Add_agents').get_logger()
+    if socket.gethostname() == 'wazuh-master':
+        logger = CustomLogger('Add_agents').get_logger()
 
-    agents_list = list(range(1, 7200))
-    agents_list = [str(agent_id).zfill(3) for agent_id in agents_list]
-    logger.info("Starting add_agents script, shuffling agents ID list with range [001-7200]")
-    random.shuffle(agents_list)
+        agents_list = list(range(1, 7200))
+        agents_list = [str(agent_id).zfill(3) for agent_id in agents_list]
+        logger.info("Starting add_agents script, shuffling agents ID list with range [001-7200]")
+        random.shuffle(agents_list)
 
-    logger.info(f"Agents with ID {', '.join(agents_list[:5])}, ... are going to be added to the client.keys file")
+        logger.info(f"Agents with ID {', '.join(agents_list[:5])}, ... are going to be added to the client.keys file")
 
-    with open(file='/var/ossec/etc/client.keys', mode='a') as f:
-        for chunk in [agents_list[x:x + 50] for x in range(0, len(agents_list), 50)]:
-            logger.info("Stopping the wazuh-manager service")
-            subprocess.run(["/var/ossec/bin/wazuh-control", "stop"])
+        with open(file='/var/ossec/etc/client.keys', mode='a') as f:
+            for chunk in [agents_list[x:x + 50] for x in range(0, len(agents_list), 50)]:
+                logger.info("Stopping the wazuh-manager service")
+                subprocess.run(["/var/ossec/bin/wazuh-control", "stop"])
 
-            logger.info(f"Adding 50 agents with IDs: {', '.join(chunk[:5])}, ...")
-            for agent_id in chunk:
-                f.write(f"{str(agent_id).zfill(3)} new_agent_{agent_id} any {agent_id}\n")
-                f.flush()  # This is important to avoid bytes staying in the buffer until the loop has finished
+                logger.info(f"Adding 50 agents with IDs: {', '.join(chunk[:5])}, ...")
+                for agent_id in chunk:
+                    f.write(f"{str(agent_id).zfill(3)} new_agent_{agent_id} any {agent_id}\n")
+                    f.flush()  # This is important to avoid bytes staying in the buffer until the loop has finished
 
-            logger.info("Starting the wazuh-manager service")
-            subprocess.run(["/var/ossec/bin/wazuh-control", "start"])
+                logger.info("Starting the wazuh-manager service")
+                subprocess.run(["/var/ossec/bin/wazuh-control", "start"])
 
-            time.sleep(60)
+                time.sleep(60)
+    exit(0)
 
 
 if __name__ == "__main__":
