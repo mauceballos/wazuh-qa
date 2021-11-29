@@ -1,0 +1,10 @@
+---
+
+-
+  name: "Analysisd: Default message"
+  description: "Send deafault message to the analysisd daemon"
+  test_case:
+  -
+    id: 0912
+    location: 'tmp_dir'
+    log: "Mensaje"
