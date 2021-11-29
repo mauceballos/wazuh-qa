@@ -1,13 +1,25 @@
 #!/var/ossec/framework/python/bin/python3
 # Send msg to WDB
 
+import logging
 import socket
 import struct
-import time
+import subprocess
 import sys
-import logging
+import time
 
 LOGGER_NAME = "unsync.log"
+
+
+def check_host_master_node():
+    proc1 = subprocess.Popen(['/var/ossec/bin/cluster_control', '-l'], stdout=subprocess.PIPE)
+    proc2 = subprocess.Popen(['grep', 'master'], stdin=proc1.stdout,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc1.stdout.close()
+    out, err = proc2.communicate()
+
+    ip_master = (out.split()[-1]).decode("utf-8")
+    return True if ip_master == socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.') else False
 
 
 class CustomLogger:
@@ -30,7 +42,7 @@ class CustomLogger:
 
 
 def main():
-    if socket.gethostname() == 'wazuh-master':
+    if check_host_master_node():
         def send_msg(msg):
             msg = struct.pack('<I', len(msg)) + msg.encode()
 

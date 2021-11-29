@@ -1,10 +1,48 @@
-import os
-import sys
 import logging
-import time
+import os
 import socket
+import subprocess
+import time
 
 LOGGER_NAME = "add_agents_to_group.log"
+
+
+def check_host_master_node():
+    proc1 = subprocess.Popen(['/var/ossec/bin/cluster_control', '-l'], stdout=subprocess.PIPE)
+    proc2 = subprocess.Popen(['grep', 'master'], stdin=proc1.stdout,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc1.stdout.close()
+    out, err = proc2.communicate()
+
+    ip_master = (out.split()[-1]).decode("utf-8")
+    return True if ip_master == socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.') else False
+
+
+def get_node_name():
+    proc1 = subprocess.Popen(['/var/ossec/bin/cluster_control', '-l'], stdout=subprocess.PIPE)
+    proc2 = subprocess.Popen(['grep', 'worker'], stdin=proc1.stdout,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc1.stdout.close()
+    out, err = proc2.communicate()
+
+    out = out.decode("utf-8")
+
+    ips_list = out.split('\n')
+    # Save name and IP in ips_list
+    ips_list = [(ip.split()[0], ip.split()[-1]) for ip in ips_list]
+
+    host_ip = socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.')
+
+    for ip in ips_list:
+        if ip[1] == host_ip:
+            return 'worker1' if 'worker1' in ip[0] \
+                else 'worker2' if 'worker2' in ip[0] \
+                else 'worker3' if 'worker3' in ip[0] \
+                else 'worker4' if 'worker4' in ip[0] \
+                else 'worker5' if 'worker5' in ip[0] \
+                else 'master'
+
+    return False
 
 
 class CustomLogger:
@@ -27,14 +65,16 @@ class CustomLogger:
 
 
 def main():
-    if socket.gethostname() != 'wazuh-master':
+    if not check_host_master_node():
         logger = CustomLogger('Add_agents').get_logger()
 
+        worker_name = get_node_name()
+
         agents_range = \
-            (1, 1440) if socket.gethostname() == 'wazuh-worker1' else (
-                1441, 2880) if socket.gethostname() == 'wazuh-worker2' else (
-                2881, 4320) if socket.gethostname() == 'wazuh-worker3' else (
-                4321, 5760) if socket.gethostname() == 'wazuh-worker4' else (5761, 7200)
+            (1, 1440) if worker_name == 'worker1' else (
+                1441, 2880) if worker_name == 'worker2' else (
+                2881, 4320) if worker_name == 'worker3' else (
+                4321, 5760) if worker_name == 'worker4' else (5761, 7200)
 
         first_agent_ID = agents_range[0]
         last_agent_ID = agents_range[1]
