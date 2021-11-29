@@ -15,7 +15,6 @@ def check_host_master_node():
     out, err = proc2.communicate()
 
     ip_master = (out.split()[-1]).decode("utf-8")
-    print(socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.'), ip_master)
     return True if ip_master == socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.') else False
 
 
