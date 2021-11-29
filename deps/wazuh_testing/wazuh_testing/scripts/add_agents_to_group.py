@@ -1,3 +1,4 @@
+import copy
 import logging
 import os
 import socket
@@ -29,17 +30,18 @@ def get_node_name():
 
     ips_list = out.split('\n')
     # Save name and IP in ips_list
-    ips_list = [(ip.split()[0], ip.split()[-1]) for ip in ips_list]
+    ips_list_copy = copy.deepcopy(ips_list)
+    ips_list = [(ip.split()[0], ip.split()[-1]) for ip in ips_list_copy[:-1]]
 
     host_ip = socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.')
 
     for ip in ips_list:
         if ip[1] == host_ip:
-            return 'worker1' if 'worker1' in ip[0] \
-                else 'worker2' if 'worker2' in ip[0] \
-                else 'worker3' if 'worker3' in ip[0] \
-                else 'worker4' if 'worker4' in ip[0] \
-                else 'worker5' if 'worker5' in ip[0] \
+            return 'worker1' if 'manager_1' in ip[0] \
+                else 'worker2' if 'manager_2' in ip[0] \
+                else 'worker3' if 'manager_3' in ip[0] \
+                else 'worker4' if 'manager_4' in ip[0] \
+                else 'worker5' if 'manager_5' in ip[0] \
                 else 'master'
 
     return False
