@@ -7,6 +7,18 @@ import time
 LOGGER_NAME = "add_agents.log"
 
 
+def check_host_master_node():
+    proc1 = subprocess.Popen(['/var/ossec/bin/cluster_control', '-l'], stdout=subprocess.PIPE)
+    proc2 = subprocess.Popen(['grep', 'master'], stdin=proc1.stdout,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc1.stdout.close()
+    out, err = proc2.communicate()
+
+    ip_master = (out.split()[-1]).decode("utf-8")
+    print(socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.'), ip_master)
+    return True if ip_master == socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.') else False
+
+
 class CustomLogger:
     def __init__(self, name, file_path=f'/tmp/{LOGGER_NAME}', foreground=False, level=logging.INFO):
         logger = logging.getLogger(name)
@@ -27,7 +39,7 @@ class CustomLogger:
 
 
 def main():
-    if socket.gethostname() == 'wazuh-master':
+    if check_host_master_node():
         logger = CustomLogger('Add_agents').get_logger()
 
         agents_list = list(range(1, 7200))
@@ -39,17 +51,12 @@ def main():
 
         with open(file='/var/ossec/etc/client.keys', mode='a') as f:
             for chunk in [agents_list[x:x + 50] for x in range(0, len(agents_list), 50)]:
-                logger.info("Stopping the wazuh-manager service")
-                subprocess.run(["/var/ossec/bin/wazuh-control", "stop"])
-
                 logger.info(f"Adding 50 agents with IDs: {', '.join(chunk[:5])}, ...")
                 for agent_id in chunk:
                     f.write(f"{str(agent_id).zfill(3)} new_agent_{agent_id} any {agent_id}\n")
                     f.flush()  # This is important to avoid bytes staying in the buffer until the loop has finished
 
-                logger.info("Starting the wazuh-manager service")
-                subprocess.run(["/var/ossec/bin/wazuh-control", "start"])
-
+                logger.info("Sleeping for 60 seconds ...")
                 time.sleep(60)
     exit(0)
 
