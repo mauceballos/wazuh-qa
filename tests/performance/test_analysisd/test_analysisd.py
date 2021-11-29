@@ -26,7 +26,7 @@ def test_analysisd(test_cases):
         msg = '0912:tmpdir:Mensaje'
         if os.path.exists(f"{test_results_path}/{scenario['eps']}"):
             sh.rmtree(f"{test_results_path}/{scenario['eps']}", ignore_errors=True)
-            os.mkdir(f"{test_results_path}/{scenario['eps']}")
+        os.mkdir(f"{test_results_path}/{scenario['eps']}")
         monitor = Monitor(process_name='analysisd', dst_dir=f'{test_results_path}/{scenario["eps"]}')
         def send_message(message, wazuh_socket):
 
