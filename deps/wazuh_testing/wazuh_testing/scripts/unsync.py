@@ -92,20 +92,22 @@ def main():
             logger.error("Wrong parameter indicating the node name")
             exit(0)
 
+        counter = 0
         while True:
-            try:
-                sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-                sock.connect(ADDR)
-                msg = f'global sql UPDATE agent SET node_name = "{node_name}", version="Wazuh v4.0.0" ' \
-                      f'where id>{first_id} and id<={last_id}'
-                logger.info(f"Updating node_name ({node_name}) and version of the agents: {send_msg(msg)}")
-                sock.close()
-                break
-            except Exception as e:
-                logger.error(f"Could not find wdb socket: {e}. Retrying in 10 seconds...")
-                time.sleep(10)
-
-        while True:
+            if counter % 60 == 0:
+                while True:
+                    try:
+                        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+                        sock.connect(ADDR)
+                        msg = f'global sql UPDATE agent SET node_name = "{node_name}", version="Wazuh v4.0.0" ' \
+                              f'where id>{first_id} and id<={last_id}'
+                        logger.info(f"Updating node_name ({node_name}) and version of the agents: {send_msg(msg)}")
+                        sock.close()
+                        break
+                    except Exception as e:
+                        logger.error(f"Could not find wdb socket: {e}. Retrying in 10 seconds...")
+                        counter += 10
+                        time.sleep(10)
             try:
                 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
                 sock.connect(ADDR)
@@ -113,6 +115,7 @@ def main():
                       f'connection_status="active" where id>{first_id} and id<={last_id}'
                 logger.info(f"Updating sync_status of agents between {first_id} and {last_id}: {send_msg(msg)}")
                 sock.close()
+                counter += 10
                 time.sleep(10)
             except KeyboardInterrupt:
                 logger.info("Closing socket")
@@ -120,6 +123,7 @@ def main():
                 exit(0)
             except Exception as e:
                 logger.error(f"An exception was raised: {e}")
+                counter += 10
                 time.sleep(10)
     exit(0)
 
