@@ -42,9 +42,9 @@ def main():
     if check_host_master_node():
         logger = CustomLogger('Add_agents').get_logger()
 
-        agents_list = list(range(1, 7200))
+        agents_list = list(range(1, 360000))
         agents_list = [str(agent_id).zfill(3) for agent_id in agents_list]
-        logger.info("Starting add_agents script, shuffling agents ID list with range [001-7200]")
+        logger.info("Starting add_agents script, shuffling agents ID list with range [001-360000]")
         random.shuffle(agents_list)
 
         logger.info(f"Agents with ID {', '.join(agents_list[:5])}, ... are going to be added to the client.keys file")
