@@ -61,4 +61,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    logger = CustomLogger('Add_agents').get_logger()
+    try:
+        main()
+    except Exception as e:
+        logger.info(f"Exception raised {e.__dict__}")
