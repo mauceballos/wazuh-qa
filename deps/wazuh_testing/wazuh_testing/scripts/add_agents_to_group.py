@@ -68,7 +68,7 @@ class CustomLogger:
 
 def main():
     if not check_host_master_node():
-        logger = CustomLogger('Add_agents').get_logger()
+        logger = CustomLogger('Add_agents_to_group').get_logger()
 
         worker_name = get_node_name()
 
@@ -107,7 +107,7 @@ def main():
 
 
 if __name__ == '__main__':
-    logger = CustomLogger('Add_agents').get_logger()
+    logger = CustomLogger('Add_agents_to_group').get_logger()
     try:
         main()
     except Exception as e:
