@@ -9,5 +9,7 @@
           value: 'macos'
       - log_format:
           value: 'macos'
+      - query:
+          value: 'eventMessage CONTAINS[c] "Only future events testing"'
       - only-future-events:
           value: ONLY_FUTURE_EVENTS

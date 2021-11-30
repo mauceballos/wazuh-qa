@@ -72,8 +72,8 @@ def test_macos_format_only_future_events(restart_logcollector_required_daemons_p
 
     only_future_events = get_configuration['metadata']['only-future-events']
 
-    old_message = 'Old logger message'
-    new_message = 'New logger message'
+    old_message = 'Only future events testing - Old logger message'
+    new_message = 'Only future events testing - New logger message'
 
     logcollector.generate_macos_logger_log(old_message)
     expected_old_macos_message = logcollector.format_macos_message_pattern('logger', old_message)
