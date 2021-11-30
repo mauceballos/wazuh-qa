@@ -72,11 +72,16 @@ def main():
 
         worker_name = get_node_name()
 
+        # Worker1: agents with ID 1-72000
+        # Worker2: agents with ID 72001-144000
+        # Worker3: agents with ID 144001-216000
+        # Worker4: agents with ID 216001-288000
+        # Worker5: agents with ID 288001-360000
         agents_range = \
-            (1, 1440) if worker_name == 'worker1' else (
-                1441, 2880) if worker_name == 'worker2' else (
-                2881, 4320) if worker_name == 'worker3' else (
-                4321, 5760) if worker_name == 'worker4' else (5761, 7200)
+            (1, 72000) if worker_name == 'worker1' else (
+                72001, 144000) if worker_name == 'worker2' else (
+                144001, 216000) if worker_name == 'worker3' else (
+                216001, 288000) if worker_name == 'worker4' else (288001, 360000)
 
         first_agent_ID = agents_range[0]
         last_agent_ID = agents_range[1]
