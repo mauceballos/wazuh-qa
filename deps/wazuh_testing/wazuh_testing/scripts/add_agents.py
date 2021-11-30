@@ -1,4 +1,5 @@
 import logging
+import os
 import random
 import socket
 import subprocess
@@ -48,6 +49,9 @@ def main():
 
         logger.info(f"Agents with ID {', '.join(agents_list[:5])}, ... are going to be added to the client.keys file")
 
+        while not os.path.exists('/var/ossec/etc/client.keys'):
+            logger.info("client.keys does not exist, waiting 15 seconds...")
+            time.sleep(15)
         with open(file='/var/ossec/etc/client.keys', mode='a') as f:
             for chunk in [agents_list[x:x + 50] for x in range(0, len(agents_list), 50)]:
                 logger.info(f"Adding 50 agents with IDs: {', '.join(chunk[:5])}, ...")
