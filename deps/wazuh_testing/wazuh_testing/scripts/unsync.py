@@ -22,6 +22,20 @@ def check_host_master_node():
     return True if ip_master == socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.') else False
 
 
+def get_node_names():
+    proc1 = subprocess.Popen(['/var/ossec/bin/cluster_control', '-l'], stdout=subprocess.PIPE)
+    proc2 = subprocess.Popen(['grep', 'worker'], stdin=proc1.stdout,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc1.stdout.close()
+    out, err = proc2.communicate()
+
+    out = out.decode("utf-8")
+
+    ips_list = out.split('\n')
+    node_names = [node.split()[0] for node in ips_list[:-1]]
+    return sorted(node_names)
+
+
 class CustomLogger:
     def __init__(self, name, file_path=f'/tmp/{LOGGER_NAME}', foreground=False, level=logging.INFO):
         logger = logging.getLogger(name)
@@ -67,7 +81,16 @@ def main():
 
         first_id = int(min(float(sys.argv[1]), float(sys.argv[2])))
         last_id = int(max(float(sys.argv[1]), float(sys.argv[2])))
-        node_name = str(sys.argv[3])
+
+        node_name = None
+        node_names = get_node_names()
+        for node in node_names:
+            if str(sys.argv[3]) in node:
+                node_name = node
+                break
+        else:
+            logger.error("Wrong parameter indicating the node name")
+            exit(0)
 
         while True:
             try:
@@ -102,4 +125,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    logger = CustomLogger('Add_agents').get_logger()
+    try:
+        main()
+    except Exception as e:
+        logger.info(f"Exception raised {e.__dict__}")
