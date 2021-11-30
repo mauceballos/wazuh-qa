@@ -52,15 +52,15 @@ def main():
         while not os.path.exists('/var/ossec/etc/client.keys'):
             logger.info("client.keys does not exist, waiting 15 seconds...")
             time.sleep(15)
-        with open(file='/var/ossec/etc/client.keys', mode='a') as f:
-            for chunk in [agents_list[x:x + 50] for x in range(0, len(agents_list), 50)]:
-                logger.info(f"Adding 50 agents with IDs: {', '.join(chunk[:5])}, ...")
-                for agent_id in chunk:
-                    f.write(f"{str(agent_id).zfill(3)} new_agent_{agent_id} any {agent_id}\n")
-                    f.flush()  # This is important to avoid bytes staying in the buffer until the loop has finished
-
-                logger.info("Sleeping for 60 seconds ...")
-                time.sleep(60)
+        for chunk in [agents_list[x:x + 50] for x in range(0, len(agents_list), 50)]:
+            f = open(file='/var/ossec/etc/client.keys', mode='a')
+            logger.info(f"Adding 50 agents with IDs: {', '.join(chunk[:5])}, ...")
+            for agent_id in chunk:
+                f.write(f"{str(agent_id).zfill(3)} new_agent_{agent_id} any {agent_id}\n")
+                f.flush()  # This is important to avoid bytes staying in the buffer until the loop has finished
+            f.close()
+            logger.info("Sleeping for 60 seconds ...")
+            time.sleep(60)
     exit(0)
 
 
