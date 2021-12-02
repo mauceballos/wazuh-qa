@@ -1,6 +1,7 @@
 #!/var/ossec/framework/python/bin/python3
 # Send msg to WDB
 
+import copy
 import logging
 import socket
 import struct
@@ -22,7 +23,7 @@ def check_host_master_node():
     return True if ip_master == socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.') else False
 
 
-def get_node_names():
+def get_node_name():
     proc1 = subprocess.Popen(['/var/ossec/bin/cluster_control', '-l'], stdout=subprocess.PIPE)
     proc2 = subprocess.Popen(['grep', 'worker'], stdin=proc1.stdout,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -32,8 +33,17 @@ def get_node_names():
     out = out.decode("utf-8")
 
     ips_list = out.split('\n')
-    node_names = [node.split()[0] for node in ips_list[:-1]]
-    return sorted(node_names)
+    # Save name and IP in ips_list
+    ips_list_copy = copy.deepcopy(ips_list)
+    ips_list = [(ip.split()[0], ip.split()[-1]) for ip in ips_list_copy[:-1]]
+
+    host_ip = socket.gethostname().split('.')[0].replace('ip-', '').replace('-', '.')
+
+    for ip in ips_list:
+        if ip[1] == host_ip:
+            return ip[0]
+
+    return False
 
 
 class CustomLogger:
@@ -56,7 +66,7 @@ class CustomLogger:
 
 
 def main():
-    if check_host_master_node():
+    if not check_host_master_node():
         def send_msg(msg):
             msg = struct.pack('<I', len(msg)) + msg.encode()
 
@@ -73,8 +83,8 @@ def main():
         logger = CustomLogger('Unsync').get_logger()
         ADDR = '/var/ossec/queue/db/wdb'
 
-        if len(sys.argv) != 4:
-            msg = f"unsync.py <first_id> <last_id> <node_name> (you used {' '.join(sys.argv)})"
+        if len(sys.argv) != 3:
+            msg = f"unsync.py <first_id> <last_id> (you used {' '.join(sys.argv)})"
             print(msg)
             logger.error(msg)
             exit(0)
@@ -82,15 +92,7 @@ def main():
         first_id = int(min(float(sys.argv[1]), float(sys.argv[2])))
         last_id = int(max(float(sys.argv[1]), float(sys.argv[2])))
 
-        node_name = None
-        node_names = get_node_names()
-        for node in node_names:
-            if str(sys.argv[3]) in node:
-                node_name = node
-                break
-        else:
-            logger.error("Wrong parameter indicating the node name")
-            exit(0)
+        node_name = get_node_name()
 
         counter = 0
         while True:
