@@ -83,50 +83,52 @@ def main():
         logger = CustomLogger('Unsync').get_logger()
         ADDR = '/var/ossec/queue/db/wdb'
 
-        if len(sys.argv) != 3:
-            msg = f"unsync.py <first_id> <last_id> (you used {' '.join(sys.argv)})"
-            print(msg)
-            logger.error(msg)
-            exit(0)
+        manager_name = sys.argv[1]
 
-        first_id = int(min(float(sys.argv[1]), float(sys.argv[2])))
-        last_id = int(max(float(sys.argv[1]), float(sys.argv[2])))
+        if manager_name in get_node_name():
 
-        node_name = get_node_name()
+            range_id = (1, 72000) if manager_name == 'manager_1' else (72000, 144000) if manager_name == 'manager_2' else \
+                (144000, 216000) if manager_name == 'manager_3' else (216000, 288000) if manager_name == 'manager_4' else (
+                288000, 360000)
 
-        counter = 0
-        while True:
-            if counter % 60 == 0:
-                while True:
-                    try:
-                        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-                        sock.connect(ADDR)
-                        msg = f'global sql UPDATE agent SET node_name = "{node_name}", version="Wazuh v4.0.0" ' \
-                              f'where id>{first_id} and id<={last_id}'
-                        logger.info(f"Updating node_name ({node_name}) and version of the agents: {send_msg(msg)}")
-                        sock.close()
-                        break
-                    except Exception as e:
-                        logger.error(f"Could not find wdb socket: {e}. Retrying in 10 seconds...")
-                        counter += 10
-                        time.sleep(10)
-            try:
-                sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-                sock.connect(ADDR)
-                msg = f'global sql UPDATE agent SET sync_status="syncreq", last_keepalive="{int(time.time())}", ' \
-                      f'connection_status="active" where id>{first_id} and id<={last_id}'
-                logger.info(f"Updating sync_status of agents between {first_id} and {last_id}: {send_msg(msg)}")
-                sock.close()
-                counter += 10
-                time.sleep(10)
-            except KeyboardInterrupt:
-                logger.info("Closing socket")
-                sock.close()
-                exit(0)
-            except Exception as e:
-                logger.error(f"An exception was raised: {e}")
-                counter += 10
-                time.sleep(10)
+            first_id = range_id[0]
+            last_id = range_id[1]
+
+            node_name = get_node_name()
+
+            counter = 0
+            while True:
+                if counter % 60 == 0:
+                    while True:
+                        try:
+                            sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+                            sock.connect(ADDR)
+                            msg = f'global sql UPDATE agent SET node_name = "{node_name}", version="Wazuh v4.0.0" ' \
+                                  f'where id>{first_id} and id<={last_id}'
+                            logger.info(f"Updating node_name ({node_name}) and version of the agents: {send_msg(msg)}")
+                            sock.close()
+                            break
+                        except Exception as e:
+                            logger.error(f"Could not find wdb socket: {e}. Retrying in 10 seconds...")
+                            counter += 10
+                            time.sleep(10)
+                try:
+                    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+                    sock.connect(ADDR)
+                    msg = f'global sql UPDATE agent SET sync_status="syncreq", last_keepalive="{int(time.time())}", ' \
+                          f'connection_status="active" where id>{first_id} and id<={last_id}'
+                    logger.info(f"Updating sync_status of agents between {first_id} and {last_id}: {send_msg(msg)}")
+                    sock.close()
+                    counter += 10
+                    time.sleep(10)
+                except KeyboardInterrupt:
+                    logger.info("Closing socket")
+                    sock.close()
+                    exit(0)
+                except Exception as e:
+                    logger.error(f"An exception was raised: {e}")
+                    counter += 10
+                    time.sleep(10)
     exit(0)
 
 
