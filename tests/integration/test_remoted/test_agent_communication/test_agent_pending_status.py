@@ -55,12 +55,10 @@ tags:
 '''
 import os
 import pytest
+from time import sleep
 
 import wazuh_testing.remote as rd
 import wazuh_testing.tools.agent_simulator as ag
-
-from time import sleep
-
 from wazuh_testing import TCP, UDP, TCP_UDP
 from wazuh_testing.tools import LOG_FILE_PATH
 from wazuh_testing.tools.monitoring import FileMonitor
@@ -104,51 +102,6 @@ configurations = load_wazuh_configurations(configurations_path, __name__, params
 
 def check_active_agents(num_agents=1, manager_address='127.0.0.1', agent_version='4.2.0', agent_os='debian7',
                         manager_port=1514, protocol=TCP):
-    '''
-    description: Check if the status of the agent is 'disconnected' after sending only the start-up event.
-                 For this purpose, the test will establish a connection with simulated agents using
-                 different ports and transport protocols. Then, it will send initialization events to the
-                 agents and check if the 'pending' status is active for each agent. Finally, the test
-                 will verify that the 'disconnected' status is active on all agents.
-
-    wazuh_min_version: 4.2.0
-
-    parameters:
-        - num_agents:
-            type: int
-            brief: Number of agents to create and check their status.
-        - manager_address:
-            type: str
-            brief: Manager IP address.
-        - agent_version:
-            type: str
-            brief: Wazuh agent version.
-        - agent_os:
-            type: str
-            brief: Agent operating system.
-       - manager_port:
-            type: int
-            brief: Manager remote communication port.
-       - protocol:
-            type: str
-            brief: It can be TCP, UDP or TCP_UDP (both).
-
-    assertions:
-        - Verify that the 'pending' status is active when a Wazuh agent is initialized.
-        - Verify that the 'disconnected' status is active after a Wazuh agent has a 'pending' status.
-
-    input_description: A configuration template (test_agent_pending_status) is contained in an external YAML
-                       file (wazuh_agent_pending_status.yaml). That template is combined with different
-                       test cases defined in the module. Those include configuration settings for
-                       the 'wazuh-remoted' daemon.
-
-    expected_output:
-        - r'pending'
-        - r'disconnected'
-
-    tags:
-        - simulator
-    '''
     def send_initialization_events(agent, sender):
         """Send the start-up and keep-alive events"""
         try:
@@ -214,6 +167,51 @@ def restart_service():
 
 def test_protocols_communication(get_configuration, configure_environment, restart_service):
     """Validate agent status after sending only the start-up"""
+    '''
+    description: Check if the status of the agent is 'disconnected' after sending only the start-up event.
+                 For this purpose, the test will establish a connection with simulated agents using
+                 different ports and transport protocols. Then, it will send initialization events to the
+                 agents and check if the 'pending' status is active for each agent. Finally, the test
+                 will verify that the 'disconnected' status is active on all agents.
+
+    wazuh_min_version: 4.2.0
+
+    parameters:
+        - num_agents:
+            type: int
+            brief: Number of agents to create and check their status.
+        - manager_address:
+            type: str
+            brief: Manager IP address.
+        - agent_version:
+            type: str
+            brief: Wazuh agent version.
+        - agent_os:
+            type: str
+            brief: Agent operating system.
+       - manager_port:
+            type: int
+            brief: Manager remote communication port.
+       - protocol:
+            type: str
+            brief: It can be TCP, UDP or TCP_UDP (both).
+
+    assertions:
+        - Verify that the 'pending' status is active when a Wazuh agent is initialized.
+        - Verify that the 'disconnected' status is active after a Wazuh agent has a 'pending' status.
+
+    input_description: A configuration template (test_agent_pending_status) is contained in an external YAML
+                       file (wazuh_agent_pending_status.yaml). That template is combined with different
+                       test cases defined in the module. Those include configuration settings for
+                       the 'wazuh-remoted' daemon.
+
+    expected_output:
+        - r'pending'
+        - r'disconnected'
+
+    tags:
+        - simulator
+    '''
     manager_port = get_configuration['metadata']['port']
     protocol = get_configuration['metadata']['protocol']
 
