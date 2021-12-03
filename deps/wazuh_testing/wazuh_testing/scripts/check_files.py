@@ -155,7 +155,10 @@ def get_data_information(item):
     permissions = get_filemode(stat_info.st_mode)
     last_update = datetime.fromtimestamp(os.path.getmtime(item)).strftime('%Y-%m-%d %H:%M:%S')
     if _type != 'directory':
-        checksum = hashlib.md5(open(item, 'rb').read()).hexdigest()
+        try:
+            checksum = hashlib.md5(open(item, 'rb').read()).hexdigest()
+        except PermissionError:
+           return 'checksum PermissionError'
 
         return {'type': _type, 'user': user, 'group': group, 'mode': mode, 'permissions': permissions,
                 'last_update': last_update, 'checksum': checksum}
