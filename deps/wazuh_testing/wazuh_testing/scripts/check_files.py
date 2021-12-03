@@ -153,7 +153,12 @@ def get_data_information(item):
     """
     stat_info = os.stat(item)
     user = pwd.getpwuid(stat_info.st_uid)[0]
-    group = grp.getgrgid(stat_info.st_gid)[0]
+    try:
+        group = grp.getgrgid(stat_info.st_gid)[0]
+    except KeyError as exception:
+        with open('/result.log', 'w') as f:
+            f.write(f"KEY ERROR ON ITEM {item}")
+        raise exception
     mode = oct(stat.S_IMODE(stat_info.st_mode))
     mode_str = str(mode).replace('o', '')
     mode = mode_str[-3:] if len(mode_str) > 3 else mode_str
