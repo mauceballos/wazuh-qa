@@ -6,21 +6,3 @@
   test_case:
   -
     eps: 1500
--
-  name: "Analysisd: 5000 EPS"
-  description: "Check the performance of analysisd while sending 1500 EPS"
-  test_case:
-  -
-    eps: 5000
--
-  name: "Analysisd: 10000 EPS"
-  description: "Check the performance of analysisd while sending 1500 EPS"
-  test_case:
-  -
-    eps: 10000
--
-  name: "Analysisd: 100000 EPS"
-  description: "Check the performance of analysisd while sending 1500 EPS"
-  test_case:
-  -
-    eps: 100000
