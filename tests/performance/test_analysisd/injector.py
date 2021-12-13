@@ -2,7 +2,8 @@ import socket
 import time
 from configobj import ConfigObj
 import sys
-from wazuh_testing.tools import ANALYSIS_STATISTICS_FILE, ANALYSISD_QUEUE_SOCKET_PATH
+from wazuh_testing.tools import ANALYSIS_STATISTICS_FILE
+from wazuh_testing.tools import ANALYSISD_QUEUE_SOCKET_PATH
 from threading import Thread
 
 msg = '0912:tmpdir:Dec  2 16:05:37 localhost su[6625]: pam_unix(su:session): session opened for user root by vagrant(uid=0)'
@@ -25,8 +26,6 @@ class Injector():
             cfg = ConfigObj(ANALYSIS_STATISTICS_FILE)
             total_events_decoded = int(cfg['total_events_decoded'])
             events_dropped = int(cfg['events_dropped'])
-            print(f'Total decoded: {total_events_decoded}')
-            print(f'Total events_dropped: {events_dropped}')
             if total_events_decoded > 0:
                 self.total_events_decoded.append(total_events_decoded)
             if events_dropped > 0:

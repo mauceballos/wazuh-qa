@@ -6,21 +6,29 @@
   test_case:
   -
     eps: 1500
+    execution_time: 60
+    analysisd_queue_size: 500
 -
   name: "Analysisd: 3000 EPS"
   description: "Check the performance of analysisd while sending 3000 EPS"
   test_case:
   -
     eps: 3000
+    execution_time: 60
+    analysisd_queue_size: 1000
 -
-  name: "Analysisd: 5000 EPS"
-  description: "Check the performance of analysisd while sending 5000 EPS"
+  name: "Analysisd: 6000 EPS"
+  description: "Check the performance of analysisd while sending 6000 EPS"
   test_case:
   -
-    eps: 5000
+    eps: 6000
+    execution_time: 60
+    analysisd_queue_size: 1500
 -
   name: "Analysisd: 100000 EPS"
   description: "Check the performance of analysisd while sending 100000 EPS"
   test_case:
   -
     eps: 100000
+    execution_time: 60
+    analysisd_queue_size: 6000
