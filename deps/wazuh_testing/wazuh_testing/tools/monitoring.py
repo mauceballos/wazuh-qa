@@ -35,12 +35,14 @@ from wazuh_testing.tools.system import HostManager
 REMOTED_DETECTOR_PREFIX = r'.*wazuh-remoted.*'
 LOG_COLLECTOR_DETECTOR_PREFIX = r'.*wazuh-logcollector.*'
 AGENT_DETECTOR_PREFIX = r'.*wazuh-agentd.*'
+WINDOWS_AGENT_DETECTOR_PREFIX = r'.*wazuh-agent.*'
 AUTHD_DETECTOR_PREFIX = r'.*wazuh-authd.*'
 MODULESD_DETECTOR_PREFIX = r'.*wazuh-modulesd.*'
 WAZUH_DB_PREFIX = r'.*wazuh-db.*'
 
 DEFAULT_POLL_FILE_TIME = 1
 DEFAULT_WAIT_FILE_TIMEOUT = 30
+
 
 def wazuh_unpack(data, format_: str = "<I"):
     """Unpack data with a given header. Using Wazuh header by default.
@@ -197,7 +199,7 @@ class FileMonitor:
 
             monitor = QueueMonitor(tailer.queue, time_step=self._time_step)
             self._result = monitor.start(timeout=timeout, callback=callback, accum_results=accum_results,
-                                         update_position=update_position, timeout_extra=timeout_extra,
+                                         update_position=True, timeout_extra=timeout_extra,
                                          error_message=error_message).result()
         finally:
             tailer.shutdown()
@@ -331,7 +333,7 @@ class SocketController:
                 while 1:
                     try:  # error means no more data
                         output += self.sock.recv(4096, socket.MSG_DONTWAIT)
-                    except:
+                    except Exception:
                         break
 
         return output
@@ -516,6 +518,7 @@ class Queue(queue.Queue):
         """
         return str(self.queue)
 
+
 class StreamServerPort(socketserver.ThreadingTCPServer):
     pass
 
@@ -600,7 +603,20 @@ class SSLStreamServerPort(socketserver.ThreadingTCPServer):
         return connstream, fromaddr
 
 
+class SSLStreamServerPortV6(SSLStreamServerPort):
+    address_family = socket.AF_INET6
+
+
+class StreamServerPortV6(StreamServerPort):
+    address_family = socket.AF_INET6
+
+
 class DatagramServerPort(socketserver.ThreadingUDPServer):
+    pass
+
+
+class DatagramServerPortV6(DatagramServerPort):
+    address_family = socket.AF_INET6
     pass
 
 
@@ -617,11 +633,12 @@ if hasattr(socketserver, 'ThreadingUnixStreamServer'):
 
 
 class StreamHandler(socketserver.BaseRequestHandler):
+    address_family = socket.AF_INET
 
     def unix_forward(self, data):
         """Default TCP unix socket forwarder for MITM servers."""
         # Create a socket context
-        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as forwarded_sock:
+        with socket.socket(self.address_family, socket.SOCK_STREAM) as forwarded_sock:
             # Connect to server and send data
             forwarded_sock.connect(self.server.mitm.forwarded_socket_path)
             forwarded_sock.sendall(wazuh_pack(len(data)) + data)
@@ -653,7 +670,7 @@ class StreamHandler(socketserver.BaseRequestHandler):
             while 1:
                 try:  # error means no more data
                     received += self.request.recv(chunk_size, socket.MSG_DONTWAIT)
-                except:
+                except Exception:
                     break
         return received
 
@@ -688,10 +705,11 @@ class StreamHandler(socketserver.BaseRequestHandler):
 
 
 class DatagramHandler(socketserver.BaseRequestHandler):
+    address_family = socket.AF_INET
 
     def unix_forward(self, data):
         """Default UDP unix socket forwarder for MITM servers."""
-        with socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM) as forwarded_sock:
+        with socket.socket(self.address_family, socket.SOCK_DGRAM) as forwarded_sock:
             forwarded_sock.sendto(data, self.server.mitm.forwarded_socket_path)
 
     def default_wazuh_handler(self):
@@ -708,6 +726,14 @@ class DatagramHandler(socketserver.BaseRequestHandler):
             data = self.request[0]
             self.server.mitm.handler_func(data)
             self.server.mitm.put_queue(data)
+
+
+class DatagramHandlerV6(DatagramHandler):
+    address_family = socket.AF_INET6
+
+
+class StreamHandlerV6(StreamHandler):
+    address_family = socket.AF_INET6
 
 
 class ManInTheMiddle:
@@ -736,7 +762,7 @@ class ManInTheMiddle:
             raise TypeError(f'Invalid connection protocol detected: {connection_protocol.lower()}. '
                             f'Valid ones are TCP or UDP')
 
-        if family in ('AF_UNIX', 'AF_INET'):
+        if family in ('AF_UNIX', 'AF_INET', 'AF_INET6'):
             self.family = family
         else:
             raise TypeError('Invalid family type detected. Valid ones are AF_UNIX or AF_INET')
@@ -746,19 +772,32 @@ class ManInTheMiddle:
         class_tree = {
             'listener': {
                 'tcp': {
-                    'AF_INET': StreamServerPort
+                    'AF_INET': StreamServerPort,
+                    'AF_INET6': StreamServerPortV6
                 },
                 'udp': {
-                    'AF_INET': DatagramServerPort
+                    'AF_INET': DatagramServerPort,
+                    'AF_INET6': DatagramServerPortV6
                 },
                 'ssl': {
-                    'AF_INET': SSLStreamServerPort
+                    'AF_INET': SSLStreamServerPort,
+                    'AF_INET6': SSLStreamServerPortV6
                 }
             },
             'handler': {
-                'tcp': StreamHandler,
-                'udp': DatagramHandler,
-                'ssl': StreamHandler
+                'tcp': {
+                    'AF_INET': StreamHandler,
+                    'AF_INET6': StreamHandlerV6
+                },
+                'udp': {
+                    'AF_INET': DatagramHandler,
+                    'AF_INET6': DatagramHandlerV6
+                },
+                'ssl': {
+                    'AF_INET': StreamHandler,
+                    'AF_INET6': StreamHandlerV6
+                }
+
             }
         }
         if hasattr(socketserver, 'ThreadingUnixStreamServer'):
@@ -766,7 +805,7 @@ class ManInTheMiddle:
             class_tree['listener']['udp']['AF_UNIX'] = DatagramServerUnix
 
         self.listener_class = class_tree['listener'][self.mode][self.family]
-        self.handler_class = class_tree['handler'][self.mode]
+        self.handler_class = class_tree['handler'][self.mode][self.family]
         self.handler_func = func
         self.listener = None
         self.thread = None
