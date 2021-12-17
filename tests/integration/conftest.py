@@ -110,7 +110,7 @@ def restart_wazuh_alerts(get_configuration, request):
     control_service('start')
 
 @pytest.fixture(scope="function")
-def skip_scheduled_test(get_configuration, request):
+def skip_scheduled_jenkins(get_configuration, request):
     mode = get_configuration['metadata']['fim_mode']
     skip = get_configuration['metadata']['skip_scan_tests']
     if skip and mode == 'scheduled' and sys.platform=='win32':

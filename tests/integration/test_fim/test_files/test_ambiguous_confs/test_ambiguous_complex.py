@@ -270,7 +270,7 @@ def get_checkers(check_list):
 ])
 @pytest.mark.skip(reason="It will be blocked by wazuh/wazuh#9298, when it was solve we can enable again this test")
 def test_ambiguous_complex(tags_to_apply,
-                           get_configuration, configure_environment, skip_scheduled_test,
+                           get_configuration, configure_environment,
                            restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon applies different configurations between
