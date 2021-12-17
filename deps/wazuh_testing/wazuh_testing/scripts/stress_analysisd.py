@@ -200,8 +200,8 @@ def run_threads(threads):
     for thread in threads:
         thread.start()
     while True:
-        script_logger.debug(f"STRESS TIME = {stress_time}")
         global stress_time
+        script_logger.debug(f"STRESS TIME = {stress_time}")
         if stress_time <=0:
             global stop_threads
             stop_threads = True
