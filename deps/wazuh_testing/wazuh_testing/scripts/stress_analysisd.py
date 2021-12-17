@@ -22,6 +22,7 @@ statistics_file_parsed = ConfigObj(ANALYSIS_STATISTICS_FILE)
 events_decoded_list = []
 events_dropped_list = []
 stop_threads = False
+stress_time = 0
 
 def get_parameters():
     """Process the script parameters
@@ -41,7 +42,7 @@ def get_parameters():
 
     return parser.parse_args()
 
-def set_parameters(parameters):
+def configure_logger(parameters):
     """Configure the script logger
 
     Args:
@@ -136,7 +137,7 @@ def calculate_eps_distribution(eps):
     return events_per_thread, quantity_of_threads
 
     
-def create_threads(number_eps, stress_time):
+def create_threads(number_eps):
     """Create a list of threads depending on the number of EPS
 
     Args:
@@ -154,7 +155,7 @@ def create_threads(number_eps, stress_time):
     threads.append(Thread(target=detect_dropped_events))
 
     for _ in range(quantity_of_threads):
-        threads.append(Thread(target=send_message, args=(stress_time, distribution, msg, ANALYSISD_QUEUE_SOCKET_PATH)))
+        threads.append(Thread(target=send_message, args=(distribution, msg, ANALYSISD_QUEUE_SOCKET_PATH)))
     
     return threads
 
@@ -174,13 +175,11 @@ def detect_dropped_events():
         script_logger.debug(f"DROPPED = {events_dropped}")
         sleep(1)
 
-def send_message(stress_time, eps_distribution, message, wazuh_socket):
+def send_message(eps_distribution, message, wazuh_socket):
     script_logger.info("Start writing messages on Analysisd's socket")
     while True:
-        if stress_time <=0:
-            global stop_threads
-            stop_threads = True
-            file.truncate_file(ARCHIVES_LOG_FILE_PATH)
+        global stop_threads
+        if stop_threads:
             break
         start = time.perf_counter()
         for _ in range(eps_distribution):
@@ -190,26 +189,37 @@ def send_message(stress_time, eps_distribution, message, wazuh_socket):
             sock.close()
         end = time.perf_counter()
         total = int(end - start)
-        sleep(1 - (total if total <= 1 else 0))
-        stress_time -= total
-        script_logger.debug(f"STRESS TIME = {stress_time}")
+        wait = 1 - total if total <= 1 else 0
+        script_logger.debug(f"Waiting = {wait}")
+        sleep(wait)
+        global stress_time
+        stress_time -= 1
+        
 
 def run_threads(threads):
     for thread in threads:
         thread.start()
-    for thread in threads:
-        thread.join()
+    while True:
+        script_logger.debug(f"STRESS TIME = {stress_time}")
+        global stress_time
+        if stress_time <=0:
+            global stop_threads
+            stop_threads = True
+            break
+    file.truncate_file(ARCHIVES_LOG_FILE_PATH)
 
 
 def main():
     global stress_time
     args = get_parameters()
-    set_parameters(args)
+    configure_logger(args)
 
     backup_local_internal_opt = get_local_internal_options_dict()
     set_analysisd_decode_queue_size(args.queue_size)
 
-    threads = create_threads(args.number_eps, args.stress_time)
+    stress_time = args.stress_time
+
+    threads = create_threads(args.number_eps)
 
     run_threads(threads)
 
