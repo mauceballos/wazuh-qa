@@ -9,11 +9,9 @@ from configobj import ConfigObj
 from threading import Thread
 from time import sleep
 
-from wazuh_testing import global_parameters
 from wazuh_testing.tools import ANALYSIS_STATISTICS_FILE, WAZUH_PATH
 from wazuh_testing.tools import ANALYSISD_QUEUE_SOCKET_PATH
 from wazuh_testing.tools import file, ARCHIVES_LOG_FILE_PATH
-from wazuh_testing.tools.services import check_daemon_status, control_service
 
 msg = '0912:tmpdir:Dec  2 16:05:37 localhost su[6625]: pam_unix(su:session): '
 'session opened for user root by vagrant(uid=0)'
