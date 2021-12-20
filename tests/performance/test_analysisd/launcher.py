@@ -193,7 +193,7 @@ def generate_test_playbooks(parameters, local_pre_data_path,
                          f"{debug_param}{queue_size_param}"
     post_script_command = f"python3 {stress_script_destination} " \
                           f"-t {parameters.stress_time} " \
-                          f"-e {parameters.ingestion_rate}" \
+                          f"-e {parameters.ingestion_rate} " \
                           f"-o {post_stress_data_output_path}" \
                           f"{debug_param}{queue_size_param}"
 
