@@ -236,9 +236,9 @@ def generate_test_playbooks(parameters, local_pre_data_path,
     # Add playbook for downloading the stress script in the remote host
     playbooks_path.append(playbook_generator.download_files(**download_files))
     # Add playbook for running pre-stress script
-    playbooks_path.append(playbook_generator.run_linux_commands(**run_pre_script_command))
     playbooks_path.append(playbook_generator.install_wazuh(**install_wazuh_playbook_parameters))
     playbooks_path.append(playbook_generator.wait_seconds(30))
+    playbooks_path.append(playbook_generator.run_linux_commands(**run_pre_script_command))
     playbooks_path.append(playbook_generator.upgrade_wazuh(**upgrade_wazuh_playbook_parameters))
     playbooks_path.append(playbook_generator.wait_seconds(30))
 
