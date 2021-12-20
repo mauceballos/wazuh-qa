@@ -117,8 +117,8 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
     interpretation = 'The dropped average ' + result_text
 
     result_data = {
-        'Before the upgrade': file1_data,
-        'After the upgrade': file2_data,
+        'Before': file1_data,
+        'After': file2_data,
         '% Variation': drop_variation,
         'Interpretation': interpretation
     }
