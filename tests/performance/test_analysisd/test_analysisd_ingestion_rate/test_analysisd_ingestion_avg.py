@@ -93,12 +93,22 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
     decoded_2 = int(file1_data['Average']['Decoded'])
     dropped_1 = int(file1_data['Average']['Dropped'])
     dropped_2 = int(file2_data['Average']['Dropped'])
-    if (dropped_2 % dropped_1) >= 0 and dropped_2 > dropped_1:
-        assert False, f"The dropped average increased after the upgrade, \
-        check the results within {get_output_path}"
-    elif (decoded_1 % decoded_2) >= 1:
-        assert False, f"The decoded average decreased after the upgrade, \
-        check the results within {get_output_path}"
+
+    threshold = 70
+    decoded_variation = (decoded_2 * 100) / decoded_1
+    dropped_variation = (dropped_2 * 100) / dropped_1
+
+    failed = False
+
+    if decoded_2 < decoded_1:
+        if decoded_variation < threshold:
+            failed = True
+    if dropped_2 > dropped_1:
+        if (dropped_variation - 100) >= threshold:
+            failed = True
+    if failed is True:
+        assert False, f"The ingestion rate decreased after the upgrade, \
+                      check the results within {get_output_path}"
 
     result_data = {
         'Before the upgrade': file1_data,
