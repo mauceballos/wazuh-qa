@@ -89,31 +89,43 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
     """
     file1_data = validate_and_read_json(get_first_result)
     file2_data = validate_and_read_json(get_second_result)
-    decoded_1 = int(file1_data['Average']['Decoded'])
-    decoded_2 = int(file1_data['Average']['Decoded'])
-    dropped_1 = int(file1_data['Average']['Dropped'])
-    dropped_2 = int(file2_data['Average']['Dropped'])
 
-    threshold = 70
-    decoded_variation = (decoded_2 * 100) / decoded_1
-    dropped_variation = (dropped_2 * 100) / dropped_1
+    initial_drop_average = int(file1_data['Average']['Dropped'])
+    final_drop_average = int(file2_data['Average']['Dropped'])
 
-    failed = False
+    threshold = 30
 
-    if decoded_2 < decoded_1:
-        if decoded_variation < threshold:
-            failed = True
-    if dropped_2 > dropped_1:
-        if (dropped_variation - 100) >= threshold:
-            failed = True
-    if failed is True:
-        assert False, f"The ingestion rate decreased after the upgrade, \
-                      check the results within {get_output_path}"
+    if initial_drop_average == final_drop_average:
+        drop_variation = 0
+    elif initial_drop_average != 0:
+        if final_drop_average > initial_drop_average:
+            drop_variation = (
+                (final_drop_average - initial_drop_average) 
+                / initial_drop_average) * 100
+        elif final_drop_average != 0:
+            drop_variation = -(
+                (initial_drop_average - final_drop_average)
+                / initial_drop_average) * 100
+    elif initial_drop_average == 0:
+        drop_variation = 100
+    else:
+        drop_variation = -100
+
+    result_text = (('increased ' if drop_variation > 0 else 'decreased ') \
+                    + f'{drop_variation}%') if drop_variation != 0 \
+                    else 'remained'
+    interpretation = 'The dropped average ' + result_text
 
     result_data = {
         'Before the upgrade': file1_data,
-        'After the upgrade': file2_data
+        'After the upgrade': file2_data,
+        '% Variation': drop_variation,
+        'Interpretation': interpretation
     }
 
     recursive_directory_creation(os.path.dirname(get_output_path))
     write_json_file(get_output_path, json.loads(result_data))
+
+    if drop_variation >= threshold:
+        assert False, f"The ingestion rate decreased after the upgrade, \
+                      check the results within {get_output_path}"
