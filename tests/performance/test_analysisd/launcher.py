@@ -19,7 +19,7 @@ from wazuh_testing.tools.time import get_current_timestamp
 TMP_FILES = os.path.join(gettempdir(), 'wazuh_analysisd_ingestion_avg')
 WAZUH_QA_FILES = os.path.join(TMP_FILES, 'wazuh-qa')
 ANALYSISD_INGESTION_AVG_TEST_PATH = os.path.join(
-    WAZUH_QA_FILES, 'tests', 'performance', 'test_analysisd', 'test_analysisd_ingestion_rate'
+    WAZUH_QA_FILES, 'tests', 'performance', 'test_analysisd'
 )
 
 logger = Logging(QACTL_LOGGER)
@@ -338,7 +338,7 @@ def main():
         pytest_launcher = 'python -m pytest' if sys.platform == 'win32' \
                           else 'python3 -m pytest'
         pytest_command = f"cd {ANALYSISD_INGESTION_AVG_TEST_PATH} && " \
-                         f"{pytest_launcher} test_analysisd_ingestion_avg " \
+                         f"{pytest_launcher} test_analysisd_ingestion_rate " \
                          f"--before-results {pre_stress_data_path} " \
                          f"--after-results {post_stress_data_path} " \
                          f"--output-path {TMP_FILES} " \
