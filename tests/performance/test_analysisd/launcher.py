@@ -18,7 +18,9 @@ from wazuh_testing.tools.time import get_current_timestamp
 
 TMP_FILES = os.path.join(gettempdir(), 'wazuh_analysisd_ingestion_avg')
 WAZUH_QA_FILES = os.path.join(TMP_FILES, 'wazuh-qa')
-ANALYSISD_INGESTION_AVG_TEST_PATH = os.path.join(WAZUH_QA_FILES, 'tests', 'performance', 'test_analysisd')
+ANALYSISD_INGESTION_AVG_TEST_PATH = os.path.join(
+    WAZUH_QA_FILES, 'tests', 'performance', 'test_analysisd', 'test_analysisd_ingestion_rate'
+)
 
 logger = Logging(QACTL_LOGGER)
 test_build_files = []
@@ -237,10 +239,8 @@ def generate_test_playbooks(parameters, local_pre_data_path,
     playbooks_path.append(playbook_generator.download_files(**download_files))
     # Add playbook for running pre-stress script
     playbooks_path.append(playbook_generator.install_wazuh(**install_wazuh_playbook_parameters))
-    playbooks_path.append(playbook_generator.wait_seconds(30))
     playbooks_path.append(playbook_generator.run_linux_commands(**run_pre_script_command))
     playbooks_path.append(playbook_generator.upgrade_wazuh(**upgrade_wazuh_playbook_parameters))
-    playbooks_path.append(playbook_generator.wait_seconds(30))
 
     # Add playbook for running the post-stress script
     playbooks_path.append(playbook_generator.run_linux_commands(**run_post_script_command))
