@@ -42,7 +42,7 @@ def get_parameters():
 
     parser.add_argument('--target-version', '-v', type=str, action='store',
                         required=True, dest='target_version',
-                        help='Target version to update Wazuh to.')
+                        help='Target version to upgrade Wazuh to.')
 
     parser.add_argument('--stress-time', '-t', type=int, action='store',
                         required=False, dest='stress_time', default=60,
@@ -218,6 +218,7 @@ def generate_test_playbooks(parameters, local_pre_data_path,
     }
 
     install_wazuh_playbook_parameters = {
+        'wazuh_target': 'manager',
         'package_name': initial_package_name,
         'package_url': initial_package_url,
         'package_destination': package_destination,
@@ -264,10 +265,10 @@ def generate_qa_ctl_configuration(parameters, playbooks_path, qa_ctl_config_gene
     logger.info('Generating qa-ctl configuration')
 
     current_timestamp = str(get_current_timestamp()).replace('.', '_')
-    config_file_path = os.path.join(TMP_FILES, f"check_files_config_{current_timestamp}.yaml")
+    config_file_path = os.path.join(TMP_FILES, f"stress_analysisd_config_{current_timestamp}.yaml")
     os_system = parameters.os_system
 
-    instance_name = f"check_files_{os_system}_{current_timestamp}"
+    instance_name = f"stress_analysisd_{os_system}_{current_timestamp}"
     instance = ConfigInstance(instance_name, os_system)
 
     # Generate deployment configuration
@@ -287,9 +288,8 @@ def generate_qa_ctl_configuration(parameters, playbooks_path, qa_ctl_config_gene
 
 
 def main():
+    parameters = get_parameters()
     try:
-        parameters = get_parameters()
-
         # Validate script parameters
         if not parameters.no_validation:
             validate_parameters(parameters)
@@ -305,15 +305,20 @@ def main():
         playbooks_path = generate_test_playbooks(
             parameters, pre_stress_data_path, post_stress_data_path)
         test_build_files.extend(playbooks_path)
-        # Generate the qa-ctl configurationgenerate_qa_ctl_configuration
+        # Generate the qa-ctl configuration
         qa_ctl_config_file_path = generate_qa_ctl_configuration(
             parameters, playbooks_path, qa_ctl_config_generator
         )
-        # Run the qa-ctl with the generated configuration. Launch deployment + custom playbooks.
-        qa_ctl_extra_args = '' if parameters.debug == 0 else ('-d' if parameters.debug == 1 else '-dd')
+        # Run the qa-ctl with the generated configuration.
+        # Launch deployment + custom playbooks.
+        qa_ctl_extra_args = ''.join(' -d' if _ == 0 else 'd'
+                                    for _ in range(parameters.debug))
         qa_ctl_extra_args += ' -p' if parameters.persistent else ''
-        local_actions.run_local_command_printing_output(f"qa-ctl -c {qa_ctl_config_file_path} {qa_ctl_extra_args} "
-                                                        '--no-validation-logging')
+
+        local_actions.run_local_command_printing_output(
+            f"qa-ctl -c {qa_ctl_config_file_path} {qa_ctl_extra_args} "
+            '--no-validation-logging'
+        )
 
         # Check that the post-stress data has been fetched correctly
         if os.path.exists(post_stress_data_path):
@@ -330,11 +335,17 @@ def main():
             raise QAValueError(f"Could not find the pre-stress data in {TMP_FILES} path", logger.error,
                                QACTL_LOGGER)
         # Launch the stress analysisd test
-        pytest_launcher = 'python -m pytest' if sys.platform == 'win32' else 'python3 -m pytest'
-        pytest_command = f"cd {ANALYSISD_INGESTION_AVG_TEST_PATH} && {pytest_launcher} test_analysisd_ingestion_avg --before-results " \
-                         f"{pre_stress_data_path} --after-results {post_stress_data_path} " \
-                         f"--output-path {TMP_FILES}"
-        test_result = local_actions.run_local_command_returning_output(pytest_command)
+        pytest_launcher = 'python -m pytest' if sys.platform == 'win32' \
+                          else 'python3 -m pytest'
+        pytest_command = f"cd {ANALYSISD_INGESTION_AVG_TEST_PATH} && " \
+                         f"{pytest_launcher} test_analysisd_ingestion_avg " \
+                         f"--before-results {pre_stress_data_path} " \
+                         f"--after-results {post_stress_data_path} " \
+                         f"--output-path {TMP_FILES} " \
+                         f"--ingestion-rate {parameters.ingestion_rate}"
+        test_result = local_actions.run_local_command_returning_output(
+            pytest_command
+        )
         print(test_result)
     finally:
         # Clean test build files

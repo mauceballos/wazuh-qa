@@ -1,3 +1,4 @@
+import sys
 import os
 import argparse
 import socket
@@ -9,9 +10,13 @@ from configobj import ConfigObj
 from threading import Thread
 from time import sleep
 
-from wazuh_testing.tools import ANALYSIS_STATISTICS_FILE, WAZUH_PATH
-from wazuh_testing.tools import ANALYSISD_QUEUE_SOCKET_PATH
-from wazuh_testing.tools import file, ARCHIVES_LOG_FILE_PATH
+if sys.platform == 'darwin':
+    WAZUH_PATH = os.path.join("/", "Library", "Ossec")
+else:
+    WAZUH_PATH = os.path.join("/", "var", "ossec")
+ANALYSIS_STATISTICS_FILE = os.path.join(WAZUH_PATH, 'var', 'run', 'wazuh-analysisd.state')
+ANALYSISD_QUEUE_SOCKET_PATH = os.path.join(WAZUH_PATH, 'queue', 'sockets')
+ARCHIVES_LOG_FILE_PATH = os.path.join(WAZUH_PATH, 'logs', 'archives', 'archives.log')
 
 msg = '0912:tmpdir:Dec  2 16:05:37 localhost su[6625]: pam_unix(su:session): '
 'session opened for user root by vagrant(uid=0)'
@@ -238,7 +243,9 @@ def run_threads(threads):
         else:
             stress_time -= 1
             sleep(1)
-    file.truncate_file(ARCHIVES_LOG_FILE_PATH)
+    # Truncate archives.log file
+    with open(ARCHIVES_LOG_FILE_PATH, 'w'):
+        pass
 
 
 def main():
