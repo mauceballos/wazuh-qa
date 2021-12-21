@@ -11,6 +11,7 @@ import sys
 import uuid
 from datetime import datetime
 
+import yaml
 import pytest
 from numpydoc.docscrape import FunctionDoc
 from py.xml import html
@@ -18,7 +19,7 @@ from py.xml import html
 import wazuh_testing.tools.configuration as conf
 from wazuh_testing import global_parameters, logger
 from wazuh_testing.logcollector import create_file_structure, delete_file_structure
-from wazuh_testing.tools import LOG_FILE_PATH, WAZUH_CONF, get_service, ALERT_FILE_PATH, WAZUH_LOCAL_INTERNAL_OPTIONS
+from wazuh_testing.tools import LOG_FILE_PATH, WAZUH_CONF, get_service, ALERT_FILE_PATH, WAZUH_LOCAL_INTERNAL_OPTIONS, CLOUD_CONFIG_PATH
 from wazuh_testing.tools.configuration import get_wazuh_conf, set_section_wazuh_conf, write_wazuh_conf
 from wazuh_testing.tools.file import truncate_file
 from wazuh_testing.tools.monitoring import QueueMonitor, FileMonitor, SocketController, close_sockets
@@ -30,6 +31,7 @@ if sys.platform == 'win32':
 
 PLATFORMS = set("darwin linux win32 sunos5".split())
 HOST_TYPES = set("server agent".split())
+CLOUD_CONFIG = None
 
 catalog = list()
 results = dict()
@@ -230,6 +232,9 @@ def pytest_configure(config):
         "markers", "tier(level): mark test to run only if it matches tier level"
     )
 
+    # Get cloud_config file options
+    read_cloud_config_file()
+
     # Set default timeout only if it is passed through command line args
     default_timeout = config.getoption("--default-timeout")
     if default_timeout:
@@ -287,6 +292,12 @@ def pytest_configure(config):
     if global_parameters.wpk_package_path:
         global_parameters.wpk_package_path = global_parameters.wpk_package_path
 
+
+def read_cloud_config_file():
+        with open(CLOUD_CONFIG_PATH) as file:
+            CLOUD_CONFIG = yaml.load(file, Loader=yaml.FullLoader)
+            if CLOUD_CONFIG is not None:
+                global_parameters.cloud_config = CLOUD_CONFIG
 
 def pytest_html_results_table_header(cells):
     cells.insert(4, html.th('Tier', class_='sortable tier', col='tier'))
@@ -850,3 +861,11 @@ def configure_local_internal_options_module(request):
 
     logger.debug(f"Restore local_internal_option to {str(backup_local_internal_options)}")
     conf.set_local_internal_options_dict(backup_local_internal_options)
+
+@pytest.fixture(scope="module")
+def skip_fim_scheduled_cloud_windows(get_configuration, request):
+    mode = get_configuration['metadata']['fim_mode']
+    skip = global_parameters_cloud_config['skip_cloud']
+    if skip is not None and skip == 'yes':
+        if mode == 'scheduled' and sys.platform == 'win32':
+            pytest.skip("skipping because scheduled mode fails on Windows on Cloud")

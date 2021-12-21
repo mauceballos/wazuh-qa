@@ -25,6 +25,7 @@ if sys.platform == 'win32':
     ANALYSIS_STATISTICS_FILE = None
     UPGRADE_PATH = os.path.join(WAZUH_PATH, 'upgrade')
     AGENT_AUTH_BINARY_PATH = os.path.join(WAZUH_PATH, 'agent-auth.exe')
+    CLOUD_CONFIG_PATH = os.path.join(PREFIX, 'cloud_config.yaml')
 
 else:
 
@@ -58,7 +59,7 @@ else:
     ANALYSIS_STATISTICS_FILE = os.path.join(WAZUH_PATH, 'var', 'run', 'wazuh-analysisd.state')
     UPGRADE_PATH = os.path.join(WAZUH_PATH, 'var', 'upgrade')
     AGENT_AUTH_BINARY_PATH = os.path.join(WAZUH_PATH, 'bin', 'agent-auth')
-
+    CLOUD_CONFIG_PATH = os.path.join('etc', 'cloud_config.yaml')
 
     try:
         import grp
