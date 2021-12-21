@@ -127,7 +127,7 @@ def get_configuration(request):
     ('regular_0', testdir1, 1000000),
 ])
 def test_file_size_disabled(tags_to_apply, filename, folder, size, get_configuration, configure_environment,
-                            restart_syscheckd, wait_for_fim_start):
+                            test_scheduled_jenkins, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon limits the size of the monitored file to generate
                  'diff' information when the 'file_size' option is disabled. For this purpose, the test

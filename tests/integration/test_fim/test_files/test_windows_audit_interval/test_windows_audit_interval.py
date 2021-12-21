@@ -136,8 +136,8 @@ def callback_sacl_restored(line):
 @pytest.mark.parametrize('tags_to_apply', [
     {'audit_interval'}
 ])
-def test_windows_audit_modify_sacl(tags_to_apply, get_configuration, configure_environment, restart_syscheckd,
-                                   wait_for_fim_start):
+def test_windows_audit_modify_sacl(tags_to_apply, get_configuration, configure_environment, restart_syscheckd, 
+                                    wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects a SACL change every 'windows_audit_interval'
                  and sets monitoring to 'realtime' mode if so. For this purpose, the test will monitor a

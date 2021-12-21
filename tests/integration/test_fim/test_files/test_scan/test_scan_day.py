@@ -113,12 +113,9 @@ def get_configuration(request):
 
 
 # tests
-@pytest.mark.parametrize('tags_to_apply', [
-    {'scan_day'}
-])
-def test_scan_day(tags_to_apply,
-                  get_configuration, configure_environment,
-                  restart_syscheckd, wait_for_fim_start):
+@pytest.mark.parametrize('tags_to_apply', [{'scan_day'}])
+def test_scan_day(tags_to_apply, get_configuration, configure_environment, skip_scheduled_jenkins, restart_syscheckd,
+                  wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' performs a scan on the day of the week specified in
                  the 'scan_day' tag. For this purpose, the test will monitor a testing folder and

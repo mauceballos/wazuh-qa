@@ -123,8 +123,9 @@ def get_configuration(request):
     (testdir1, 'ignore_testfile2', False, {'valid_regex'}),
     (testdir2, 'not_ignored_sregex', True, {'valid_regex'})
 ])
-def test_ignore_works_over_restrict(folder, filename, triggers_event, tags_to_apply, get_configuration,
-                                    configure_environment, restart_syscheckd, wait_for_fim_start):
+def test_ignore_works_over_restrict(folder, filename, triggers_event, tags_to_apply, get_configuration, 
+                                    skip_scheduled_jenkins, configure_environment, restart_syscheckd, 
+                                    wait_for_fim_start):
     '''
     description: Check if the 'ignore' tag prevails over the 'restrict' one when using both in the same directory.
                  For example, when a directory is ignored and at the same time monitoring is restricted to a file

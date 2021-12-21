@@ -141,7 +141,7 @@ def get_configuration(request):
     (subkey_4, KEY_WOW64_64KEY, ['random_key'], ['test_value'], key_all_attrs, {'single_registry_and_list'}),
 
 ])
-def test_duplicate_entries(key, subkey, arch, key_list, value_list, checkers, tags_to_apply,
+def test_duplicate_entries(key, subkey, arch, key_list, value_list, checkers, tags_to_apply, skip_scheduled_jenkins,
                            get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon uses the last entry when setting multiple ones with

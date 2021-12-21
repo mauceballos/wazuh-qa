@@ -109,12 +109,13 @@ def restart_wazuh_alerts(get_configuration, request):
     # Start Wazuh
     control_service('start')
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def skip_scheduled_jenkins(get_configuration, request):
     mode = get_configuration['metadata']['fim_mode']
-    skip = get_configuration['metadata']['skip_scan_tests']
-    if skip and mode == 'scheduled' and sys.platform=='win32':
-        pytest.skip("skipping because scheduled mode fails on Windows on Jenkins")
+    skip = global_parameters.skip_scan_tests
+    if skip is not None:
+        if mode == 'scheduled' and sys.platform == 'win32':
+            pytest.skip("skipping because scheduled mode fails on Windows on Jenkins")
 
 
 def pytest_addoption(parser):
@@ -209,8 +210,8 @@ def pytest_addoption(parser):
         "--skip_scan_tests",
         action="append",
         metavar="skip_scan_tests",
-        default=False,
-        type=bool,
+        default=None,
+        type=str,
         help="determine if tests must be run - Used in Jenkins"
     )
     parser.addoption(
@@ -290,6 +291,10 @@ def pytest_configure(config):
     if not mode:
         mode = ["scheduled", "whodata", "realtime"]
     global_parameters.fim_mode = mode
+
+    # Set skip_can_tests
+    skip_scan = config.getoption("skip_scan_tests")
+    global_parameters.skip_scan_tests = skip_scan
 
     # Set WPK package version
     global_parameters.wpk_version = config.getoption("--wpk_version")

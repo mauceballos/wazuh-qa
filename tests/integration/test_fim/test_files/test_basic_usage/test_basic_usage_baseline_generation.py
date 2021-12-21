@@ -131,7 +131,7 @@ def extra_configuration_before_yield():
         create_file(REGULAR, testdir2, f'test_{int(round(time() * 10 ** 6))}', content='')
 
 
-def test_wait_until_baseline(get_configuration, configure_environment, skip_scheduled_jenkins, restart_syscheckd):
+def test_wait_until_baseline(get_configuration, skip_scheduled_jenkins, configure_environment, restart_syscheckd):
     '''
     description: Check if FIM events are appearing after the 'baseline'. The log message
                  'File integrity monitoring scan ended' informs about the end of the first scan,

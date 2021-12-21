@@ -114,7 +114,7 @@ def get_configuration(request):
 
 # tests
 
-def test_disabled(get_configuration, configure_environment, restart_syscheckd):
+def test_disabled(get_configuration, configure_environment, skip_scheduled_jenkins, restart_syscheckd):
     '''
     description: Check if the 'wazuh-syscheckd' daemon generates FIM events when it is disabled
                  in the main configuration file. For this purpose, the test will monitor a testing
