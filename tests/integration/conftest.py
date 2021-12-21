@@ -11,6 +11,7 @@ import sys
 import uuid
 from datetime import datetime
 
+import yaml
 import pytest
 from numpydoc.docscrape import FunctionDoc
 from py.xml import html
@@ -18,7 +19,7 @@ from py.xml import html
 import wazuh_testing.tools.configuration as conf
 from wazuh_testing import global_parameters, logger
 from wazuh_testing.logcollector import create_file_structure, delete_file_structure
-from wazuh_testing.tools import LOG_FILE_PATH, WAZUH_CONF, get_service, ALERT_FILE_PATH, WAZUH_LOCAL_INTERNAL_OPTIONS
+from wazuh_testing.tools import LOG_FILE_PATH, WAZUH_CONF, get_service, ALERT_FILE_PATH, WAZUH_LOCAL_INTERNAL_OPTIONS, CLOUD_CONFIG_PATH
 from wazuh_testing.tools.configuration import get_wazuh_conf, set_section_wazuh_conf, write_wazuh_conf
 from wazuh_testing.tools.file import truncate_file
 from wazuh_testing.tools.monitoring import QueueMonitor, FileMonitor, SocketController, close_sockets
@@ -30,6 +31,7 @@ if sys.platform == 'win32':
 
 PLATFORMS = set("darwin linux win32 sunos5".split())
 HOST_TYPES = set("server agent".split())
+CLOUD_CONFIG = None
 
 catalog = list()
 results = dict()
@@ -108,14 +110,6 @@ def restart_wazuh_alerts(get_configuration, request):
 
     # Start Wazuh
     control_service('start')
-
-@pytest.fixture(scope="module")
-def skip_scheduled_jenkins(get_configuration, request):
-    mode = get_configuration['metadata']['fim_mode']
-    skip = global_parameters.skip_scan_tests
-    if skip is not None:
-        if mode == 'scheduled' and sys.platform == 'win32':
-            pytest.skip("skipping because scheduled mode fails on Windows on Jenkins")
 
 
 def pytest_addoption(parser):
@@ -207,14 +201,6 @@ def pytest_addoption(parser):
         help="run tests using a specific FIM mode"
     )
     parser.addoption(
-        "--skip_scan_tests",
-        action="append",
-        metavar="skip_scan_tests",
-        default=None,
-        type=str,
-        help="determine if tests must be run - Used in Jenkins"
-    )
-    parser.addoption(
         "--wpk_version",
         action="append",
         metavar="wpk_version",
@@ -245,6 +231,9 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "tier(level): mark test to run only if it matches tier level"
     )
+
+    # Get cloud_config file
+    read_cloud_config_file()
 
     # Set default timeout only if it is passed through command line args
     default_timeout = config.getoption("--default-timeout")
@@ -292,10 +281,6 @@ def pytest_configure(config):
         mode = ["scheduled", "whodata", "realtime"]
     global_parameters.fim_mode = mode
 
-    # Set skip_can_tests
-    skip_scan = config.getoption("skip_scan_tests")
-    global_parameters.skip_scan_tests = skip_scan
-
     # Set WPK package version
     global_parameters.wpk_version = config.getoption("--wpk_version")
 
@@ -306,6 +291,13 @@ def pytest_configure(config):
     global_parameters.wpk_package_path = config.getoption("--wpk_package_path")
     if global_parameters.wpk_package_path:
         global_parameters.wpk_package_path = global_parameters.wpk_package_path
+
+
+def read_cloud_config_file():
+    with open(CLOUD_CONFIG_PATH) as file:
+        CLOUD_CONFIG = yaml.load(file, Loader=yaml.FullLoader)
+        if CLOUD_CONFIG is not None:
+            global_parameters.cloud_config = CLOUD_CONFIG
 
 
 def pytest_html_results_table_header(cells):
@@ -870,3 +862,12 @@ def configure_local_internal_options_module(request):
 
     logger.debug(f"Restore local_internal_option to {str(backup_local_internal_options)}")
     conf.set_local_internal_options_dict(backup_local_internal_options)
+
+
+@pytest.fixture(scope="module")
+def skip_fim_scheduled_cloud_windows(get_configuration, request):
+    mode = get_configuration['metadata']['fim_mode']
+    skip = global_parameters.cloud_config['skip_cloud']
+    if skip is not None and skip == 'yes':
+        if mode == 'scheduled' and sys.platform == 'win32':
+            pytest.skip("skipping because scheduled mode fails on Windows on Jenkins")

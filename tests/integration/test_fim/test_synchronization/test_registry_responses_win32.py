@@ -101,7 +101,7 @@ def get_configuration(request):
 
 @pytest.mark.parametrize('key_name', [':subkey1', 'subkey2:', ':subkey3:'])
 @pytest.mark.parametrize('value_name', [':value1', 'value2:', ':value3:'])
-def test_registry_sync_after_restart(key_name, value_name, configure_local_internal_options_module,
+def test_registry_sync_after_restart(key_name, value_name, configure_local_internal_options_module, skip_fim_scheduled_cloud_windows,
                                      get_configuration, configure_environment, create_key):
     '''
     description: Check if the 'wazuh-syscheckd' daemon synchronizes the registry DB when a modification
