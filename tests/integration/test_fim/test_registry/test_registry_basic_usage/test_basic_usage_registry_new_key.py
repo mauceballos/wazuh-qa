@@ -97,7 +97,8 @@ def get_configuration(request):
 
 # tests
 
-def test_new_key(get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
+def test_new_key(get_configuration, configure_environment, skip_fim_scheduled_cloud_windows, restart_syscheckd,
+                 wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon generates events from a new monitored key after
                  the next scheduled scan. For this purpose, the test will monitor a registry key and

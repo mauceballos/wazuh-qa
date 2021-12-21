@@ -131,7 +131,8 @@ def callback_integrity_or_whodata(line):
 @pytest.mark.parametrize('tags_to_apply', [
     {'synchronize_events_conf'}
 ])
-def test_events_while_integrity_scan(tags_to_apply, get_configuration, configure_environment, restart_syscheckd):
+def test_events_while_integrity_scan(tags_to_apply, get_configuration, configure_environment, 
+                                     skip_fim_scheduled_cloud_windows, restart_syscheckd):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects events while the synchronization is performed
                  simultaneously. For this purpose, the test will monitor a testing directory and registry key.

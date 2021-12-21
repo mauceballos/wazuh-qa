@@ -151,7 +151,8 @@ def get_configuration(request):
                         pytest.mark.xfail(reason='Xfail due to issue: https://github.com/wazuh/wazuh/issues/4612')))
 ])
 def test_create_file_scheduled(folder, name, filetype, content, checkers, tags_to_apply, encoding, get_configuration,
-                               configure_environment, restart_syscheckd, wait_for_fim_start):
+                               skip_fim_scheduled_cloud_windows, configure_environment, restart_syscheckd, 
+                               wait_for_fim_start):
     '''
     description: Check if a special or regular file creation is detected by the 'wazuh-syscheckd' daemon using
                  the 'scheduled' monitoring mode. Regular files must be monitored, special files must not.

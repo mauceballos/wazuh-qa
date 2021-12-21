@@ -122,7 +122,8 @@ def extra_configuration_before_yield():
 @pytest.mark.parametrize('tags_to_apply', [
     {'file_limit_registry_conf'}
 ])
-def test_file_limit_values(tags_to_apply, get_configuration, configure_environment, restart_syscheckd):
+def test_file_limit_values(tags_to_apply, get_configuration, configure_environment, skip_fim_scheduled_cloud_windows,
+                            restart_syscheckd):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects the value of the 'entries' tag, which corresponds to
                  the maximum number of entries to monitor from the 'file_limit' option of FIM. For this purpose,

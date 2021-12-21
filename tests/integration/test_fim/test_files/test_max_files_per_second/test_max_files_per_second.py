@@ -113,8 +113,8 @@ def get_configuration(request):
                          (False),
                          pytest.param(True, marks=(pytest.mark.linux, pytest.mark.darwin, pytest.mark.sunos5))
                          ])
-def test_max_files_per_second(inode_collision, get_configuration, configure_environment, restart_syscheckd,
-                              wait_for_fim_start):
+def test_max_files_per_second(inode_collision, get_configuration, configure_environment, skip_fim_scheduled_cloud_windows,
+                              restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon sleeps to limit the file scanning frequency when
                  the 'max_files_per_second' option is enabled. For this purpose, after the 'baseline' is

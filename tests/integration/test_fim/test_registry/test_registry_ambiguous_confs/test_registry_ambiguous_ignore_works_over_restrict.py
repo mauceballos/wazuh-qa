@@ -117,8 +117,8 @@ def get_configuration(request):
     (key, subkey_2, KEY_WOW64_64KEY, 'key_restrict'),
     (key, subkey_2, KEY_WOW64_32KEY, 'key_restrict')
 ])
-def test_ignore_over_restrict_key(key, subkey, key_name, arch,
-                                  get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
+def test_ignore_over_restrict_key(key, subkey, key_name, arch, get_configuration, configure_environment,
+                                  skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'ignore' tag prevails over the 'restrict' one when using both in the same
                  registry key. For example, when a registry key is ignored, and at the same time,

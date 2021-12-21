@@ -129,8 +129,8 @@ def callback_detect_event_before_end_scan(line):
     (key, sub_key_2, KEY_WOW64_32KEY, REG_SZ, 'added'),
     (key, sub_key_2, KEY_WOW64_64KEY, REG_SZ, 'added')
 ])
-def test_wait_until_baseline(key, subkey, arch, value_type, content, get_configuration,
-                             configure_environment, restart_syscheckd_each_time):
+def test_wait_until_baseline(key, subkey, arch, value_type, content, get_configuration, configure_environment,
+                            skip_fim_scheduled_cloud_windows, restart_syscheckd_each_time):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects registry events generated after the 'baseline'.
                  The log message 'File integrity monitoring scan ended' informs about the end of the first scan,

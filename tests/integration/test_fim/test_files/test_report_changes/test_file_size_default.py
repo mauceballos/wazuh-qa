@@ -139,8 +139,8 @@ def extra_configuration_after_yield():
 @pytest.mark.parametrize('filename, folder', [
     ('regular_0', testdir1),
 ])
-def test_file_size_default(tags_to_apply, filename, folder, get_configuration, configure_environment, restart_syscheckd,
-                           wait_for_fim_start):
+def test_file_size_default(tags_to_apply, filename, folder, get_configuration, configure_environment,
+                            skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon limits the size of the monitored file to generate
                  'diff' information from the default value of the 'file_size' option. For this purpose,

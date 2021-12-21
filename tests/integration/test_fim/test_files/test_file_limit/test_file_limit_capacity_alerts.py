@@ -128,8 +128,8 @@ def get_configuration(request):
     (90, {'file_limit_conf'}),
     (0, {'file_limit_conf'})
 ])
-def test_file_limit_capacity_alert(percentage, tags_to_apply, get_configuration, configure_environment,
-                                   restart_syscheckd, wait_for_fim_start):
+def test_file_limit_capacity_alert(percentage, tags_to_apply, get_configuration, configure_environment, 
+                                   skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon generates events for different capacity thresholds limits when
                  using the 'schedule' monitoring mode. For this purpose, the test will monitor a directory in which

@@ -112,8 +112,8 @@ def get_configuration(request):
     (key, sub_key_2, KEY_WOW64_32KEY),
     (key, sub_key_2, KEY_WOW64_64KEY)
 ])
-def test_registry_changes(key, subkey, arch, value_type, get_configuration, configure_environment, restart_syscheckd,
-                          wait_for_fim_start):
+def test_registry_changes(key, subkey, arch, value_type, get_configuration, configure_environment, 
+                          skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects registry events generated from subkeys/values.
                  For this purpose, the test will monitor a registry key and make key/value operations inside it.

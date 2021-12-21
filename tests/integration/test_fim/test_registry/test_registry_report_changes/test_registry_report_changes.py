@@ -105,9 +105,8 @@ def get_configuration(request):
     (key, sub_key_1, KEY_WOW64_32KEY, "some_value", {'test_report_changes'}),
     (key, sub_key_2, KEY_WOW64_64KEY, "some_value", {'test_report_changes'})
 ])
-def test_report_changes(key, subkey, arch, value_name, tags_to_apply,
-                        get_configuration, configure_environment, restart_syscheckd,
-                        wait_for_fim_start):
+def test_report_changes(key, subkey, arch, value_name, tags_to_apply, skip_fim_scheduled_cloud_windows,
+                        get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects events and creates 'diff' files from monitored
                  keys when the 'report_changes' option is enabled. For this purpose, the test will monitor a key,

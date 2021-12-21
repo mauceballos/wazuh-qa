@@ -98,7 +98,8 @@ def get_configuration(request):
     return request.param
 
 
-def test_long_registry_path(get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
+def test_long_registry_path(get_configuration, configure_environment, skip_fim_scheduled_cloud_windows,
+                            restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon generates events from monitored keys with long paths.
                  For this purpose, the test will monitor a registry key with a long character length path

@@ -115,9 +115,8 @@ def get_configuration(request):
     (key, sub_key_1, KEY_WOW64_32KEY, "some_value", {'test_limits'}),
     (key, sub_key_2, KEY_WOW64_64KEY, "some_value", {'test_limits'})
 ])
-def test_disk_quota_values(key, subkey, arch, value_name, tags_to_apply, size,
-                           get_configuration, configure_environment, restart_syscheckd,
-                           wait_for_fim_start):
+def test_disk_quota_values(key, subkey, arch, value_name, tags_to_apply, size, get_configuration, configure_environment,
+                            skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon limits the size of the folder where the data used
                  to perform the 'diff' operations is stored when the 'disk_quota' limit is set. For this

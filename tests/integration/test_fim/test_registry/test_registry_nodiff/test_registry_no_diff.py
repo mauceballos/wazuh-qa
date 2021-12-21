@@ -116,9 +116,8 @@ def get_configuration(request):
     (key, sub_key_2, KEY_WOW64_64KEY, "some_value", False, {'no_diff_str'})
 
 ])
-def test_no_diff_str(key, subkey, arch, value_name, truncated, tags_to_apply,
-                     get_configuration, configure_environment, restart_syscheckd,
-                     wait_for_fim_start):
+def test_no_diff_str(key, subkey, arch, value_name, truncated, tags_to_apply, skip_fim_scheduled_cloud_windows,
+                     get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon truncates the value changes in the generated events using
                  the value path in the 'registry_nodiff' tag and vice versa. For this purpose, the test will monitor
@@ -216,9 +215,8 @@ def test_no_diff_str(key, subkey, arch, value_name, truncated, tags_to_apply,
     (key, sub_key_2, KEY_WOW64_64KEY, no_diff_value, True, {'no_diff_regex'}),
     (key, sub_key_2, KEY_WOW64_64KEY, "some_value", False, {'no_diff_regex'})
 ])
-def test_no_diff_regex(key, subkey, arch, value_name, truncated, tags_to_apply,
-                       get_configuration, configure_environment, restart_syscheckd,
-                       wait_for_fim_start):
+def test_no_diff_regex(key, subkey, arch, value_name, truncated, tags_to_apply, skip_fim_scheduled_cloud_windows,
+                       get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon truncates the value changes in the generated events using
                  regex in the 'registry_nodiff' tag and vice versa. For this purpose, the test will monitor

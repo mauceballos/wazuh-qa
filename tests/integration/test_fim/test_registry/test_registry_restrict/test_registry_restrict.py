@@ -113,9 +113,8 @@ def get_configuration(request):
     (key, sub_key_2, KEY_WOW64_64KEY, no_valid_value_name, False, {'value_restrict'})
 ])
 @pytest.mark.skip(reason="It will be blocked by #1602, when it was solve we can enable again this test")
-def test_restrict_value(key, subkey, arch, value_name, triggers_event, tags_to_apply,
-                        get_configuration, configure_environment, restart_syscheckd,
-                        wait_for_fim_start):
+def test_restrict_value(key, subkey, arch, value_name, triggers_event, tags_to_apply, skip_fim_scheduled_cloud_windows,
+                        get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects or ignores events in monitored registry entries
                  depending on the value set in the 'restrict_value' attribute. This attribute limit checks to
@@ -239,9 +238,8 @@ def test_restrict_value(key, subkey, arch, value_name, triggers_event, tags_to_a
     (key, sub_key_2, no_valid_subkey, KEY_WOW64_64KEY, False, {'key_restrict'}),
     (key, sub_key_2, no_valid_subkey, KEY_WOW64_32KEY, False, {'key_restrict'})
 ])
-def test_restrict_key(key, subkey, test_subkey, arch, triggers_event, tags_to_apply,
-                      get_configuration, configure_environment, restart_syscheckd,
-                      wait_for_fim_start):
+def test_restrict_key(key, subkey, test_subkey, arch, triggers_event, tags_to_apply, skip_fim_scheduled_cloud_windows,
+                      get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects or ignores events in monitored registry entries
                  depending on the value set in the 'restrict_key' attribute. This attribute limit checks to
