@@ -132,7 +132,8 @@ def get_configuration(request):
 @pytest.mark.parametrize('key, subkey, key_attr, value_attr, triggers_key_modification, triggers_value_modification',
                          params_list)
 def test_check_others(key, subkey, key_attr, value_attr, triggers_key_modification, triggers_value_modification,
-                      get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
+                      skip_fim_scheduled_cloud_windows, get_configuration, configure_environment, restart_syscheckd,
+                      wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon adds in the generated events the 'check_' specified in
                  the configuration. These checks are attributes indicating that a monitored registry entry has

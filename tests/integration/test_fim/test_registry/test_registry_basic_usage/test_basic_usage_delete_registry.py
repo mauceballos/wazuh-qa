@@ -108,9 +108,8 @@ def get_configuration(request):
     (key, sub_key_2, KEY_WOW64_64KEY, ['value1', 'value2', 'value3'])
 
 ])
-def test_delete_registry(key, subkey, arch, value_list,
-                         get_configuration, configure_environment,
-                         restart_syscheckd, wait_for_fim_start):
+def test_delete_registry(key, subkey, arch, value_list, get_configuration, configure_environment, 
+                         skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects 'deleted' events from the values contained
                  in a registry key that is being deleted. For this purpose, the test will monitor a registry

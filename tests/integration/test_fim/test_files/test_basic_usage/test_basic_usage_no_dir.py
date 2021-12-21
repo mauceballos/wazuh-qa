@@ -119,7 +119,7 @@ def get_configuration(request):
 @pytest.mark.parametrize('tags_to_apply', [
     {'ossec_conf'}
 ])
-def test_new_directory(tags_to_apply, get_configuration, skip_scheduled_jenkins, configure_environment, restart_syscheckd):
+def test_new_directory(tags_to_apply, get_configuration, skip_fim_scheduled_cloud_windows, configure_environment, restart_syscheckd):
     '''
     description: Check if the 'wazuh-syscheckd' daemon shows a debug message when an empty 'directories' tag is found.
                  For this purpose, the test uses a configuration without specifying the directory to monitor.

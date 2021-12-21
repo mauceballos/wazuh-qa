@@ -127,7 +127,7 @@ def get_configuration(request):
     ('regular_0', testdir1, 10000000),
 ])
 def test_disk_quota_disabled(tags_to_apply, filename, folder, size, get_configuration, configure_environment,
-                             skip_scheduled_jenkins, restart_syscheckd, wait_for_fim_start):
+                             skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon limits the size of the folder where the data used
                  to perform the 'diff' operations is stored when the 'disk_quota' option is disabled.

@@ -105,7 +105,7 @@ def get_configuration(request):
     (key, sub_key_1, KEY_WOW64_32KEY, "some_value", {'test_report_changes'}),
     (key, sub_key_2, KEY_WOW64_64KEY, "some_value", {'test_report_changes'})
 ])
-def test_report_changes(key, subkey, arch, value_name, tags_to_apply,
+def test_report_changes(key, subkey, arch, value_name, tags_to_apply, skip_fim_scheduled_cloud_windows,
                         get_configuration, configure_environment, restart_syscheckd,
                         wait_for_fim_start):
     '''

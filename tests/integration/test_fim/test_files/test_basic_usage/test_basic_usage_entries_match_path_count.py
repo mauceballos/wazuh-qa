@@ -126,7 +126,7 @@ def extra_configuration_before_yield():
     create_file(HARDLINK, testdir1, 'hardlink', target=os.path.join(testdir1, 'test_2'))
 
 
-def test_entries_match_path_count(get_configuration, configure_environment, skip_scheduled_jenkins, restart_syscheckd, wait_for_fim_start):
+def test_entries_match_path_count(get_configuration, configure_environment, skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if FIM events contain the correct number of file paths when 'hard'
                  and 'symbolic' links are used. For this purpose, the test will monitor

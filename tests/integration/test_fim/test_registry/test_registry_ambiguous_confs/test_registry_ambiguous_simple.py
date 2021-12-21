@@ -142,8 +142,8 @@ def get_configuration(request):
     (key, (subkey_1, os.path.join(subkey_1, key_name)), True, "onekey"),
     (key, (subkey_2, os.path.join(subkey_2, key_name)), False, "other_value")
 ])
-def test_ambiguous_restrict(key, sub_keys, is_key, name,
-                            get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
+def test_ambiguous_restrict(key, sub_keys, is_key, name, get_configuration, configure_environment, 
+                            skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects changes (add, modify, delete) of key/values
                  depending on its 'restrict' attribute. This attribute limit checks to keys/values containing
@@ -214,8 +214,8 @@ def test_ambiguous_restrict(key, sub_keys, is_key, name,
     (key, (subkey_2, os.path.join(subkey_2, key_name)), KEY_WOW64_64KEY),
     (key, (subkey_2, os.path.join(subkey_2, key_name)), KEY_WOW64_32KEY)
 ])
-def test_ambiguous_tags(key, sub_keys, arch,
-                        get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
+def test_ambiguous_tags(key, sub_keys, arch, get_configuration, configure_environment, skip_fim_scheduled_cloud_windows,
+                        restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon adds, in the generated events, the tags specified in
                  the configuration. The 'tags' attribute allows adding tags to alerts for monitored registry
@@ -289,8 +289,8 @@ def test_ambiguous_tags(key, sub_keys, arch,
     (key, os.path.join(subkey_2, recursion_key), KEY_WOW64_64KEY),
     (key, os.path.join(subkey_2, recursion_key), KEY_WOW64_32KEY)
 ])
-def test_ambiguous_recursion(key, subkey, arch,
-                             get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
+def test_ambiguous_recursion(key, subkey, arch, get_configuration, configure_environment, skip_fim_scheduled_cloud_windows,
+                             restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects events for a registry key level defined
                  in the 'recursion_level' attribute. The 'recursion_level' attribute limits the maximum
@@ -355,8 +355,8 @@ def test_ambiguous_recursion(key, subkey, arch,
     (key, (subkey_1, os.path.join(subkey_1, key_name)), checkers_key_case1, checkers_subkey_case1),
     (key, (subkey_2, os.path.join(subkey_2, key_name)), checkers_key_case2, checkers_subkey_case2)
 ])
-def test_ambiguous_checks(key, subkey, key_checkers, subkey_checkers,
-                          get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
+def test_ambiguous_checks(key, subkey, key_checkers, subkey_checkers, get_configuration, configure_environment,
+                        skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon adds, in the generated events, the 'check_' fields
                  specified in the configuration. These checks are attributes indicating that a monitored

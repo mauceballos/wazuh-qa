@@ -123,7 +123,7 @@ def get_configuration(request):
 @pytest.mark.parametrize('tags_to_apply', [
     {'ossec_conf_diff_size_limit'}
 ])
-def test_diff_size_limit_default(tags_to_apply, get_configuration, skip_scheduled_jenkins, configure_environment,
+def test_diff_size_limit_default(tags_to_apply, get_configuration, skip_fim_scheduled_cloud_windows, configure_environment,
                                  restart_syscheckd):
     '''
     description: Check if the 'wazuh-syscheckd' daemon limits the size of 'diff' information to generate from

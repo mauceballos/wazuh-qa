@@ -118,7 +118,7 @@ def get_configuration(request):
 @pytest.mark.parametrize('tags_to_apply', [
     {'ossec_conf_diff_default'}
 ])
-def test_disk_quota_default(tags_to_apply, get_configuration, configure_environment, skip_scheduled_jenkins, restart_syscheckd):
+def test_disk_quota_default(tags_to_apply, get_configuration, configure_environment, skip_fim_scheduled_cloud_windows, restart_syscheckd):
     '''
     description: Check if the 'wazuh-syscheckd' daemon limits the size of the folder where the data used to perform
                  the 'diff' operations is stored to the default value. For this purpose, the test will monitor

@@ -160,7 +160,7 @@ def extra_configuration_after_yield():
     (False, False, False)
 ])
 def test_num_watches(realtime_enabled, decreases_num_watches, rename_folder, get_configuration, configure_environment,
-                     skip_scheduled_jenkins, restart_syscheckd_each_time):
+                     skip_fim_scheduled_cloud_windows, restart_syscheckd_each_time):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects the correct number of 'inotify watches' when
                  renaming and deleting a monitored directory. For this purpose, the test will create and monitor

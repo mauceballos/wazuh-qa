@@ -98,7 +98,7 @@ def get_configuration(request):
 
 # Tests
 
-def test_invalid_sync_response(get_configuration, configure_environment, restart_syscheckd):
+def test_invalid_sync_response(get_configuration, configure_environment, skip_fim_scheduled_cloud_windows, restart_syscheckd):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects invalid synchronization intervals
                  by catching the warning message displayed on the log file. For this purpose,

@@ -129,7 +129,7 @@ def callback_detect_event_before_end_scan(line):
     (key, sub_key_2, KEY_WOW64_32KEY, REG_SZ, 'added'),
     (key, sub_key_2, KEY_WOW64_64KEY, REG_SZ, 'added')
 ])
-def test_wait_until_baseline(key, subkey, arch, value_type, content, get_configuration,
+def test_wait_until_baseline(key, subkey, arch, value_type, content, get_configuration, skip_fim_scheduled_cloud_windows,
                              configure_environment, restart_syscheckd_each_time):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects registry events generated after the 'baseline'.

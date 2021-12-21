@@ -114,9 +114,8 @@ def get_configuration(request):
     (key, sub_key_1, KEY_WOW64_32KEY, "some_value", False, {'no_diff_str'}),
     (key, sub_key_2, KEY_WOW64_64KEY, no_diff_value, True, {'no_diff_str'}),
     (key, sub_key_2, KEY_WOW64_64KEY, "some_value", False, {'no_diff_str'})
-
 ])
-def test_no_diff_str(key, subkey, arch, value_name, truncated, tags_to_apply,
+def test_no_diff_str(key, subkey, arch, value_name, truncated, tags_to_apply, skip_fim_scheduled_cloud_windows,
                      get_configuration, configure_environment, restart_syscheckd,
                      wait_for_fim_start):
     '''
@@ -216,7 +215,7 @@ def test_no_diff_str(key, subkey, arch, value_name, truncated, tags_to_apply,
     (key, sub_key_2, KEY_WOW64_64KEY, no_diff_value, True, {'no_diff_regex'}),
     (key, sub_key_2, KEY_WOW64_64KEY, "some_value", False, {'no_diff_regex'})
 ])
-def test_no_diff_regex(key, subkey, arch, value_name, truncated, tags_to_apply,
+def test_no_diff_regex(key, subkey, arch, value_name, truncated, tags_to_apply, skip_fim_scheduled_cloud_windows,
                        get_configuration, configure_environment, restart_syscheckd,
                        wait_for_fim_start):
     '''

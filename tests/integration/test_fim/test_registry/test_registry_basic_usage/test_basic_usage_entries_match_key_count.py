@@ -106,7 +106,8 @@ def extra_configuration_before_yield():
     modify_registry_value(key_h, "value3", REG_DWORD, 1234)
 
 
-def test_entries_match_key_count(get_configuration, configure_environment, restart_syscheckd, wait_for_fim_start):
+def test_entries_match_key_count(get_configuration, configure_environment, skip_fim_scheduled_cloud_windows, restart_syscheckd,
+                                 wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon detects the correct number of events when adding
                  registry entries. For this purpose, the test will add and monitor a registry key. Then,

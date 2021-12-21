@@ -115,7 +115,7 @@ def get_configuration(request):
     return request.param
 
 
-def test_max_eps(get_configuration, configure_environment, skip_scheduled_jenkins, restart_syscheckd, wait_for_fim_start):
+def test_max_eps(get_configuration, configure_environment, skip_fim_scheduled_cloud_windows, restart_syscheckd, wait_for_fim_start):
     '''
     description: Check if the 'wazuh-syscheckd' daemon applies the limit set in the 'max_eps' tag when
                  a lot of 'syscheck' events are generated. For this purpose, the test will monitor a folder,
