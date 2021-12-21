@@ -294,6 +294,8 @@ def pytest_configure(config):
 
 
 def read_cloud_config_file():
+    global_parameters.cloud_config = None
+    if os.path.isfile(CLOUD_CONFIG_PATH):
         with open(CLOUD_CONFIG_PATH) as file:
             CLOUD_CONFIG = yaml.load(file, Loader=yaml.FullLoader)
             if CLOUD_CONFIG is not None:
@@ -865,7 +867,8 @@ def configure_local_internal_options_module(request):
 @pytest.fixture(scope="module")
 def skip_fim_scheduled_cloud_windows(get_configuration, request):
     mode = get_configuration['metadata']['fim_mode']
-    skip = global_parameters_cloud_config['skip_cloud']
-    if skip is not None and skip == 'yes':
-        if mode == 'scheduled' and sys.platform == 'win32':
-            pytest.skip("skipping because scheduled mode fails on Windows on Cloud")
+    if global_parameters.cloud_config is not None:
+        skip = global_parameters.cloud_config['skip_cloud']
+        if skip is not None and skip == 'yes':
+            if mode == 'scheduled' and sys.platform == 'win32':
+                pytest.skip("skipping because scheduled mode fails on Windows on Cloud")
