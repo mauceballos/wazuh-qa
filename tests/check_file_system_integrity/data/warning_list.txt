@@ -42,8 +42,7 @@
 /snap/core18/2253
 /snap/lxd/21545/lxc/config/common.conf.d/01-local.conf
 /snap/lxd/21835/lxc/config/common.conf.d/01-local.conf
-/tmp/ansible_ansible.legacy.command_payload_6alt_jwz
-/tmp/ansible_ansible.legacy.command_payload_kjskp37n
+/tmp/ansible_ansible.legacy.command_payload_
 /tmp/wazuh-manager-4.2.5-1.x86_64.rpm
 /usr/lib/.build-id
 /usr/lib/debug/usr/.dwz
