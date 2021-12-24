@@ -254,11 +254,11 @@ def check_diffs_in_warning_list(diff, warning_list):
     # If after moving the misplaced paths within the red diff, still there are red diffs the state is red
     # If there are no red diffs, that means that only wrong red diffs were in the red diff, so the state is
     # yellow
-    # if move_misplaced_red(state, red_output_dict['values_changed'], yellow_output_dict):
-    #     if not red_output_dict['values_changed']:
-    #         red_output_dict.pop('values_changed', None)
-    #     if not red_output_dict:
-    #         state = 'yellow'
+    if move_misplaced_red(state, red_output_dict['values_changed'], yellow_output_dict):
+        if not red_output_dict['values_changed']:
+            red_output_dict.pop('values_changed', None)
+        if not red_output_dict:
+            state = 'yellow'
 
     return state, yellow_output_dict, red_output_dict
 
