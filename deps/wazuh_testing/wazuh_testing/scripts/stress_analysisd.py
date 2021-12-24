@@ -1,3 +1,7 @@
+# Copyright (C) 2015-2021, Wazuh Inc.
+# Created by Wazuh, Inc. <info@wazuh.com>.
+# This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
+
 import sys
 import os
 import argparse
@@ -14,17 +18,27 @@ if sys.platform == 'darwin':
     WAZUH_PATH = os.path.join("/", "Library", "Ossec")
 else:
     WAZUH_PATH = os.path.join("/", "var", "ossec")
-ANALYSIS_STATISTICS_FILE = os.path.join(WAZUH_PATH, 'var', 'run', 'wazuh-analysisd.state')
-ANALYSISD_QUEUE_SOCKET_PATH = os.path.join(WAZUH_PATH, 'queue', 'sockets')
+ANALYSISD_PROCESS_NAME = 'wazuh-analysisd'
+ANALYSIS_STATISTICS_FILE = os.path.join(WAZUH_PATH, 'var', 'run', f'{ANALYSISD_PROCESS_NAME}.state')
+ANALYSISD_QUEUE_SOCKET_PATH = os.path.join(WAZUH_PATH, 'queue', 'sockets', 'queue')
 ARCHIVES_LOG_FILE_PATH = os.path.join(WAZUH_PATH, 'logs', 'archives', 'archives.log')
+ALERTS_LOG_FILE_PATH = os.path.join(WAZUH_PATH, 'logs', 'alerts', 'alerts.log')
+ALERTS_JSON_FILE_PATH = os.path.join(WAZUH_PATH, 'logs', 'alerts', 'alerts.json')
+ANALYSISD_BINARY_PATH = os.path.join(WAZUH_PATH, 'bin', ANALYSISD_PROCESS_NAME)
 
 msg = '0912:tmpdir:Dec  2 16:05:37 localhost su[6625]: pam_unix(su:session): '
 'session opened for user root by vagrant(uid=0)'
+
+process_timeout = 5
+stop_command = f'pkill -f {ANALYSISD_PROCESS_NAME}'
+
 script_logger = logging.getLogger('stress_manager')
 
 events_decoded_list = []
 events_dropped_list = []
 stop_threads = False
+thread_wait = 1
+read_signal = False
 stress_time = 0
 
 
@@ -36,7 +50,7 @@ def get_parameters():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--stress-time", type=int, required=False,
-                        default=60, dest='stress_time',
+                        default=300, dest='stress_time',
                         help="Time in seconds to stress Analysisd")
     parser.add_argument("-e", "--number-eps", type=int, required=True,
                         dest='number_eps',
@@ -96,13 +110,28 @@ def set_internal_options_conf(param=None, value=None, restore_backup=None):
     with open(internal_options, 'w') as f:
         f.write(new_content)
 
-    script_logger.info("Restarting the manager")
+    script_logger.info("Restarting analysisd")
     try:
-        subprocess.run([f'{WAZUH_PATH}/bin/wazuh-control', 'restart'],
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(stop_command.split())
+        subprocess.run([ANALYSISD_BINARY_PATH])
     except subprocess.CalledProcessError as error:
         print(error.output)
-    sleep(10)
+
+    start_time = time.perf_counter()
+    elapsed_time = 0
+    running = False
+    while elapsed_time < process_timeout:
+        control_status_output = subprocess.run([f'{WAZUH_PATH}/bin/wazuh-control','status'],
+            stdout=subprocess.PIPE).stdout.decode()
+        analysisd_status_line = [line for line in control_status_output.splitlines() if 'analysisd' in line][0]
+        status = ' '.join(analysisd_status_line.split()[1:])
+        if status == 'is running...':
+            running = True
+            break
+        elapsed_time = time.perf_counter() - start_time
+    if not running:
+        raise TimeoutError(f"{ANALYSISD_PROCESS_NAME} is not running")
+
 
     return backup
 
@@ -119,7 +148,16 @@ def get_analysisd_data(params):
     results = {
         'EPS': params.number_eps,
         'Stress Time': params.stress_time,
+        'Queue size': params.queue_size,
         'Average': {
+            'Decoded': '',
+            'Dropped': ''
+        },
+        'Max': {
+            'Decoded': '',
+            'Dropped': ''
+        },
+        'Min': {
             'Decoded': '',
             'Dropped': ''
         }
@@ -130,12 +168,15 @@ def get_analysisd_data(params):
 
     for _, item in enumerate(data):
         key = list(results['Average'].keys())[_]
-        if len(item) == 0:
-            results['Average'][key] = 0
+        data_set_len = len(item)
+        if data_set_len == 0:
+            raise BaseException("No data collected while stressing analysisd.")
         else:
-            for total_events in item:
-                events_sum += int(total_events)
-            results['Average'][key] = int(events_sum / len(item))
+            for events_number in item:
+                events_sum += events_number
+            results['Average'][key] = int(events_sum / data_set_len)
+            results['Max'][key] = max(item)
+            results['Min'][key] = min(item)
 
     return results
 
@@ -170,8 +211,12 @@ def calculate_eps_distribution(eps):
         int: The total number of threads
     """
     usable_cpus = len(os.sched_getaffinity(0))
-    quantity_of_threads = (usable_cpus * 4) - 1
-    events_per_thread = (eps + quantity_of_threads - 1) // quantity_of_threads
+    quantity_of_threads = (usable_cpus * 2) - 1
+    if eps <= quantity_of_threads or eps <= 200:
+        quantity_of_threads = 0
+        events_per_thread = eps
+    else:
+        events_per_thread = (eps + quantity_of_threads - 1) // quantity_of_threads
 
     return events_per_thread, quantity_of_threads
 
@@ -188,13 +233,20 @@ def create_threads(number_eps):
     threads = []
 
     distribution, quantity_of_threads = calculate_eps_distribution(number_eps)
+    if quantity_of_threads == 0:
+        script_logger.info(f"Sender threads = 1")
+    else:
+        script_logger.info(f"Sender threads = {quantity_of_threads}")
     script_logger.info(f"Thread-EPS distributon = {distribution}")
 
-    threads.append(Thread(target=detect_dropped_events))
-    for _ in range(quantity_of_threads):
+    for _ in range(quantity_of_threads - 1):
         threads.append(Thread(target=send_message, args=(
             distribution, msg, ANALYSISD_QUEUE_SOCKET_PATH
         )))
+    threads.append(Thread(target=send_message, args=(
+        distribution, msg, ANALYSISD_QUEUE_SOCKET_PATH, True # Final thread
+    )))
+    threads.append(Thread(target=detect_dropped_events))
 
     return threads
 
@@ -205,47 +257,56 @@ def detect_dropped_events():
         global stop_threads
         if stop_threads:
             break
-        statistics_file_parsed = ConfigObj(ANALYSIS_STATISTICS_FILE)
-        events_decoded = int(statistics_file_parsed['total_events_decoded'])
-        events_dropped = int(statistics_file_parsed['events_dropped'])
-        if events_decoded > 0:
+        global read_signal
+        if read_signal:
+            statistics_file_parsed = ConfigObj(ANALYSIS_STATISTICS_FILE)
+            events_decoded = int(statistics_file_parsed['total_events_decoded'])
+            events_dropped = int(statistics_file_parsed['events_dropped'])
             events_decoded_list.append(events_decoded)
-        if events_dropped > 0:
             events_dropped_list.append(events_dropped)
-        script_logger.debug(f"DECODED = {events_decoded}")
-        script_logger.debug(f"DROPPED = {events_dropped}")
-        sleep(1)
+            script_logger.debug(f"DECODED = {events_decoded}"
+                f" --- DROPPED = {events_dropped}"
+            )
+            read_signal = False
 
 
-def send_message(eps_distribution, message, wazuh_socket):
+def send_message(eps_distribution, message, wazuh_socket, final_thread=False):
+    script_logger.info("Start sending events")
+    start = 0
+    end = 0
     while True:
         global stop_threads
         if stop_threads:
             break
-        script_logger.debug(f"Sending: {eps_distribution}")
+        sleep(thread_wait - (end-start))
+        start = time.perf_counter()
         for _ in range(eps_distribution):
             sock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
             sock.connect(wazuh_socket)
             sock.send(message.encode())
             sock.close()
-        sleep(1)
+        if final_thread:
+            global read_signal
+            read_signal = True
+        end = time.perf_counter()
 
 
 def run_threads(threads):
     for thread in threads:
         thread.start()
     while True:
+        start = time.perf_counter()
         global stress_time
         if stress_time <= 0:
             global stop_threads
             stop_threads = True
+            end = time.perf_counter()
             break
         else:
+            end = time.perf_counter()
+            sleep(thread_wait - (end - start))
             stress_time -= 1
-            sleep(1)
-    # Truncate archives.log file
-    with open(ARCHIVES_LOG_FILE_PATH, 'w'):
-        pass
+            script_logger.debug(f"Remaining: {stress_time}")
 
 
 def main():
@@ -261,12 +322,8 @@ def main():
     stress_time = args.stress_time
 
     threads = create_threads(args.number_eps)
-
-    start = time.perf_counter()
+    
     run_threads(threads)
-    end = time.perf_counter()
-    total = int(end - start)
-    script_logger.debug(f"EXECUTION TIME = {total}")
 
     analysisd_data = get_analysisd_data(args)
 
@@ -276,6 +333,10 @@ def main():
         write_results_to_file(analysisd_data, args.output_file)
 
     set_internal_options_conf(restore_backup=backup_internal_options)
+
+    for file in [ARCHIVES_LOG_FILE_PATH, ALERTS_LOG_FILE_PATH, ALERTS_JSON_FILE_PATH]:
+        with open(file, 'w'):
+            pass
 
 
 if __name__ == '__main__':
