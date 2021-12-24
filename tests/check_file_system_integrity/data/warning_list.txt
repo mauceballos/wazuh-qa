@@ -22,10 +22,7 @@
 /etc/passwd-
 /etc/passwd
 /etc/pki/nssdb
-/etc/rc.d/init.d/functions
-/etc/rc.d/init.d/README
-/etc/rc.d/init.d/wazuh-agent
-/etc/rc.d/init.d/wazuh-manager
+/etc/rc.d/init.d
 /etc/rc.d/rc2.d
 /etc/rc.d/rc3.d
 /etc/rc.d/rc4.d
