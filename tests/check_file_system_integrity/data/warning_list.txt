@@ -45,7 +45,7 @@
 /snap/lxd/21545/lxc/config/common.conf.d/01-local.conf
 /snap/lxd/21835/lxc/config/common.conf.d/01-local.conf
 /tmp/ansible_ansible.legacy.command_payload_
-/tmp/wazuh-manager-
+/tmp/wazuh-manager
 /usr/lib/.build-id
 /usr/lib/debug/usr/.dwz
 /usr/lib/gcc
@@ -71,8 +71,6 @@
 /usr/src/kernels/4.18.0-305.12.1.el8_4.x86_64/scripts/dtc/include-prefixes/powerpc
 /usr/src/kernels/4.18.0-305.19.1.el8_4.x86_64/scripts/dtc/include-prefixes/nios2
 /usr/src/kernels/4.18.0-305.19.1.el8_4.x86_64/scripts/dtc/include-prefixes/powerpc
-/var/backups/apt.extended_states.1.gz
-/var/backups/apt.extended_states.0
 /var/cache
 /var/lib
 /var/log
