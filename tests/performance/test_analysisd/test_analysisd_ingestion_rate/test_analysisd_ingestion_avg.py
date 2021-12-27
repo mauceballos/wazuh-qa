@@ -124,7 +124,7 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
     }
 
     recursive_directory_creation(os.path.dirname(get_output_path))
-    write_json_file(get_output_path, json.loads(result_data))
+    write_json_file(get_output_path, result_data)
 
     if drop_variation >= threshold:
         assert False, f"The ingestion rate decreased after the upgrade, \
