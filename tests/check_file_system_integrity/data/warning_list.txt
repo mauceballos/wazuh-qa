@@ -48,7 +48,6 @@
 /usr/lib/gcc
 /usr/lib/modules
 /usr/lib/python3/dist-packages/cloudinit/cmd/__pycache__/cloud_id.cpython-39.pyc
-/usr/lib/python3/dist-packages/ufw/__pycache__
 /usr/lib/udev/hwdb.d/20-usb-vendor-model.hwdb
 /usr/lib/yum
 /usr/local/lib/python3.9/dist-packages/apt/__pycache__
