@@ -131,7 +131,9 @@ def set_internal_options_conf(param=None, value=None, restore_backup=None):
         elapsed_time = time.perf_counter() - start_time
     if not running:
         raise TimeoutError(f"{ANALYSISD_PROCESS_NAME} is not running")
-
+    while not os.path.isfile(ANALYSIS_STATISTICS_FILE):
+        pass
+    script_logger.info("Analysisd started and statistics file ready.")
 
     return backup
 
