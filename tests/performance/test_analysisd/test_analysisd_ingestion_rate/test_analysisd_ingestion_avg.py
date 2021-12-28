@@ -110,7 +110,7 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
     initial_drop_average = int(file1_data['Average']['Dropped'])
     final_drop_average = int(file2_data['Average']['Dropped'])
 
-    threshold = 30
+    threshold = -20
 
     if initial_drop_average == final_drop_average:
         drop_variation = 0
@@ -143,6 +143,6 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
     results_path = os.path.join(get_output_path, 'test_results.json')
     write_json_file(results_path, result_data)
 
-    if drop_variation >= threshold:
+    if drop_variation <= threshold:
         assert False, f"The ingestion rate decreased after the upgrade, \
                       check the results within {get_output_path}"
