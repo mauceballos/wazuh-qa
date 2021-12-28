@@ -74,6 +74,22 @@ def validate_and_read_json(file_path):
     return file_data
 
 
+def validate_and_create_output_path(output_path):
+    """"Check that the given output path is a directory if it already exists and creates it when it does not exist yet.
+    Args:
+        output_path (str): Path were the results will be saved.
+    """
+    try:
+        if os.path.exists(output_path) and not os.path.isdir(output_path):
+            raise ValueError(f"The given output path {output_path} already exists and is not a directory.")
+    except TypeError:
+        raise TypeError(f"The --output-path flag expects a string with the path where you want to save the test "
+                        "results.")
+
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
+
 def test_analysisd_ingestion_rate(get_first_result, get_second_result,
                                   get_output_path):
     """This test checks if the performance of Analysisd decreased after
@@ -89,6 +105,7 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
     """
     file1_data = validate_and_read_json(get_first_result)
     file2_data = validate_and_read_json(get_second_result)
+    validate_and_create_output_path(get_output_path)
 
     initial_drop_average = int(file1_data['Average']['Dropped'])
     final_drop_average = int(file2_data['Average']['Dropped'])
@@ -123,8 +140,8 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
         'Interpretation': interpretation
     }
 
-    recursive_directory_creation(os.path.dirname(get_output_path))
-    write_json_file(get_output_path, result_data)
+    results_path = os.path.join(get_output_path, 'test_results.json')
+    write_json_file(results_path, result_data)
 
     if drop_variation >= threshold:
         assert False, f"The ingestion rate decreased after the upgrade, \
