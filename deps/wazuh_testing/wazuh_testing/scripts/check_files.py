@@ -129,13 +129,13 @@ def get_check_files_data(path='/', ignored_paths=[]):
                     try:
                         files_items_dict[dirpath] = get_data_information(dirpath)
                     except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
-                        pass
+                        print(f"First temp attempt {dirpath}")
 
                 if file_path not in ignored_paths and os.path.exists(file_path):
                     try:
                         files_items_dict[file_path] = get_data_information(file_path)
                     except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
-                        pass
+                        print(f"Second temp attempt {dirpath}")
 
     return files_items_dict
 
