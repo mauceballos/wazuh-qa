@@ -213,7 +213,7 @@ def calculate_eps_distribution(eps):
         int: The total number of threads
     """
     usable_cpus = len(os.sched_getaffinity(0))
-    quantity_of_threads = (usable_cpus * 2) - 1
+    quantity_of_threads = (usable_cpus * 4) - 2
     if eps <= quantity_of_threads or eps <= 200:
         quantity_of_threads = 0
         events_per_thread = eps
@@ -241,7 +241,7 @@ def create_threads(number_eps):
         script_logger.info(f"Sender threads = {quantity_of_threads}")
     script_logger.info(f"Thread-EPS distributon = {distribution}")
 
-    for _ in range(quantity_of_threads - 1):
+    for _ in range(quantity_of_threads):
         threads.append(Thread(target=send_message, args=(
             distribution, msg, ANALYSISD_QUEUE_SOCKET_PATH
         )))
@@ -318,7 +318,8 @@ def main():
 
     options = {
         'analysisd.decode_event_queue_size': args.queue_size,
-        'analysisd.state_interval': 1
+        'analysisd.state_interval': 1,
+        'analysisd.decode_output_queue_size': args.queue_size
     }
     backup_internal_options = set_internal_options_conf(options)
 

@@ -350,6 +350,8 @@ def main():
         test_result = local_actions.run_local_command_returning_output(
             pytest_command
         )
+        logger.info(f"The test was executed correctly. Result:\n{test_result}")
+        logger.info(f"The result of the test was saved in {TMP_FILES}")
     finally:
         # Clean test build files
         if parameters and not parameters.persistent:

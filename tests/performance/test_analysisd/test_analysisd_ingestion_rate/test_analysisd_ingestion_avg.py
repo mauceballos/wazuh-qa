@@ -75,6 +75,7 @@ import os
 
 from wazuh_testing.tools.file import validate_json_file, read_json_file
 from wazuh_testing.tools.file import write_json_file
+from wazuh_testing.tools.time import get_current_timestamp
 
 
 @pytest.fixture
@@ -219,8 +220,8 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
         '% Variation': drop_variation,
         'Interpretation': interpretation
     }
-
-    results_path = os.path.join(get_output_path, 'test_results.json')
+    current_timestamp = str(get_current_timestamp()).replace('.', '_')
+    results_path = os.path.join(get_output_path, f'test_results_{current_timestamp}.json')
     write_json_file(results_path, result_data)
 
     assert not drop_variation >= threshold, "The ingestion rate decreased" \
