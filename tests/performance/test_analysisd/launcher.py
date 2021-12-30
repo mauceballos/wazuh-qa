@@ -17,7 +17,7 @@ from wazuh_testing.qa_ctl import QACTL_LOGGER
 from wazuh_testing.qa_ctl.configuration.config_instance import ConfigInstance
 from wazuh_testing.qa_ctl.configuration.config_generator import QACTLConfigGenerator
 from wazuh_testing.tools import file
-from wazuh_testing.tools.s3_package import get_last_production_package_url, get_production_package_url
+from wazuh_testing.tools.s3_package import get_production_package_url
 from wazuh_testing.tools.time import get_current_timestamp
 
 TMP_FILES = os.path.join(gettempdir(), 'wazuh_analysisd_ingestion_avg')
@@ -255,7 +255,8 @@ def generate_test_playbooks(parameters, local_pre_data_path,
 
 
 def generate_qa_ctl_configuration(parameters, playbooks_path, qa_ctl_config_generator):
-    """Generate the qa-ctl configuration according to the script parameters and write it into a file.
+    """Generate the qa-ctl configuration according to the script parameters
+    and write it into a file.
 
     Args:
         parameters (argparse.Namespace): Object with the user parameters.
