@@ -84,9 +84,9 @@ def configure_logger(parameters):
     script_logger.addHandler(handler)
 
 
-def set_internal_options_conf(param=None, value=None, restore_backup=None):
-    if None not in (param, value, restore_backup):
-        raise ValueError("Parameters: 'param' and 'value' cannot be None if "
+def set_internal_options_conf(options=None, restore_backup=None):
+    if None not in (options, restore_backup):
+        raise ValueError("Parameters: 'options' cannot be None if "
                          "'restore_backup' is None")
 
     new_content = ''
@@ -98,17 +98,17 @@ def set_internal_options_conf(param=None, value=None, restore_backup=None):
         for line in restore_backup:
             new_content += line
     else:
-        with open(internal_options, 'r') as f:
-            backup = lines = f.readlines()
-
-            for line in lines:
-                new_line = line
-                if param in line:
-                    new_line = f'{param}={value}\n'
-                new_content += new_line
-
-    with open(internal_options, 'w') as f:
-        f.write(new_content)
+        for option in list(options.keys()):
+            with open(internal_options, 'r') as f:
+                backup = lines = f.readlines()
+                for line in lines:
+                    new_line = line
+                    if option in line:
+                        new_line = f'{option}={options[option]}\n'
+                    new_content += new_line
+            with open(internal_options, 'w') as f:
+                f.write(new_content)
+            new_content = ''
 
     script_logger.info("Restarting analysisd")
     try:
@@ -316,10 +316,11 @@ def main():
     args = get_parameters()
     configure_logger(args)
 
-    backup_internal_options = set_internal_options_conf(
-        'analysisd.decode_event_queue_size',
-        args.queue_size
-    )
+    options = {
+        'analysisd.decode_event_queue_size': args.queue_size,
+        'analysisd.state_interval': 1
+    }
+    backup_internal_options = set_internal_options_conf(options)
 
     stress_time = args.stress_time
 
