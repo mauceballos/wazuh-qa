@@ -345,12 +345,10 @@ def main():
                          f"{pytest_launcher} test_analysisd_ingestion_rate " \
                          f"--before-results {pre_stress_data_path} " \
                          f"--after-results {post_stress_data_path} " \
-                         f"--output-path {TMP_FILES} " \
-                         f"--ingestion-rate {parameters.ingestion_rate}"
+                         f"--output-path {TMP_FILES} "
         test_result = local_actions.run_local_command_returning_output(
             pytest_command
         )
-        print(test_result)
     finally:
         # Clean test build files
         if parameters and not parameters.persistent:

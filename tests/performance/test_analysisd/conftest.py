@@ -12,7 +12,6 @@ def pytest_addoption(parser):
     parser.addoption('--before-results', action='store', dest='before_results')
     parser.addoption('--after-results', action='store', dest='after_results')
     parser.addoption('--output-path', action='store', dest='output_path')
-    parser.addoption('--ingestion-rate', action='store', dest='ingestion_rate')
 
 
 def pytest_generate_tests(metafunc):
@@ -34,7 +33,3 @@ def pytest_generate_tests(metafunc):
     option_value = metafunc.config.option.output_path
     if 'output-path' in metafunc.fixturenames and option_value is not None:
         metafunc.parametrize('--output-path', [option_value])
-
-    option_value = metafunc.config.option.ingestion_rate
-    if 'ingestion-rate' in metafunc.fixturenames and option_value is not None:
-        metafunc.parametrize('--ingestion-rate', [option_value])
