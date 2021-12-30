@@ -71,6 +71,8 @@ def configure_socket_listener(request, get_current_test_case):
         expected = get_current_test_case['message']['expected'].format(host_name=get_host_name()).encode()
     else:
         expected = None
+    address_family = 'AF_INET6' if 'ipv6' in get_current_test_case else 'AF_INET'
+    manager_address = '::1' if 'ipv6' in get_current_test_case else MANAGER_ADDRESS
 
     address_family = 'AF_INET6' if 'ipv6' in get_current_test_case else 'AF_INET'
     manager_address = '::1' if 'ipv6' in get_current_test_case else MANAGER_ADDRESS
