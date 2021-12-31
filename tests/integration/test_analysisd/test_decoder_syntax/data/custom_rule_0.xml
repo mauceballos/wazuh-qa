@@ -1,0 +1,6 @@
+<group name="testing">
+  <rule id="100015" level="4">
+    <field name="fielA">hi</field>
+    <description>test description var: $(null_tst)</description>
+  </rule>
+</group>

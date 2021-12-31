@@ -1,0 +1,12 @@
+<!-- Test: Bad json fields configuration -->
+<decoder name="decoder_null_test">
+  <program_name>^decoder_null_test</program_name>
+</decoder>
+
+<decoder name="decoder_null_test">
+  <parent>decoder_null_test</parent>
+  <prematch>123456 </prematch>
+  <plugin_decoder offset="after_prematch">JSON_Decoder</plugin_decoder>
+  <json_null_field>string1234</json_null_field>
+  <json_array_structure>csv1234</json_array_structure>
+</decoder>
