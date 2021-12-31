@@ -70,6 +70,7 @@
 /var/cache
 /var/lib
 /var/log
+/var/backups/apt.extended_states.0
 /var/snap/lxd/common/lxd/unix.socket
 /var/spool/postfix/pid/master.pid
 /var/spool/postfix/private
