@@ -2,18 +2,15 @@ import os
 import pytest
 from yaml import safe_load
 from shutil import copy
-from json import loads
 
 from wazuh_testing import global_parameters
-import wazuh_testing.execd as execd
 from wazuh_testing.tools.services import control_service
 from wazuh_testing.logcollector import LOG_COLLECTOR_GLOBAL_TIMEOUT
 from wazuh_testing.logtest import callback_logtest_started
 from wazuh_testing.tools.services import control_service
 from wazuh_testing.tools.monitoring import FileMonitor
 from wazuh_testing.tools.file import truncate_file
-from wazuh_testing.tools import LOG_FILE_PATH
-from wazuh_testing.tools import WAZUH_PATH
+from wazuh_testing.tools import WAZUH_PATH, LOG_FILE_PATH
 from wazuh_testing.analysis import (callback_analysisd_invalid_value)
 
 
@@ -117,29 +114,3 @@ def test_decoder_syntax(get_configuration, configure_local_decoders,
                             callback=callbacks.get(get_configuration['log_expect']),
                             error_message='Event not found')
     assert wazuh_log_monitor.result()
-
-
-    # send the logtest request
-
-    # # receive logtest reply and parse it
-    # response = receiver_sockets[0].receive(size=True).rstrip(b'\x00').decode()
-    # result = loads(response)
-    # print(result)
-
-    # errors = []
-
-    # if 'output_error' in get_configuration and get_configuration['output_error'] != result["error"]:
-    #     errors.append("output_error")
-
-    # if ('output_data_msg' in get_configuration and
-    #         get_configuration['output_data_msg'] not in result["data"]["messages"][0]):
-    #     errors.append("output_data_msg")
-
-    # if ('output_data_codemsg' in get_configuration and
-    #         get_configuration['output_data_codemsg'] != result["data"]["codemsg"]):
-    #     errors.append("output_data_codemsg")
-
-    #print(errors)
-
-    # error if any check fails
-    # assert not errors, "Failed stage(s) :{}".format("\n".join(errors))

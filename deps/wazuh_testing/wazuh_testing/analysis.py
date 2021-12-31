@@ -30,9 +30,6 @@ def callback_analysisd_invalid_value(line):
     if match:
         return match.group(1)
 
-    # print(line)
-    # match = re.match(r"WARNING: \(\d+\): Invalid value '.+' in '.+' option \(decoder `.+`\). Default value will be used", line)
-    # return True if match is not None else None
 
 def callback_analysisd_message(line):
     if isinstance(line, bytes):
