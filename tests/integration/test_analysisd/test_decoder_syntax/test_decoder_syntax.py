@@ -11,7 +11,8 @@ from wazuh_testing.tools.services import control_service
 from wazuh_testing.tools.monitoring import FileMonitor
 from wazuh_testing.tools.file import truncate_file
 from wazuh_testing.tools import WAZUH_PATH, LOG_FILE_PATH
-from wazuh_testing.analysis import (callback_analysisd_invalid_value)
+from wazuh_testing.analysis import (callback_analysisd_invalid_value,
+                                    callback_analysisd_deprecated_value)
 
 
 # Marks
@@ -27,16 +28,14 @@ with open(messages_path) as f:
 
 # Variables
 logtest_path = os.path.join(os.path.join(WAZUH_PATH, 'queue', 'sockets', 'logtest'))
-print(logtest_path)
 receiver_sockets_params = [(logtest_path, 'AF_UNIX', 'TCP')]
 
 callbacks = {
-    'invalid_value': callback_analysisd_invalid_value
+    'invalid_value': callback_analysisd_invalid_value,
+    'deprecated_value': callback_analysisd_deprecated_value
 }
  
-def clean_logs():
-    """Clean log file"""
-    truncate_file(LOG_FILE_PATH)
+
 
 # Fixtures
 @pytest.fixture(scope='function')
@@ -45,9 +44,7 @@ def configure_local_decoders(get_configuration):
 
     # configuration for testing
     decoder_file_test = os.path.join(test_data_path, get_configuration['decoder'])
-    print(decoder_file_test)
     decoder_target_file_test = os.path.join(WAZUH_PATH, 'etc', 'decoders', get_configuration['decoder'])
-    print(decoder_target_file_test)
 
     copy(decoder_file_test, decoder_target_file_test)
 

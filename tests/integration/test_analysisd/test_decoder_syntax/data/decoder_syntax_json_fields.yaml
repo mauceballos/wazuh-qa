@@ -1,10 +1,24 @@
 ---
 -
-  name: "Wrong values: json_null_field"
+  name: "Wrong value: json_null_field"
   decoder: "custom_decoder_0.xml"
   rules: "custom_rule_0.xml"
-  input: 'Dec 25 20:45:02 MyHost decoder_null_test[12345]: 123456 { "fielA" : "hi", "array_test" : ["AAA", "BBB", "CCC"], "null_tst" : null}'
-  output_error: 1
   log_expect: 'invalid_value'
-  output_data_msg: "(7602): Invalid value 'string1234' in 'json_null_field' option (decoder `decoder_null_test`). Default value will be taken"
-  output_data_codemsg: -1
+
+-
+  name: "Wrong value: json_array_structure"
+  decoder: "custom_decoder_1.xml"
+  rules: "custom_rule_0.xml"
+  log_expect: 'invalid_value'
+
+-
+  name: "Deprecated value: json_null_field"
+  decoder: "custom_decoder_2.xml"
+  rules: "custom_rule_0.xml"
+  log_expect: 'deprecated_value'
+
+# -
+#   name: "Case-insensitive value: json_null_field"
+#   decoder: "custom_decoder_3.xml"
+#   rules: "custom_rule_0.xml"
+#   log_expect: 'invalid_value'

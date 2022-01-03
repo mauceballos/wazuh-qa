@@ -23,13 +23,12 @@ with open(os.path.join(_data_path, 'state_integrity_analysis_schema.json'), 'r')
     state_integrity_analysis_schema = json.load(f)
 
 def callback_analysisd_invalid_value(line):
-    if isinstance(line, bytes):
-        line = line.decode()
-        print(line)
-    match = re.match(r"WARNING: \(\d+\): Invalid value '.+' in '.+' option \(decoder `.+`\). Default value will be used", line)
-    if match:
-        return match.group(1)
+    match = re.match(r".*WARNING: \(\d+\): Invalid value '.+' in '.+' option \(decoder `.+`\). Default value will be used", line)
+    return True if match is not None else None
 
+def callback_analysisd_deprecated_value(line):
+    match = re.match(r".*WARNING: \(\d+\): Deprecated value '.+' in '.+' option \(decoder `.+`\). Default value will be used", line)
+    return True if match is not None else None
 
 def callback_analysisd_message(line):
     if isinstance(line, bytes):

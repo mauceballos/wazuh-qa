@@ -1,4 +1,4 @@
-<!-- Test: Bad json null field configuration -->
+<!-- Test: Case-insentive json null field -->
 <decoder name="decoder_null_test">
   <program_name>^decoder_null_test</program_name>
 </decoder>
@@ -7,6 +7,6 @@
   <parent>decoder_null_test</parent>
   <prematch>123456 </prematch>
   <plugin_decoder offset="after_prematch">JSON_Decoder</plugin_decoder>
-  <json_null_field>string1234</json_null_field>
+  <json_null_field>STRING</json_null_field>
   <json_array_structure>csv</json_array_structure>
 </decoder>
