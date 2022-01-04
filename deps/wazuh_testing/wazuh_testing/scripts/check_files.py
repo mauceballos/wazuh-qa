@@ -109,14 +109,15 @@ def get_check_files_data2(path='/', ignored_paths=[], files_items_dict={}):
     child_dirs = None
     files = None
 
-    skip_path_checking = should_ignore(path, ignored_paths)
+    #skip_path_checking = should_ignore(path, ignored_paths)
 
     if not skip_path_checking:
         (dir_path, _, filenames) = next(os.walk(path), (None, None, []))
         child_dirs = []
         for dir in _:
-            if not should_ignore(dir, ignored_paths):
-                child_dirs.append(os.path.join(path, dir))
+            child_dir = os.path.join(path, dir)
+            if not should_ignore(child_dir, ignored_paths):
+                child_dirs.append(child_dir)
         files = []
         for file in filenames:
             if file not in ignored_paths:
@@ -157,9 +158,6 @@ def get_check_files_data(path='/', ignored_paths=[]):
     """
     files_items_dict = {}
 
-    script_logger.info(f"Ignoring the following paths: {ignored_paths}")
-    script_logger.info(f"Getting check-files data from {path}")
-
     for (dirpath, _, filenames) in os.walk(path, followlinks=False):
         skip_path_checking = False
 
@@ -168,19 +166,21 @@ def get_check_files_data(path='/', ignored_paths=[]):
                 skip_path_checking = True
 
         if not skip_path_checking:
-            for filename in filenames:
-                file_path = os.path.join(dirpath, filename)
-                if os.path.exists(dirpath):
+            if os.path.exists(dirpath):
                     try:
                         files_items_dict[dirpath] = get_data_information(dirpath)
                     except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
                         pass
+
+            for filename in filenames:
+                file_path = os.path.join(dirpath, filename)
  
                 if file_path not in ignored_paths and os.path.exists(file_path):
                     try:
                         files_items_dict[file_path] = get_data_information(file_path)
                     except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
                         pass
+            
 
     return files_items_dict
 
@@ -286,8 +286,8 @@ def main():
     check_files_data = {}
     script_logger.info(f"Ignoring the following paths: {ignored_paths}")
     script_logger.info(f"Getting check-files data from {arguments.path}")
-    get_check_files_data2(arguments.path, ignored_paths, check_files_data)
-    #check_files_data = get_check_files_data(arguments.path, ignored_paths)
+    #get_check_files_data2(arguments.path, ignored_paths, check_files_data)
+    check_files_data = get_check_files_data(arguments.path, ignored_paths)
 
     # Save the check-files data to a file if specified, otherwise will be logged in the stdout
     if arguments.output_file:
