@@ -93,6 +93,53 @@ def get_human_readable_bytes(bytes):
         return f"{bytes}B"
 
 
+def get_check_files_data2(path='/', ignored_paths=[], files_items_dict={}):
+    skip_path_checking = False
+    script_logger.debug(f"Getting check-files data from {path}")
+    dir_path = None
+    child_dirs = None
+    files = None
+
+    for ignore_path in ignored_paths:
+            if ignore_path in path[0:len(ignore_path)]:
+                skip_path_checking = True
+
+    if not skip_path_checking:
+
+        for (dirpath, _, filenames) in os.walk(path, followlinks=False):
+            dir_path = os.path.join(path, dirpath)
+            child_dirs = []
+            for dir in _:
+                child_dirs.append(os.path.join(path, dir))
+            files = []
+            for file in filenames:
+                files.append(os.path.join(path, file))
+            break
+
+        for ignore_path in ignored_paths:
+            if ignore_path in dir_path[0:len(ignore_path)]:
+                skip_path_checking = True
+
+        if not skip_path_checking:
+            for child_path in child_dirs:
+                get_check_files_data2(child_path, ignored_paths, files_items_dict)
+
+            if dir_path:
+                try:
+                    files_items_dict[dir_path] = get_data_information(dir_path)
+                except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
+                    pass
+
+            for file in files:
+                file_path = os.path.join(dirpath, file)
+                
+                if file_path not in ignored_paths and os.path.exists(file_path):
+                    try:
+                        files_items_dict[file_path] = get_data_information(file_path)
+                    except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
+                        pass
+
+
 def get_check_files_data(path='/', ignored_paths=[]):
     """Get a dictionary with all check-files information recursively from a specific path
 
@@ -238,7 +285,11 @@ def main():
     ignored_paths = arguments.ignore if arguments.ignore else []
 
     # Get the check-files info
-    check_files_data = get_check_files_data(arguments.path, ignored_paths)
+    check_files_data = {}
+    script_logger.info(f"Ignoring the following paths: {ignored_paths}")
+    script_logger.info(f"Getting check-files data from {arguments.path}")
+    get_check_files_data2(arguments.path, ignored_paths, check_files_data)
+    #check_files_data = get_check_files_data(arguments.path, ignored_paths)
 
     # Save the check-files data to a file if specified, otherwise will be logged in the stdout
     if arguments.output_file:
