@@ -101,8 +101,8 @@ def get_check_files_data2(path='/', ignored_paths=[], files_items_dict={}):
     files = None
 
     for ignore_path in ignored_paths:
-            if ignore_path in path[0:len(ignore_path)]:
-                skip_path_checking = True
+        if ignore_path in path[0:len(ignore_path)]:
+            skip_path_checking = True
 
     if not skip_path_checking:
 
@@ -114,6 +114,7 @@ def get_check_files_data2(path='/', ignored_paths=[], files_items_dict={}):
             files = []
             for file in filenames:
                 files.append(os.path.join(path, file))
+            print(dir_path)
             break
 
         for ignore_path in ignored_paths:
