@@ -93,6 +93,15 @@ def get_human_readable_bytes(bytes):
         return f"{bytes}B"
 
 
+def should_ignore(path, ignore_paths):
+    skip = False
+    for ignore_path in ignore_paths:
+        if ignore_path == path[0:len(ignore_path)]:
+            skip = True
+
+    return skip
+
+
 def get_check_files_data(path='/', ignored_paths=[]):
     """Get a dictionary with all check-files information recursively from a specific path
 
@@ -118,9 +127,7 @@ def get_check_files_data(path='/', ignored_paths=[]):
     for (dirpath, _, filenames) in os.walk(path, followlinks=False):
         skip_path_checking = False
 
-        for ignore_path in ignored_paths:
-            if ignore_path in dirpath:
-                skip_path_checking = True
+        skip_path_checking = should_ignore(path, ignored_paths)
 
         if not skip_path_checking:
             for filename in filenames:
