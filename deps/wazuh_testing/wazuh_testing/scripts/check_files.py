@@ -102,41 +102,30 @@ def should_ignore(path, ignored_paths):
     return skip
 
 
-def get_check_files_data2(path='/', ignored_paths=[], files_items_dict={}):
+def get_check_files_data_recursive(path='/', ignored_paths=[], files_items_dict={}):
     skip_path_checking = False
     script_logger.debug(f"Getting check-files data from {path}")
-    dir_path = None
-    child_dirs = None
-    files = None
-
-    #skip_path_checking = should_ignore(path, ignored_paths)
 
     if not skip_path_checking:
-        (dir_path, _, filenames) = next(os.walk(path), (None, None, []))
-        child_dirs = []
-        for dir in _:
-            child_dir = os.path.join(path, dir)
-            if not should_ignore(child_dir, ignored_paths):
-                child_dirs.append(child_dir)
-        files = []
-        for file in filenames:
-            if file not in ignored_paths:
-                files.append(os.path.join(path, file))
-
-        for child_path in child_dirs:
-            get_check_files_data2(child_path, ignored_paths, files_items_dict)
-
-        for file in files:
-            if os.path.exists(file):
-                try:
-                    files_items_dict[file] = get_data_information(file)
-                except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
-                    pass
+        (dir_path, _, filenames) = next(os.walk(path, followlinks=False), (None, None, []))
 
         try:
             files_items_dict[dir_path] = get_data_information(dir_path)
         except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
             pass
+
+        for file in filenames:
+            file_path = os.path.join(path, file)
+            if os.path.exists(file_path) and file not in ignored_paths:
+                try:
+                    files_items_dict[file_path] = get_data_information(file_path)
+                except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
+                    pass  
+
+        for dir in _:
+            child_dir = os.path.join(path, dir)
+            if not should_ignore(child_dir, ignored_paths):
+                get_check_files_data_recursive(child_dir, ignored_paths, files_items_dict)
 
 
 def get_check_files_data(path='/', ignored_paths=[]):
@@ -158,29 +147,28 @@ def get_check_files_data(path='/', ignored_paths=[]):
     """
     files_items_dict = {}
 
+    script_logger.info(f"Ignoring the following paths: {ignored_paths}")
+    script_logger.info(f"Getting check-files data from {path}")
+
     for (dirpath, _, filenames) in os.walk(path, followlinks=False):
         skip_path_checking = False
 
-        for ignore_path in ignored_paths:
-            if ignore_path == dirpath[0:len(ignore_path)]:
-                skip_path_checking = True
+        skip_path_checking = should_ignore(path, ignored_paths)
 
         if not skip_path_checking:
-            if os.path.exists(dirpath):
+            for filename in filenames:
+                file_path = os.path.join(dirpath, filename)
+                if os.path.exists(dirpath):
                     try:
                         files_items_dict[dirpath] = get_data_information(dirpath)
                     except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
                         pass
 
-            for filename in filenames:
-                file_path = os.path.join(dirpath, filename)
- 
                 if file_path not in ignored_paths and os.path.exists(file_path):
                     try:
                         files_items_dict[file_path] = get_data_information(file_path)
                     except OSError:  # Ignore errors like "No such device or address" due to dynamic and temporary files
                         pass
-            
 
     return files_items_dict
 
@@ -286,8 +274,9 @@ def main():
     check_files_data = {}
     script_logger.info(f"Ignoring the following paths: {ignored_paths}")
     script_logger.info(f"Getting check-files data from {arguments.path}")
-    #get_check_files_data2(arguments.path, ignored_paths, check_files_data)
-    check_files_data = get_check_files_data(arguments.path, ignored_paths)
+    get_check_files_data_recursive(arguments.path, ignored_paths, check_files_data)
+    #check_files_data = get_check_files_data(arguments.path, ignored_paths)
+    script_logger.info(f"The check-files data has been collected")
 
     # Save the check-files data to a file if specified, otherwise will be logged in the stdout
     if arguments.output_file:
