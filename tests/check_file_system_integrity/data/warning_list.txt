@@ -1,4 +1,3 @@
-/etc/mtab
 /etc/group
 /etc/gshadow
 /etc/passwd-
