@@ -66,7 +66,18 @@ class CustomLogger:
 
 
 def main():
-    if not check_host_master_node():
+    logger = CustomLogger('Unsync').get_logger()
+
+    while True:
+        try:
+            is_master_node = check_host_master_node()
+            logger.info(f"Node type correctly obtained.")
+            break
+        except Exception as e:
+            logger.error(f"Error while trying to check node type. Retrying in 10 seconds: {e}")
+            time.sleep(10)
+
+    if not is_master_node:
         def send_msg(msg):
             msg = struct.pack('<I', len(msg)) + msg.encode()
 
@@ -80,12 +91,20 @@ def main():
 
             return data
 
-        logger = CustomLogger('Unsync').get_logger()
         ADDR = '/var/ossec/queue/db/wdb'
 
         manager_name = sys.argv[1]
 
-        if manager_name in get_node_name():
+        while True:
+            try:
+                node_name = get_node_name()
+                logger.info(f"Node name correctly obtained.")
+                break
+            except Exception as e:
+                logger.error(f"Error while trying to check node name. Retrying in 10 seconds: {e}")
+                time.sleep(10)
+
+        if manager_name in node_name:
 
             range_id = (1, 20000) if manager_name == 'manager_1' else (20000, 40000) if manager_name == 'manager_2' else \
                 (40000, 60000) if manager_name == 'manager_3' else (60000, 80000) if manager_name == 'manager_4' else (
@@ -93,8 +112,6 @@ def main():
 
             first_id = range_id[0]
             last_id = range_id[1]
-
-            node_name = get_node_name()
 
             counter = 0
             while True:
