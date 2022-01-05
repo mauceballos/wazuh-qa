@@ -13,3 +13,8 @@
 /var/cache
 /usr/lib
 /usr/lib/systemd/system
+/home/vagrant/.ansible/tmp/ansible-tmp-
+/tmp/ansible_ansible.legacy.command_payload_
+//.rnd
+/tmp
+/etc/mtab
