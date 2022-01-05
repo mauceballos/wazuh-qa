@@ -42,6 +42,7 @@
 /snap/lxd/21545/lxc/config/common.conf.d/01-local.conf
 /snap/lxd/21835/lxc/config/common.conf.d/01-local.conf
 /tmp/ansible_ansible.legacy.command_payload_
+/tmp/systemd-private-
 /tmp/wazuh-manager
 /usr/lib/.build-id
 /usr/lib/debug/usr/.dwz
@@ -80,3 +81,4 @@
 /var/spool/anacron/cron.weekly
 /var/spool/anacron/cron.monthly
 /var/tmp/dnf-vagrant-*
+/var/tmp/systemd-private-
