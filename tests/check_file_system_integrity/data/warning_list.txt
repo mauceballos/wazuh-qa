@@ -16,5 +16,6 @@
 /home/vagrant/.ansible/tmp/ansible-tmp-
 /tmp/ansible_ansible.legacy.command_payload_
 //.rnd
+/pre_check_files_data.json
 /tmp
 /etc/mtab
