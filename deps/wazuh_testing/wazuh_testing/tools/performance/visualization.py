@@ -184,6 +184,7 @@ class DataVisualizer:
         if self.base_name is not None:
             svg_name = f"{self.base_name}_{svg_name}"
         plt.savefig(join(self.store_path, f"{svg_name}.svg"), dpi=1200, format='svg')
+        plt.close()
 
     def _plot_data(self, elements, title=None, generic_label=None):
         """Function to plot the different types of dataframes.
