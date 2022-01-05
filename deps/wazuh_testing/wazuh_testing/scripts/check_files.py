@@ -102,7 +102,7 @@ def should_ignore(path, ignored_paths):
     return skip
 
 
-def get_check_files_data_recursive(path='/', ignored_paths=[], files_items_dict={}):
+def get_check_files_data_recursive(path='/', ignored_paths=[], files_items_dict={}, depth=0):
     skip_path_checking = False
     script_logger.debug(f"Getting check-files data from {path}")
 
@@ -124,8 +124,9 @@ def get_check_files_data_recursive(path='/', ignored_paths=[], files_items_dict=
 
         for dir in _:
             child_dir = os.path.join(path, dir)
-            if not should_ignore(child_dir, ignored_paths):
-                get_check_files_data_recursive(child_dir, ignored_paths, files_items_dict)
+            if depth < 3:
+                if not should_ignore(child_dir, ignored_paths):
+                    get_check_files_data_recursive(child_dir, ignored_paths, files_items_dict, depth+1)
 
 
 def get_check_files_data(path='/', ignored_paths=[]):
@@ -274,9 +275,9 @@ def main():
     check_files_data = {}
     script_logger.info(f"Ignoring the following paths: {ignored_paths}")
     script_logger.info(f"Getting check-files data from {arguments.path}")
-    get_check_files_data_recursive(arguments.path, ignored_paths, check_files_data)
-    #check_files_data = get_check_files_data(arguments.path, ignored_paths)
-    script_logger.info(f"The check-files data has been collected")
+    #get_check_files_data_recursive(arguments.path, ignored_paths, check_files_data)
+    check_files_data = get_check_files_data(arguments.path, ignored_paths)
+    script_logger.info(f"The check-files data have been collected")
 
     # Save the check-files data to a file if specified, otherwise will be logged in the stdout
     if arguments.output_file:
