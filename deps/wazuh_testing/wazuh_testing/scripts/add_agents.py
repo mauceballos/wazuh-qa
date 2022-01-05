@@ -42,25 +42,32 @@ def main():
     if check_host_master_node():
         logger = CustomLogger('Add_agents').get_logger()
 
-        agents_list = list(range(1, 360000))
+        agents_list = list(range(1, 100000))
         agents_list = [str(agent_id).zfill(3) for agent_id in agents_list]
-        logger.info("Starting add_agents script, shuffling agents ID list with range [001-360000]")
-        random.shuffle(agents_list)
-
-        logger.info(f"Agents with ID {', '.join(agents_list[:5])}, ... are going to be added to the client.keys file")
+        logger.info("Starting add_agents script.")
 
         while not os.path.exists('/var/ossec/etc/client.keys'):
             logger.info("client.keys does not exist, waiting 15 seconds...")
             time.sleep(15)
-        for chunk in [agents_list[x:x + 50] for x in range(0, len(agents_list), 50)]:
-            f = open(file='/var/ossec/etc/client.keys', mode='a')
-            logger.info(f"Adding 50 agents with IDs: {', '.join(chunk[:5])}, ...")
-            for agent_id in chunk:
+
+        # Add agents to client.keys
+        with open(file='/var/ossec/etc/client.keys', mode='a') as f:
+            for agent_id in range(0, len(agents_list)):
                 f.write(f"{str(agent_id).zfill(3)} new_agent_{agent_id} any {agent_id}\n")
-                f.flush()  # This is important to avoid bytes staying in the buffer until the loop has finished
-            f.close()
-            logger.info("Sleeping for 60 seconds ...")
-            time.sleep(60)
+                f.flush()
+                if agent_id % 5000 == 0:
+                    logger.info(f"The first {agent_id} agents have already been added.")
+
+        # Add agent-groups files
+        logger.info("Starting to add agents to groups.")
+        for idx, agent_id in enumerate(agents_list):
+            agent_group_file = f"/var/ossec/queue/agent-groups/{agent_id}"
+            if not os.path.exists(agent_group_file):
+                with open(file=agent_group_file, mode='w') as f:
+                    f.write('default')
+                if idx % 5000 == 0:
+                    logger.info(f"The first {agent_id} agents have already been added.")
+
     exit(0)
 
 

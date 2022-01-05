@@ -87,9 +87,9 @@ def main():
 
         if manager_name in get_node_name():
 
-            range_id = (1, 72000) if manager_name == 'manager_1' else (72000, 144000) if manager_name == 'manager_2' else \
-                (144000, 216000) if manager_name == 'manager_3' else (216000, 288000) if manager_name == 'manager_4' else (
-                288000, 360000)
+            range_id = (1, 20000) if manager_name == 'manager_1' else (20000, 40000) if manager_name == 'manager_2' else \
+                (40000, 60000) if manager_name == 'manager_3' else (60000, 80000) if manager_name == 'manager_4' else (
+                80000, 100000)
 
             first_id = range_id[0]
             last_id = range_id[1]
