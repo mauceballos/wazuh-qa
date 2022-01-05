@@ -42,13 +42,14 @@
 /snap/lxd/21545/lxc/config/common.conf.d/01-local.conf
 /snap/lxd/21835/lxc/config/common.conf.d/01-local.conf
 /tmp/ansible_ansible.legacy.command_payload_
+/tmp/systemd-private-
 /tmp/wazuh-manager
 /usr/lib/.build-id
 /usr/lib/debug/usr/.dwz
 /usr/lib/gcc
 /usr/lib/modules
 /usr/lib/python3/dist-packages/cloudinit/cmd/__pycache__/cloud_id.cpython-39.pyc
-/usr/lib/python3/dist-packages/ufw/__pycache__
+/usr/lib/systemd/system/wazuh-manager.service
 /usr/lib/udev/hwdb.d/20-usb-vendor-model.hwdb
 /usr/lib/yum
 /usr/local/lib/python3.9/dist-packages/apt/__pycache__
@@ -71,6 +72,7 @@
 /var/cache
 /var/lib
 /var/log
+/var/backups/apt.extended_states.0
 /var/snap/lxd/common/lxd/unix.socket
 /var/spool/postfix/pid/master.pid
 /var/spool/postfix/private
@@ -79,3 +81,4 @@
 /var/spool/anacron/cron.weekly
 /var/spool/anacron/cron.monthly
 /var/tmp/dnf-vagrant-*
+/var/tmp/systemd-private-
