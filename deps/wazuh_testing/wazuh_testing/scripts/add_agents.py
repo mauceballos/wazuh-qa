@@ -50,6 +50,11 @@ def main():
             logger.info("client.keys does not exist, waiting 15 seconds...")
             time.sleep(15)
 
+        logger.info("Stopping wazuh...")
+        proc1 = subprocess.Popen(['/var/ossec/bin/wazuh-control', 'stop'], stdout=subprocess.PIPE)
+        out, err = proc1.communicate()
+        logger.info("Wazuh stopped")
+
         # Add agents to client.keys
         with open(file='/var/ossec/etc/client.keys', mode='a') as f:
             for agent_id in range(0, len(agents_list)):
@@ -67,6 +72,11 @@ def main():
                     f.write('default')
                 if idx % 5000 == 0:
                     logger.info(f"The first {agent_id} agents have already been added.")
+
+        logger.info("Starting wazuh...")
+        proc1 = subprocess.Popen(['/var/ossec/bin/wazuh-control', 'start'], stdout=subprocess.PIPE)
+        out, err = proc1.communicate()
+        logger.info("Wazuh started")
 
     exit(0)
 
