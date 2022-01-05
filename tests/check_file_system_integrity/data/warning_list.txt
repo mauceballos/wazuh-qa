@@ -1,4 +1,3 @@
-/etc
 /etc/mtab
 /etc/group
 /etc/gshadow
@@ -10,8 +9,6 @@
 /etc/group-
 /etc/rc.d/init.d
 /etc/selinux/targeted
-/
-/var
 /var/lib
 /var/log
 /var/cache
