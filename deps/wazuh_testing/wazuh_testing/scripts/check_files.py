@@ -154,7 +154,9 @@ def get_check_files_data(path='/', ignored_paths=[]):
     for (dirpath, _, filenames) in os.walk(path, followlinks=False):
         skip_path_checking = False
 
-        skip_path_checking = should_ignore(path, ignored_paths)
+        for ignore_path in ignored_paths:
+            if ignore_path == dirpath[0:len(ignore_path)]:
+                skip_path_checking = True
 
         if not skip_path_checking:
             for filename in filenames:
