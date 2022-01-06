@@ -226,16 +226,13 @@ def generate_test_playbooks(parameters, local_checkfiles_pre_data_path, local_ch
     os_platform = 'linux'
     package_destination = '/tmp'
     check_files_tool_destination = '/bin/check_files.py'
-    ignore_check_files_path_pre = ['/sys', '/proc', '/run', '/dev', '/var/ossec', '/bin/check_files.py']
-    ignore_check_files_path_pos = ['/sys', '/proc', '/run', '/dev', '/bin/check_files.py']
+    ignore_check_files_path = ['/sys', '/proc', '/run', '/dev', '/var/ossec', '/bin/check_files.py']
     check_files_extra_args = '' if parameters.debug == 0 else ('-d' if parameters.debug == 1 else '-dd')
     pre_check_files_data_output_path = '/pre_check_files_data.json'
     post_check_files_data_output_path = '/post_check_files_data.json'
-    pre_check_files_command = f"python3 {check_files_tool_destination} -p / -i " \
-                              f"{' '.join(ignore_check_files_path_pre)} " \
+    pre_check_files_command = f"python3 {check_files_tool_destination} -p / -i {' '.join(ignore_check_files_path)} " \
                               f"-o {pre_check_files_data_output_path} {check_files_extra_args}"
-    post_check_files_command = f"python3 {check_files_tool_destination} -p / -i " \
-                               f"{' '.join(ignore_check_files_path_pos)} " \
+    post_check_files_command = f"python3 {check_files_tool_destination} -p / -i {' '.join(ignore_check_files_path)} " \
                                f"-o {post_check_files_data_output_path} {check_files_extra_args}"
     # Playbook parameters
     wazuh_install_playbook_parameters = {'wazuh_target': parameters.wazuh_target, 'package_name': package_name,
