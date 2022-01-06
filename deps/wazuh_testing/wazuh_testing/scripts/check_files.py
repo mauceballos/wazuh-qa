@@ -186,7 +186,8 @@ def get_data_information(item):
     try:
         group = grp.getgrgid(stat_info.st_gid)[0]
     except KeyError:
-        raise KeyError('gid not found.')
+        group = ""
+        pass
     mode = oct(stat.S_IMODE(stat_info.st_mode))
     mode_str = str(mode).replace('o', '')
     mode = mode_str[-3:] if len(mode_str) > 3 else mode_str
