@@ -227,7 +227,7 @@ def generate_test_playbooks(parameters, local_checkfiles_pre_data_path, local_ch
     package_destination = '/tmp'
     check_files_tool_destination = '/bin/check_files.py'
     ignore_check_files_path_pre = ['/sys', '/proc', '/run', '/dev', '/var/ossec', '/bin/check_files.py']
-    ignore_check_files_path_pos = ['/sys', '/proc', '/run', '/dev', '/var/ossec', '/bin/check_files.py']
+    ignore_check_files_path_pos = ['/sys', '/proc', '/run', '/dev', '/bin/check_files.py']
     check_files_extra_args = '' if parameters.debug == 0 else ('-d' if parameters.debug == 1 else '-dd')
     pre_check_files_data_output_path = '/pre_check_files_data.json'
     post_check_files_data_output_path = '/post_check_files_data.json'
