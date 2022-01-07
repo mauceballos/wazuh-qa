@@ -23,3 +23,4 @@
 /var/cache
 /var/lib
 /var/log
+/VBox.log
