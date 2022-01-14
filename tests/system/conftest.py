@@ -17,12 +17,6 @@ results = dict()
 report_files = []
 
 
-def set_report_files(files):
-    if files:
-        for file in files:
-            report_files.append(file)
-
-
 def get_report_files():
     for file in os.listdir('/tmp'):
         if 'wazuh' in file:
