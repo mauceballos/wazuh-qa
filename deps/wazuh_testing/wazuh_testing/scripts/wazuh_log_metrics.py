@@ -4,14 +4,14 @@ from os.path import join
 from tempfile import gettempdir
 from time import time
 
-from wazuh_testing.tools.performance.binary import ClusterLogParser, APILogParser
+from wazuh_testing.tools.performance.binary import ClusterLogParser, APILogParser, KeepAliveLogParser
 
 METRICS_FOLDER = join(gettempdir(), 'log_metrics')
 CURRENT_SESSION = join(METRICS_FOLDER, datetime.now().strftime('%d-%m-%Y'), str(int(time())))
 
 
 def get_script_arguments():
-    target_choices = ['cluster', 'api']
+    target_choices = ['cluster', 'api', 'keepalive']
     parser = argparse.ArgumentParser(usage="%(prog)s [options]", description="Wazuh log parser",
                                      formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('-l', '--log', dest='log', default=None,
@@ -32,6 +32,8 @@ def main():
             ClusterLogParser(log_file=options.log, dst_dir=options.output).write_csv()
         elif options.log_type_target == 'api':
             APILogParser(log_file=options.log, dst_dir=options.output).write_csv()
+        elif options.log_type_target == 'keepalive':
+            KeepAliveLogParser(log_file=options.log, dst_dir=options.output).write_csv()
 
 
 if __name__ == '__main__':
