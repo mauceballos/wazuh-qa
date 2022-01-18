@@ -1589,7 +1589,7 @@ class InjectorThread(threading.Thread):
 
     def keep_alive(self):
         """Send a keep alive message from the agent to the manager."""
-        sleep(10)
+        sleep(1)
         logging.debug("Startup - {}({})".format(self.agent.name, self.agent.id))
         self.sender.send_event(self.agent.startup_msg)
         self.sender.send_event(self.agent.keep_alive_event)
