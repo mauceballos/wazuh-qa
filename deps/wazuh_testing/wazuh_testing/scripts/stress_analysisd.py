@@ -19,7 +19,7 @@ if sys.platform == 'darwin':
 else:
     WAZUH_PATH = os.path.join("/", "var", "ossec")
 ANALYSISD_PROCESS_NAME = 'wazuh-analysisd'
-ANALYSIS_STATISTICS_FILE = os.path.join(WAZUH_PATH, 'var', 'run', f'{ANALYSISD_PROCESS_NAME}.state')
+ANALYSISD_STATISTICS_FILE = os.path.join(WAZUH_PATH, 'var', 'run', f'{ANALYSISD_PROCESS_NAME}.state')
 ANALYSISD_QUEUE_SOCKET_PATH = os.path.join(WAZUH_PATH, 'queue', 'sockets', 'queue')
 ARCHIVES_LOG_FILE_PATH = os.path.join(WAZUH_PATH, 'logs', 'archives', 'archives.log')
 ALERTS_LOG_FILE_PATH = os.path.join(WAZUH_PATH, 'logs', 'alerts', 'alerts.log')
@@ -59,7 +59,7 @@ def get_parameters():
                         default=16384, dest='queue_size',
                         help="Size of Analysisd`s 'decode event' queue")
     parser.add_argument("-o", "--output-file", type=str,
-                        help='The path where the results are stored')
+                        help='The path of the file to which the results will be written.')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Run in debug mode.')
 
@@ -131,7 +131,7 @@ def set_internal_options_conf(options=None, restore_backup=None):
         elapsed_time = time.perf_counter() - start_time
     if not running:
         raise TimeoutError(f"{ANALYSISD_PROCESS_NAME} is not running")
-    while not os.path.isfile(ANALYSIS_STATISTICS_FILE):
+    while not os.path.isfile(ANALYSISD_STATISTICS_FILE):
         pass
     script_logger.info("Analysisd started and statistics file ready.")
 
@@ -176,7 +176,7 @@ def get_analysisd_data(params):
         else:
             for events_number in item:
                 events_sum += events_number
-            results['Average'][key] = int(events_sum / data_set_len)
+            results['Average'][key] = round(events_sum / data_set_len, 2)
             results['Max'][key] = max(item)
             results['Min'][key] = min(item)
 
@@ -188,7 +188,7 @@ def write_results_to_file(data, output_file_path):
 
     Args:
         data (dict): Analysisd data
-        output_file_path (string): The path where the results are stored
+        output_file_path (string): The path of the file to which the results will be written
     """
     output_dir = os.path.split(output_file_path)[0]
 
@@ -198,7 +198,7 @@ def write_results_to_file(data, output_file_path):
     with open(output_file_path, 'w') as file:
         file.write(json.dumps(data, indent=4))
 
-    script_logger.info(f"The Analysisd data has been written in"
+    script_logger.info(f"The Analysisd data has been written in "
                        f"{output_file_path} file")
 
 
@@ -257,11 +257,14 @@ def detect_dropped_events():
     script_logger.info("Start detecting dropped events")
     while True:
         global stop_threads
+        global read_signal
+
         if stop_threads:
             break
-        global read_signal
+        while not os.path.isfile(ANALYSISD_STATISTICS_FILE):
+            pass
         if read_signal:
-            statistics_file_parsed = ConfigObj(ANALYSIS_STATISTICS_FILE)
+            statistics_file_parsed = ConfigObj(ANALYSISD_STATISTICS_FILE)
             events_decoded = int(statistics_file_parsed['total_events_decoded'])
             events_dropped = int(statistics_file_parsed['events_dropped'])
             events_decoded_list.append(events_decoded)
@@ -308,7 +311,6 @@ def run_threads(threads):
             end = time.perf_counter()
             sleep(thread_wait - (end - start))
             stress_time -= 1
-            script_logger.debug(f"Remaining: {stress_time}")
 
 
 def main():
