@@ -66,8 +66,7 @@ references:
     - https://documentation.wazuh.com/current/user-manual/reference/daemons/wazuh-analysisd.html
 
 tags:
-    - analysisd_performance
-    - analysisd_ingestion_rate
+    - analysisd
 '''
 
 import pytest
@@ -181,8 +180,7 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
           check the results within /path/to/result/file
 
     tags:
-        - analysisd_performance
-        - ingestion_rate
+        - analysisd
     '''
     file1_data = validate_and_read_json(get_first_result)
     file2_data = validate_and_read_json(get_second_result)
