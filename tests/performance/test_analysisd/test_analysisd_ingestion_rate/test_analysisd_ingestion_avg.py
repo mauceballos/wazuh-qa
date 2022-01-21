@@ -165,7 +165,7 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
         - get_output_path:
             type: fixture
             brief: Get the file path where the test result will be stored.
-    
+
     assertions:
         - Verify that the ingestion rate does not decreased after upgrading
           Wazuh.
@@ -196,7 +196,7 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
     elif initial_drop_average != 0:
         if final_drop_average > initial_drop_average:
             drop_variation = (
-                (final_drop_average - initial_drop_average) 
+                (final_drop_average - initial_drop_average)
                 / initial_drop_average) * 100
         elif final_drop_average != 0:
             drop_variation = -(
@@ -207,9 +207,8 @@ def test_analysisd_ingestion_rate(get_first_result, get_second_result,
     else:
         drop_variation = -100
 
-    result_text = (('increased ' if drop_variation > 0 else 'decreased ') \
-                    + f'{drop_variation}%') if drop_variation != 0 \
-                    else 'remained'
+    result_text = (('increased ' if drop_variation > 0 else 'decreased ')
+                   + f'{drop_variation}%') if drop_variation != 0 else 'remained'
     interpretation = 'The dropped average ' + result_text
 
     result_data = {
