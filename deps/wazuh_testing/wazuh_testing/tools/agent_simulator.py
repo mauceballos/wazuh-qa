@@ -1589,12 +1589,13 @@ class InjectorThread(threading.Thread):
 
     def keep_alive(self):
         """Send a keep alive message from the agent to the manager."""
-        sleep(1)
+        sleep(10)
         logging.debug("Startup - {}({})".format(self.agent.name, self.agent.id))
         self.sender.send_event(self.agent.startup_msg)
         self.sender.send_event(self.agent.keep_alive_event)
         start_time = time()
         frequency = self.agent.modules["keepalive"]["frequency"]
+        frequency = 0.1
         eps = 1
         if 'eps' in self.agent.modules["keepalive"]:
             frequency = 0
