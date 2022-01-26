@@ -63,6 +63,8 @@ pytest_args:
     - fim_mode:
         realtime: Enable real-time monitoring on Linux (using the 'inotify' system calls) and Windows systems.
         whodata: Implies real-time monitoring but adding the 'who-data' information.
+        scheduled: Enable monitoring scans at specified intervals on Linux and Windows Systems.
+
     - tier:
         0: Only level 0 tests are performed, they check basic functionalities and are quick to perform.
         1: Only level 1 tests are performed, they check functionalities of medium complexity.
@@ -72,43 +74,39 @@ tags:
     - fim_max_eps
 '''
 import os
-import shutil
 import sys
-from collections import Counter
-
+import shutil
 import pytest
-from wazuh_testing.fim import LOG_FILE_PATH, REGULAR, create_file, generate_params, callback_integrity_message, \
-    callback_connection_message
+
+from collections import Counter
 from wazuh_testing.tools import PREFIX
-from wazuh_testing.tools.configuration import load_wazuh_configurations, check_apply_test
 from wazuh_testing.tools.monitoring import FileMonitor
+from wazuh_testing.fim import LOG_FILE_PATH, REGULAR, create_file, generate_params, callback_integrity_message, callback_connection_message
+from wazuh_testing.tools.configuration import load_wazuh_configurations, check_apply_test
+
+from wazuh_testing.wazuh_variables import TIER1, AGENT, DATA, WINDOWS, LINUX
+from wazuh_testing.fim_module.fim_variables import (YAML_CONF_SYNC_MAX_EPS, TEST_DIRECTORIES, TEST_DIR_1)
 
 # Marks
-
-pytestmark = [pytest.mark.tier(level=1), pytest.mark.agent]
+pytestmark = [TIER1, AGENT, WINDOWS, LINUX]
 
 # Variables
-test_directories_no_delete = [os.path.join(PREFIX, 'testdir1')]
-
-directory_str = ','.join(test_directories_no_delete)
-
 wazuh_log_monitor = FileMonitor(LOG_FILE_PATH)
-test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
-configurations_path = os.path.join(test_data_path, 'wazuh_conf_synchro.yaml')
-testdir1 = os.path.join(PREFIX, 'testdir1')
+test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), DATA)
+configurations_path = os.path.join(test_data_path, YAML_CONF_SYNC_MAX_EPS)
+test_directories = [os.path.join(PREFIX, TEST_DIR_1)]
 
 # Configurations
-conf_params = {'TEST_DIRECTORIES': directory_str,
-               'MODULE_NAME': __name__}
+conf_params = {TEST_DIRECTORIES: test_directories[0], 'MODULE_NAME': __name__}
 
-eps_values = ['50', '10']
-test_modes = ['realtime'] if sys.platform == 'linux' or sys.platform == 'win32' else ['scheduled']
+eps_values = ['2']
 
-p, m = generate_params(extra_params=conf_params, apply_to_all=({'MAX_EPS': eps_value} for eps_value in eps_values),
-                       modes=test_modes)
-configurations = load_wazuh_configurations(configurations_path, __name__, params=p, metadata=m)
+# To deleted eps_values = ['50', '10']
+# eps_values = ['0', '1', '50', '499', '1000', '2000']
 
-
+parameters, metadata = generate_params(extra_params=conf_params, apply_to_all=({'MAX_EPS': eps_value} for eps_value in eps_values))
+configurations = load_wazuh_configurations(configurations_path, __name__, params=parameters, metadata=metadata)
+# VER de poner los local internals options.
 # Fixtures
 
 @pytest.fixture(scope='module', params=configurations)
@@ -121,14 +119,15 @@ def get_configuration(request):
 def create_files(get_configuration):
     max_eps = get_configuration['metadata']['max_eps']
     mode = get_configuration['metadata']['fim_mode']
-    for i in range(int(max_eps) * 5):
-        create_file(REGULAR, testdir1, f'test{i}_{mode}_{max_eps}', content='')
+    # ANALIZAR DE AGREGAR TODOS LOS MODOS, y q cuando no pongamos ninguno se pongan todos automatico.
+    for i in range(int(max_eps)*5):
+        create_file(REGULAR, test_directories[0], f'test{i}_{mode}_{max_eps}', content='')
 
 
 @pytest.fixture(scope='function')
 def delete_files():
     yield
-    for test_dir in test_directories_no_delete:
+    for test_dir in test_directories:
         shutil.rmtree(test_dir, ignore_errors=True)
 
 
